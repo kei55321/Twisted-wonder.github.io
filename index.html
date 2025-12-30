@@ -2,9 +2,10 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>ツイステッドワンダーランド キャラ管理</title>
   <style>
+    /* 基本のスタイル */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -19,35 +20,71 @@
     }
     h1 {
       margin: 0;
+      font-size: 24px;
     }
+    p {
+      font-size: 14px;
+      margin: 10px 0 0;
+    }
+
     main {
-      padding: 20px;
+      padding: 10px;
     }
     section {
       margin-bottom: 20px;
     }
+
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
     }
+
     th, td {
       padding: 10px;
       border: 1px solid #ddd;
       text-align: center;
     }
+
     th {
       background-color: #f4f4f4;
     }
+
     td img {
       width: 50px;
       height: 50px;
     }
+
     footer {
       text-align: center;
-      padding: 20px;
+      padding: 10px;
       background-color: #333;
       color: white;
+    }
+
+    /* モバイル向けのレスポンシブデザイン */
+    @media (max-width: 600px) {
+      th, td {
+        font-size: 12px;  /* フォントサイズを小さくする */
+      }
+
+      td img {
+        width: 40px;  /* アイコンを小さく */
+        height: 40px;
+      }
+
+      header {
+        padding: 15px;
+      }
+
+      h1 {
+        font-size: 20px;
+      }
+
+      footer {
+        font-size: 12px;
+        padding: 10px;
+      }
     }
   </style>
 </head>
