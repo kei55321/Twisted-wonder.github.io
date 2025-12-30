@@ -1,0 +1,22 @@
+[
+  {
+    "icon": "image/01_Heartslabyul/Riddle/riddle.webp",
+    "rarity": "R",
+    "genre": "制服",
+    "name": "リドル",
+    "hp": 6498,
+    "atk": 3780,
+    "mg1": "火",
+    "mg1_description": "火属性ダメージ(強)",
+    "mg2": "木",
+    "mg2_description": "2連撃の木属性ダメージ(弱)",
+    "mg3": "",
+    "mg3_description": "",
+    "buddy1": "トレイ",
+    "buddy1_bonus": "HP UP(中)",
+    "buddy2": "",
+    "buddy2_bonus": "",
+    "buddy3": "",
+    "buddy3_bonus": ""
+  }
+]
