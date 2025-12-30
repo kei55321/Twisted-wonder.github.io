@@ -95,12 +95,18 @@
 
     // 自動で同じフォルダ内のJSONファイルを読み込む
     window.onload = function() {
-      const jsonUrl = 'characters.json';  // JSONファイルが同じフォルダにある場合
+      const jsonUrl = 'a.json';  // JSONファイルが同じフォルダにある場合
 
       fetch(jsonUrl)
-        .then(response => response.json())  // JSONとして解析
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('JSONファイルの読み込みに失敗しました');
+          }
+          return response.json();
+        })  // JSONとして解析
         .then(data => {
           if (Array.isArray(data)) {
+            // JSONデータが配列形式の場合
             data.forEach(char => addCharacterToTable(char));  // キャラクター情報をテーブルに追加
           } else {
             alert("無効なデータ形式です。");
@@ -116,7 +122,7 @@
     function addCharacterToTable(char) {
       const tr = document.createElement('tr');
 
-     tr.innerHTML = `
+      tr.innerHTML = `
         <td><img src="${char.icon}" alt="${char.name}" class="char-img"></td>
         <td>${char.name}</td>
         <td>${char.hp}</td>
