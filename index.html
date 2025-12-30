@@ -116,18 +116,13 @@
     function addCharacterToTable(char) {
       const tr = document.createElement('tr');
 
-      tr.innerHTML = `
-        <td>
-          <img src="${char.icon}" alt="${char.name}" class="char-img">
-          ${char.name}
-        </td>
+     tr.innerHTML = `
+        <td><img src="${char.icon}" alt="${char.name}" class="char-img"></td>
+        <td>${char.name}</td>
         <td>${char.hp}</td>
         <td>${char.atk}</td>
-        <td>
-          ${char.mg1} - ${char.mg1_description}<br>
-          ${char.mg2} - ${char.mg2_description}<br>
-          ${char.mg3} - ${char.mg3_description}
-        </td>
+        <td>${char.mg1} - ${char.mg1_description}</td>
+        <td>${char.mg2} - ${char.mg2_description}</td>
         <td>${char.buddy1}</td>
         <td>${char.buddy1_bonus}</td>
         <td>${char.buddy2}</td>
