@@ -1,84 +1,144 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="ツイステッドワンダーランド キャラ性能一覧">
-    <title>ツイステッドワンダーランド キャラ性能</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ツイステッドワンダーランド キャラ管理</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    header {
+      background-color: #333;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      margin: 0;
+    }
+    main {
+      padding: 20px;
+    }
+    section {
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+    td img {
+      width: 50px;
+      height: 50px;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #333;
+      color: white;
+    }
+  </style>
 </head>
-
 <body>
-    <header>
-        <h1>ツイステッドワンダーランド キャラ性能一覧</h1>
-        <p>お気に入りキャラクターのステータスとスキルをチェックしよう！</p>
-    </header>
 
-    <section id="character-list">
-        <!-- キャラ1: リドル・ローズハート -->
-        <div class="character-card">
-            <h2>リドル・ローズハート</h2>
-            <img src="riddle.jpg" alt="リドル・ローズハート" class="character-img">
-            <div class="stats">
-                <p><strong>HP:</strong> 1600</p>
-                <p><strong>攻撃力:</strong> 240</p>
-                <p><strong>防御力:</strong> 150</p>
-            </div>
-            <div class="skills">
-                <h3>スキル</h3>
-                <ul>
-                    <li>スキル1: バースデー・クレイジー</li>
-                    <li>スキル2: ハートの支配者</li>
-                    <li>スキル3: 心の呪縛</li>
-                </ul>
-            </div>
-        </div>
+  <header>
+    <h1>ツイステッドワンダーランド キャラ管理</h1>
+    <p>同じフォルダにあるJSONファイルを読み込み、キャラクター情報を表示します。</p>
+  </header>
 
-        <!-- キャラ2: ジャック・ハウル -->
-        <div class="character-card">
-            <h2>ジャック・ハウル</h2>
-            <img src="jack.jpg" alt="ジャック・ハウル" class="character-img">
-            <div class="stats">
-                <p><strong>HP:</strong> 1700</p>
-                <p><strong>攻撃力:</strong> 260</p>
-                <p><strong>防御力:</strong> 140</p>
-            </div>
-            <div class="skills">
-                <h3>スキル</h3>
-                <ul>
-                    <li>スキル1: 狼の本能</li>
-                    <li>スキル2: 夜の襲撃</li>
-                    <li>スキル3: 強化・爪の力</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- キャラ3: エペル・フェルミエ -->
-        <div class="character-card">
-            <h2>エペル・フェルミエ</h2>
-            <img src="epel.jpg" alt="エペル・フェルミエ" class="character-img">
-            <div class="stats">
-                <p><strong>HP:</strong> 1550</p>
-                <p><strong>攻撃力:</strong> 230</p>
-                <p><strong>防御力:</strong> 160</p>
-            </div>
-            <div class="skills">
-                <h3>スキル</h3>
-                <ul>
-                    <li>スキル1: メイジ・オブ・ウィッチ</li>
-                    <li>スキル2: 狩りの時間</li>
-                    <li>スキル3: エトワールの誇り</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- 他のキャラクターカードを追加 -->
+  <main>
+    <!-- キャラクター表 -->
+    <section id="character-list-section">
+      <h2>キャラクター一覧</h2>
+      <table class="character-table">
+        <thead>
+          <tr>
+            <th>アイコン</th>
+            <th>キャラ名</th>
+            <th>HP</th>
+            <th>ATK</th>
+            <th>スキル1</th>
+            <th>スキル1 説明</th>
+            <th>バディ1</th>
+            <th>バディ1 ボーナス</th>
+            <th>バディ2</th>
+            <th>バディ2 ボーナス</th>
+            <th>バディ3</th>
+            <th>バディ3 ボーナス</th>
+          </tr>
+        </thead>
+        <tbody id="character-table-body">
+          <!-- ここにキャラクター情報が追加されます -->
+        </tbody>
+      </table>
     </section>
+  </main>
 
-    <footer>
-        <p>© 2025 ツイステッドワンダーランド キャラ性能サイト</p>
-    </footer>
+  <footer>
+    <p>© ツイステッドワンダーランド 非公式ファンサイト</p>
+  </footer>
+
+  <script>
+    const tableBody = document.getElementById('character-table-body');
+
+    // 自動で同じフォルダ内のJSONファイルを読み込む
+    window.onload = function() {
+      const jsonUrl = 'a.json';  // JSONファイルが同じフォルダにある場合
+
+      fetch(jsonUrl)
+        .then(response => response.json())  // JSONとして解析
+        .then(data => {
+          if (Array.isArray(data)) {
+            data.forEach(char => addCharacterToTable(char));  // キャラクター情報をテーブルに追加
+          } else {
+            alert("無効なデータ形式です。");
+          }
+        })
+        .catch(error => {
+          console.error('JSON読み込みエラー:', error);
+          alert('JSONの読み込みに失敗しました。');
+        });
+    };
+
+    // キャラクター情報をテーブルに追加する
+    function addCharacterToTable(char) {
+      const tr = document.createElement('tr');
+
+      tr.innerHTML = `
+        <td>
+          <img src="${char.icon}" alt="${char.name}" class="char-img">
+          ${char.name}
+        </td>
+        <td>${char.hp}</td>
+        <td>${char.atk}</td>
+        <td>
+          ${char.mg1} - ${char.mg1_description}<br>
+          ${char.mg2} - ${char.mg2_description}<br>
+          ${char.mg3} - ${char.mg3_description}
+        </td>
+        <td>${char.buddy1}</td>
+        <td>${char.buddy1_bonus}</td>
+        <td>${char.buddy2}</td>
+        <td>${char.buddy2_bonus}</td>
+        <td>${char.buddy3}</td>
+        <td>${char.buddy3_bonus}</td>
+      `;
+
+      tableBody.appendChild(tr);
+    }
+  </script>
+
 </body>
-
 </html>
