@@ -4,52 +4,43 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>ツイステッドワンダーランド キャラ管理</title>
+
   <style>
-    /* 基本のスタイル */
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       margin: 0;
-      padding: 0;
       background-color: #f4f4f4;
-      writing-mode: horizontal-tb; /* 横書きに設定 */
     }
 
     header {
       background-color: #333;
-      color: white;
+      color: #fff;
       padding: 20px;
       text-align: center;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 24px;
-    }
-
-    p {
-      font-size: 14px;
-      margin: 10px 0 0;
     }
 
     main {
       padding: 10px;
     }
 
+    button {
+      margin: 10px 0;
+      padding: 8px 16px;
+      font-size: 14px;
+    }
+
+    /* ===== テーブル表示 ===== */
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
+      margin-top: 10px;
     }
 
     th, td {
-      padding: 10px;
       border: 1px solid #ddd;
+      padding: 8px;
       text-align: center;
-      writing-mode: horizontal-tb; /* 横書きに設定 */
-    }
-
-    th {
-      background-color: #f4f4f4;
+      font-size: 12px;
     }
 
     td img {
@@ -57,118 +48,154 @@
       height: 50px;
     }
 
+    th {
+      background-color: #eee;
+    }
+
+    /* ===== アイコンのみ表示 ===== */
+    #icon-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .icon-item {
+      text-align: center;
+    }
+
+    .icon-item img {
+      width: 80px;
+      height: 80px;
+    }
+
+    /* ===== スマホ向け ===== */
+    @media (max-width: 600px) {
+      th, td {
+        font-size: 8px;
+      }
+
+      button {
+        display: none; /* スマホではボタン非表示 */
+      }
+    }
+
     footer {
       text-align: center;
       padding: 10px;
       background-color: #333;
       color: white;
-    }
-
-    /* モバイル向けのレスポンシブデザイン */
-    @media (max-width: 600px) {
-      th, td {
-        font-size: 5px;  /* フォントサイズを小さくする */
-      }
-
-      td img {
-        width: 40px;  /* アイコンを小さく */
-        height: 40px;
-      }
-
-      header {
-        padding: 15px;
-      }
-
-      h1 {
-        font-size: 20px;
-      }
-
-      footer {
-        font-size: 12px;
-        padding: 10px;
-      }
+      font-size: 12px;
     }
   </style>
 </head>
+
 <body>
 
-  <header>
-    <h1>ツイステッドワンダーランド キャラ管理</h1>
-    <p>同じフォルダにあるJSONファイルを読み込み、キャラクター情報を表示します。</p>
-  </header>
+<header>
+  <h1>ツイステッドワンダーランド キャラ管理</h1>
+  <p>JSONからキャラクター情報を表示</p>
+</header>
 
-  <main>
-    <!-- キャラクター表 -->
-    <section id="character-list-section">
-      <h2>キャラクター一覧</h2>
-      <table class="character-table">
-        <thead>
-          <tr>
-            <th>アイコン</th>
-            <th>キャラ名</th>
-            <th>HP</th>
-            <th>ATK</th>
-            <th>スキル1</th>
-            <th>スキル2</th>
-            <th>スキル3</th>
-          </tr>
-        </thead>
-        <tbody id="character-table-body">
-          <!-- ここにキャラクター情報が追加されます -->
-        </tbody>
-      </table>
-    </section>
-  </main>
+<main>
+  <button id="toggleStatusBtn">ステータス表示：OFF</button>
 
-  <footer>
-    <p>© ツイステッドワンダーランド 非公式ファンサイト</p>
-  </footer>
+  <!-- ステータス表 -->
+  <section id="character-list-section">
+    <table>
+      <thead>
+        <tr>
+          <th>アイコン</th>
+          <th>名前</th>
+          <th>HP</th>
+          <th>ATK</th>
+          <th>スキル1</th>
+          <th>スキル2</th>
+          <th>スキル3</th>
+        </tr>
+      </thead>
+      <tbody id="character-table-body"></tbody>
+    </table>
+  </section>
 
-  <script>
-    const tableBody = document.getElementById('character-table-body');
+  <!-- アイコンのみ -->
+  <section id="icon-only-section" style="display:none;">
+    <div id="icon-grid"></div>
+  </section>
+</main>
 
-    // 自動で同じフォルダ内のJSONファイルを読み込む
-    window.onload = function() {
-      const jsonUrl = 'characters.json';  // JSONファイルが同じフォルダにある場合
+<footer>
+  <p>© ツイステッドワンダーランド 非公式ファンサイト</p>
+</footer>
 
-      fetch(jsonUrl)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('JSONファイルの読み込みに失敗しました');
-          }
-          return response.json();
-        })  // JSONとして解析
-        .then(data => {
-          if (Array.isArray(data)) {
-            // JSONデータが配列形式の場合
-            data.forEach(char => addCharacterToTable(char));  // キャラクター情報をテーブルに追加
-          } else {
-            alert("無効なデータ形式です。");
-          }
-        })
-        .catch(error => {
-          console.error('JSON読み込みエラー:', error);
-          alert('JSONの読み込みに失敗しました。');
+<script>
+  const tableBody = document.getElementById('character-table-body');
+  const toggleBtn = document.getElementById('toggleStatusBtn');
+  const tableSection = document.getElementById('character-list-section');
+  const iconSection = document.getElementById('icon-only-section');
+  const iconGrid = document.getElementById('icon-grid');
+
+  let statusOn = false;
+
+  window.onload = function () {
+    fetch('characters.json')
+      .then(res => res.json())
+      .then(data => {
+        data.forEach(char => {
+          addCharacterToTable(char);
+          addIconOnly(char);
         });
-    };
+        checkScreenSize();
+      });
+  };
 
-    // キャラクター情報をテーブルに追加する
-    function addCharacterToTable(char) {
-      const tr = document.createElement('tr');
+  function addCharacterToTable(char) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><img src="${char.icon}" alt="${char.name}"></td>
+      <td>${char.name}</td>
+      <td>${char.hp}</td>
+      <td>${char.atk}</td>
+      <td>${char.mg1} - ${char.mg1_description}</td>
+      <td>${char.mg2} - ${char.mg2_description}</td>
+      <td>${char.mg3} - ${char.mg3_description}</td>
+    `;
+    tableBody.appendChild(tr);
+  }
 
-      tr.innerHTML = `
-        <td><img src="${char.icon}" alt="${char.name}" class="char-img"></td>
-        <td>${char.name}</td>
-        <td>${char.hp}</td>
-        <td>${char.atk}</td>
-        <td>${char.mg1} - ${char.mg1_description}</td>
-        <td>${char.mg2} - ${char.mg2_description}</td>
-        <td>${char.mg3} - ${char.mg3_description}</td>
-      `;
+  function addIconOnly(char) {
+    const div = document.createElement('div');
+    div.className = 'icon-item';
+    div.innerHTML = `
+      <img src="${char.icon}" alt="${char.name}">
+      <div>${char.name}</div>
+    `;
+    iconGrid.appendChild(div);
+  }
 
-      tableBody.appendChild(tr);
+  toggleBtn.addEventListener('click', () => {
+    statusOn = !statusOn;
+    updateDisplay();
+  });
+
+  function checkScreenSize() {
+    statusOn = window.innerWidth > 600;
+    updateDisplay();
+  }
+
+  function updateDisplay() {
+    if (statusOn) {
+      toggleBtn.textContent = 'ステータス表示：ON';
+      tableSection.style.display = 'block';
+      iconSection.style.display = 'none';
+    } else {
+      toggleBtn.textContent = 'ステータス表示：OFF';
+      tableSection.style.display = 'none';
+      iconSection.style.display = 'block';
     }
-  </script>
+  }
+
+  window.addEventListener('resize', checkScreenSize);
+</script>
 
 </body>
 </html>
