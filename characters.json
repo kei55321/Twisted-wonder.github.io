@@ -1,6 +1,6 @@
 [
   {
-    "icon": "制服.jpg",
+    "icon": "image\01_Heartslabyul\Riddle\icon\制服.jpg",
     "rarity": "R",
     "genre": "バランス",
     "name": "リドル(R/制服)",
@@ -20,7 +20,7 @@
     "buddy3_bonus": ""
   },
   {
-    "icon": "運動着.jpg",
+    "icon": "image\01_Heartslabyul\Riddle\icon\運動着.jpg",
     "rarity": "R",
     "genre": "ディフェンス",
     "name": "リドル（R/運動着）",
@@ -40,7 +40,7 @@
     "buddy3_bonus": ""
   },
   {
-    "icon": "マスカレードドレス.jpg",
+    "icon": "image\01_Heartslabyul\Riddle\icon\マスカレードドレス.jpg",
     "rarity": "R",
     "genre": "ディフェンス",
     "name": "リドル（R/マスカレードドレス",
