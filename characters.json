@@ -1,9 +1,9 @@
 [
   {
-    "icon": "image\01_Heartslabyul\Riddle\icon\制服.jpg",
+    "icon": "image/01_Heartslabyul/Riddle/icon/制服.jpg",
     "rarity": "R",
     "genre": "バランス",
-    "name": "リドル(R/制服)",
+    "name": "リドル（R/制服）",
     "hp": 7581,
     "atk": 4410,
     "mg1": "火",
@@ -20,7 +20,7 @@
     "buddy3_bonus": ""
   },
   {
-    "icon": "image\01_Heartslabyul\Riddle\icon\運動着.jpg",
+    "icon": "image/01_Heartslabyul/Riddle/icon/運動着.jpg",
     "rarity": "R",
     "genre": "ディフェンス",
     "name": "リドル（R/運動着）",
@@ -40,10 +40,10 @@
     "buddy3_bonus": ""
   },
   {
-    "icon": "image\01_Heartslabyul\Riddle\icon\マスカレードドレス.jpg",
+    "icon": "image/01_Heartslabyul/Riddle/icon/マスカレードドレス.jpg",
     "rarity": "R",
     "genre": "ディフェンス",
-    "name": "リドル（R/マスカレードドレス",
+    "name": "リドル（R/マスカレードドレス）",
     "hp": 10501,
     "atk": 2827,
     "mg1": "水",
