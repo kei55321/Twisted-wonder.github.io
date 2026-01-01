@@ -1,6 +1,6 @@
 [
   {
-    "icon": "image/01_Heartslabyul/Riddle/icon/制服.jpg",
+    "icon": "image/01_Heartslabyul/Riddle/riddle.webp",
     "rarity": "R",
     "genre": "バランス",
     "name": "リドル（R/制服）",
@@ -60,3 +60,4 @@
     "buddy3_bonus": ""
   }
 ]
+
