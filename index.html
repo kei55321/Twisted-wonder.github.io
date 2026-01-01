@@ -29,11 +29,23 @@
       font-size: 14px;
     }
 
+    /* エラー表示 */
+    #error-box {
+      display: none;
+      color: #b00020;
+      background: #ffecec;
+      border: 1px solid #b00020;
+      padding: 10px;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
     /* ===== テーブル表示 ===== */
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
+      background: #fff;
     }
 
     th, td {
@@ -46,6 +58,7 @@
     td img {
       width: 50px;
       height: 50px;
+      object-fit: cover;
     }
 
     th {
@@ -61,11 +74,15 @@
 
     .icon-item {
       text-align: center;
+      background: #fff;
+      padding: 5px;
+      border: 1px solid #ddd;
     }
 
     .icon-item img {
       width: 80px;
       height: 80px;
+      object-fit: cover;
     }
 
     /* ===== スマホ向け ===== */
@@ -73,10 +90,7 @@
       th, td {
         font-size: 8px;
       }
-
-      button {
-        display: none; /* スマホではボタン非表示 */
-      }
+      /* ボタンは消さない（重要） */
     }
 
     footer {
@@ -97,7 +111,10 @@
 </header>
 
 <main>
-  <button id="toggleStatusBtn">ステータス表示：OFF</button>
+  <!-- エラー表示 -->
+  <div id="error-box"></div>
+
+  <button id="toggleStatusBtn">ステータス表示：ON</button>
 
   <!-- ステータス表 -->
   <section id="character-list-section">
@@ -133,31 +150,55 @@
   const tableSection = document.getElementById('character-list-section');
   const iconSection = document.getElementById('icon-only-section');
   const iconGrid = document.getElementById('icon-grid');
+  const errorBox = document.getElementById('error-box');
 
-  let statusOn = false;
+  let statusOn = true; // 初期は必ず表示
 
-  window.onload = function () {
-    fetch('characters.json')
-      .then(res => res.json())
+  window.onload = () => {
+    fetch('./characters.json')
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status} : ${res.statusText}`);
+        }
+        return res.json();
+      })
       .then(data => {
+        if (!Array.isArray(data)) {
+          throw new Error('JSONが配列ではありません');
+        }
+
         data.forEach(char => {
           addCharacterToTable(char);
           addIconOnly(char);
         });
-        checkScreenSize();
+
+        updateDisplay();
+      })
+      .catch(err => {
+        console.error(err);
+        showError(
+          'キャラクターデータを読み込めませんでした。\n' +
+          err.message +
+          '\ncharacters.json の場所・名前・大文字小文字を確認してください。'
+        );
       });
   };
+
+  function showError(message) {
+    errorBox.textContent = message;
+    errorBox.style.display = 'block';
+  }
 
   function addCharacterToTable(char) {
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td><img src="${char.icon}" alt="${char.name}"></td>
       <td>${char.name}</td>
-      <td>${char.hp}</td>
-      <td>${char.atk}</td>
-      <td>${char.mg1} - ${char.mg1_description}</td>
-      <td>${char.mg2} - ${char.mg2_description}</td>
-      <td>${char.mg3} - ${char.mg3_description}</td>
+      <td>${char.hp ?? '-'}</td>
+      <td>${char.atk ?? '-'}</td>
+      <td>${char.mg1 ? `${char.mg1}：${char.mg1_description}` : '-'}</td>
+      <td>${char.mg2 ? `${char.mg2}：${char.mg2_description}` : '-'}</td>
+      <td>${char.mg3 ? `${char.mg3}：${char.mg3_description}` : '-'}</td>
     `;
     tableBody.appendChild(tr);
   }
@@ -177,11 +218,6 @@
     updateDisplay();
   });
 
-  function checkScreenSize() {
-    statusOn = window.innerWidth > 600;
-    updateDisplay();
-  }
-
   function updateDisplay() {
     if (statusOn) {
       toggleBtn.textContent = 'ステータス表示：ON';
@@ -193,8 +229,6 @@
       iconSection.style.display = 'block';
     }
   }
-
-  window.addEventListener('resize', checkScreenSize);
 </script>
 
 </body>
