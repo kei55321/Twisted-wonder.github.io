@@ -18,7 +18,8 @@
     "buddy2_bonus": "",
     "buddy3": "",
     "buddy3_bonus": "",
-    "image": "image/01_Heartslabyul/Riddle/制服.jpg"
+    "imageBefore": "image/01_Heartslabyul/Riddle/制服.jpg",
+    "imageAfter": "image/01_Heartslabyul/Riddle/制服_G.jpg"
   },
   {
     "icon": "image/01_Heartslabyul/Riddle/icon/運動着.jpg",
