@@ -1,73 +1,90 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ツイステ キャラ管理</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ツイステ キャラ管理</title>
 
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      margin: 0;
-      background: #f4f4f4;
-    }
+<style>
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  margin: 0;
+  background: #f4f4f4;
+}
 
-    header, footer {
-      background: #333;
-      color: white;
-      text-align: center;
-      padding: 15px;
-    }
+header, footer {
+  background: #333;
+  color: #fff;
+  text-align: center;
+  padding: 15px;
+}
 
-    main {
-      padding: 10px;
-    }
+main {
+  padding: 10px;
+}
 
-    button {
-      padding: 8px 14px;
-      margin: 5px;
-      font-size: 14px;
-    }
+button {
+  padding: 8px 14px;
+  margin: 4px;
+  font-size: 14px;
+}
 
-    input {
-      width: 100%;
-      padding: 8px;
-      margin: 10px 0;
-      font-size: 14px;
-    }
+input {
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+  font-size: 14px;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-    }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
 
-    th, td {
-      border: 1px solid #ddd;
-      padding: 6px;
-      text-align: center;
-      font-size: 12px;
-    }
+th, td {
+  border: 1px solid #ddd;
+  padding: 6px;
+  text-align: center;
+  font-size: 12px;
+}
 
-    img {
-      width: 50px;
-      height: 50px;
-      object-fit: cover;
-    }
+img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+}
 
-    #icon-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
+/* アイコン表示 */
+#icon-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
 
-    .icon-item {
-      background: white;
-      padding: 5px;
-      text-align: center;
-      border: 1px solid #ddd;
-    }
-  </style>
+.icon-item {
+  background: #fff;
+  padding: 5px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+/* レア度色 */
+.rarity-R {
+  color: #777;
+}
+
+.rarity-SR {
+  color: #1e88e5;
+  font-weight: bold;
+}
+
+.rarity-SSR {
+  color: #f9a825;
+  font-weight: bold;
+  text-shadow: 0 0 2px rgba(0,0,0,0.3);
+}
+</style>
 </head>
 
 <body>
@@ -78,125 +95,152 @@
 
 <main>
 
-  <button id="toggleStatusBtn">ステータス表示：ON</button>
+<button id="toggleStatusBtn">ステータス表示：ON</button>
 
-  <input id="searchInput" placeholder="キャラ名で検索">
+<input id="searchInput" placeholder="キャラ名で検索">
 
-  <div>
-    <button id="sortAtkBtn">ATK ↓</button>
-    <button id="sortHpBtn">HP ↓</button>
-  </div>
+<div>
+  <button id="sortAtkBtn">ATK ↓</button>
+  <button id="sortHpBtn">HP ↓</button>
+  <button id="resetBtn">デフォルト</button>
+</div>
 
-  <section id="character-list-section">
-    <table>
-      <thead>
-        <tr>
-          <th>アイコン</th>
-          <th>名前</th>
-          <th>HP</th>
-          <th>ATK</th>
-          <th>スキル1</th>
-          <th>スキル2</th>
-          <th>スキル3</th>
-        </tr>
-      </thead>
-      <tbody id="character-table-body"></tbody>
-    </table>
-  </section>
+<section id="character-list-section">
+<table>
+<thead>
+<tr>
+  <th>アイコン</th>
+  <th>名前</th>
+  <th>レア度</th>
+  <th>ATK</th>
+  <th>HP</th>
+  <th>スキル1</th>
+  <th>スキル2</th>
+  <th>スキル3</th>
+</tr>
+</thead>
+<tbody id="character-table-body"></tbody>
+</table>
+</section>
 
-  <section id="icon-only-section" style="display:none;">
-    <div id="icon-grid"></div>
-  </section>
+<section id="icon-only-section" style="display:none;">
+  <div id="icon-grid"></div>
+</section>
 
 </main>
 
-<footer>
-  © 非公式ファンサイト
-</footer>
+<footer>© 非公式ファンサイト</footer>
 
 <script>
-  const tableBody = document.getElementById('character-table-body');
-  const iconGrid = document.getElementById('icon-grid');
-  const toggleBtn = document.getElementById('toggleStatusBtn');
-  const searchInput = document.getElementById('searchInput');
-  const sortAtkBtn = document.getElementById('sortAtkBtn');
-  const sortHpBtn = document.getElementById('sortHpBtn');
+const tableBody = document.getElementById('character-table-body');
+const iconGrid = document.getElementById('icon-grid');
+const toggleBtn = document.getElementById('toggleStatusBtn');
+const searchInput = document.getElementById('searchInput');
+const sortAtkBtn = document.getElementById('sortAtkBtn');
+const sortHpBtn = document.getElementById('sortHpBtn');
+const resetBtn = document.getElementById('resetBtn');
 
-  const tableSection = document.getElementById('character-list-section');
-  const iconSection = document.getElementById('icon-only-section');
+const tableSection = document.getElementById('character-list-section');
+const iconSection = document.getElementById('icon-only-section');
 
-  let characters = [];
-  let currentList = [];
-  let statusOn = true;
+let characters = [];
+let originalOrder = [];
+let currentList = [];
+let statusOn = true;
 
-  let atkAsc = false;
-  let hpAsc = false;
+let atkAsc = false;
+let hpAsc = false;
 
-  fetch('./characters.json')
-    .then(res => res.json())
-    .then(data => {
-      characters = data;
-      renderCharacters(data);
-    });
+fetch('./characters.json')
+  .then(res => res.json())
+  .then(data => {
+    characters = data;
+    originalOrder = [...data];
+    renderCharacters(data);
+  });
 
-  function renderCharacters(list) {
-    currentList = list;
-    tableBody.innerHTML = '';
-    iconGrid.innerHTML = '';
+function rarityStars(rarity) {
+  if (rarity === 'SSR') return '★★★';
+  if (rarity === 'SR') return '★★';
+  if (rarity === 'R') return '★';
+  return '-';
+}
 
-    list.forEach(char => {
-      tableBody.innerHTML += `
-        <tr>
-          <td><img src="${char.icon}"></td>
-          <td>${char.name}</td>
-          <td>${char.hp ?? '-'}</td>
-          <td>${char.atk ?? '-'}</td>
-          <td>${char.mg1 ?? '-'}</td>
-          <td>${char.mg2 ?? '-'}</td>
-          <td>${char.mg3 ?? '-'}</td>
-        </tr>
-      `;
+function rarityClass(rarity) {
+  return rarity ? `rarity-${rarity}` : '';
+}
 
-      iconGrid.innerHTML += `
-        <div class="icon-item">
-          <img src="${char.icon}">
-          <div>${char.name}</div>
+function renderCharacters(list) {
+  currentList = list;
+  tableBody.innerHTML = '';
+  iconGrid.innerHTML = '';
+
+  list.forEach(char => {
+    tableBody.innerHTML += `
+      <tr>
+        <td><img src="${char.icon}"></td>
+        <td>${char.name}</td>
+        <td class="${rarityClass(char.rarity)}">
+          ${rarityStars(char.rarity)}
+        </td>
+        <td>${char.atk ?? '-'}</td>
+        <td>${char.hp ?? '-'}</td>
+        <td>${char.mg1 ?? '-'}</td>
+        <td>${char.mg2 ?? '-'}</td>
+        <td>${char.mg3 ?? '-'}</td>
+      </tr>
+    `;
+
+    iconGrid.innerHTML += `
+      <div class="icon-item">
+        <img src="${char.icon}">
+        <div>${char.name}</div>
+        <div class="${rarityClass(char.rarity)}">
+          ${rarityStars(char.rarity)}
         </div>
-      `;
-    });
-  }
+      </div>
+    `;
+  });
+}
 
-  toggleBtn.onclick = () => {
-    statusOn = !statusOn;
-    tableSection.style.display = statusOn ? 'block' : 'none';
-    iconSection.style.display = statusOn ? 'none' : 'block';
-    toggleBtn.textContent = statusOn ? 'ステータス表示：ON' : 'ステータス表示：OFF';
-  };
+toggleBtn.onclick = () => {
+  statusOn = !statusOn;
+  tableSection.style.display = statusOn ? 'block' : 'none';
+  iconSection.style.display = statusOn ? 'none' : 'block';
+  toggleBtn.textContent = statusOn ? 'ステータス表示：ON' : 'ステータス表示：OFF';
+};
 
-  searchInput.oninput = () => {
-    const key = searchInput.value.toLowerCase();
-    renderCharacters(
-      characters.filter(c => c.name.toLowerCase().includes(key))
-    );
-  };
+searchInput.oninput = () => {
+  const key = searchInput.value.toLowerCase();
+  renderCharacters(
+    characters.filter(c => c.name.toLowerCase().includes(key))
+  );
+};
 
-  sortAtkBtn.onclick = () => {
-    atkAsc = !atkAsc;
-    const sorted = [...currentList].sort((a, b) =>
-      atkAsc ? (a.atk ?? 0) - (b.atk ?? 0) : (b.atk ?? 0) - (a.atk ?? 0)
-    );
-    sortAtkBtn.textContent = atkAsc ? 'ATK ↑' : 'ATK ↓';
-    renderCharacters(sorted);
-  };
+sortAtkBtn.onclick = () => {
+  atkAsc = !atkAsc;
+  sortAtkBtn.textContent = atkAsc ? 'ATK ↑' : 'ATK ↓';
+  renderCharacters([...currentList].sort((a, b) =>
+    atkAsc ? (a.atk ?? 0) - (b.atk ?? 0) : (b.atk ?? 0) - (a.atk ?? 0)
+  ));
+};
 
-  sortHpBtn.onclick = () => {
-    hpAsc = !hpAsc;
-    const sorted = [...currentList].sort((a, b) =>
-      hpAsc ? (a.hp ?? 0) - (b.hp ?? 0) : (b.hp ?? 0) - (a.hp ?? 0)
-    );
-    sortHpBtn.textContent = hpAsc ? 'HP ↑' : 'HP ↓';
-    renderCharacters(sorted);
-  };
+sortHpBtn.onclick = () => {
+  hpAsc = !hpAsc;
+  sortHpBtn.textContent = hpAsc ? 'HP ↑' : 'HP ↓';
+  renderCharacters([...currentList].sort((a, b) =>
+    hpAsc ? (a.hp ?? 0) - (b.hp ?? 0) : (b.hp ?? 0) - (a.hp ?? 0)
+  ));
+};
+
+resetBtn.onclick = () => {
+  atkAsc = false;
+  hpAsc = false;
+  sortAtkBtn.textContent = 'ATK ↓';
+  sortHpBtn.textContent = 'HP ↓';
+  searchInput.value = '';
+  renderCharacters(originalOrder);
+};
 </script>
 
 </body>
