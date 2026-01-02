@@ -27,6 +27,16 @@ button {
   padding: 8px 14px;
   margin: 4px;
   font-size: 14px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+}
+
+/* ▼ 押されているボタン */
+button.active-sort {
+  background: #1e88e5;
+  color: #fff;
+  border-color: #1e88e5;
 }
 
 input {
@@ -55,7 +65,6 @@ img {
   object-fit: cover;
 }
 
-/* アイコン表示 */
 #icon-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -69,16 +78,8 @@ img {
   text-align: center;
 }
 
-/* レア度色 */
-.rarity-R {
-  color: #777;
-}
-
-.rarity-SR {
-  color: #1e88e5;
-  font-weight: bold;
-}
-
+.rarity-R { color: #777; }
+.rarity-SR { color: #1e88e5; font-weight: bold; }
 .rarity-SSR {
   color: #f9a825;
   font-weight: bold;
@@ -99,7 +100,6 @@ img {
 
 <input id="searchInput" placeholder="キャラ名で検索">
 
-<!-- ▼ ボタン順：HP → ATK -->
 <div>
   <button id="sortHpBtn">HP ↓</button>
   <button id="sortAtkBtn">ATK ↓</button>
@@ -113,7 +113,6 @@ img {
   <th>アイコン</th>
   <th>名前</th>
   <th>レア度</th>
-  <!-- ▼ 列順：HP → ATK -->
   <th>HP</th>
   <th>ATK</th>
   <th>スキル1</th>
@@ -172,6 +171,11 @@ function rarityClass(rarity) {
   return rarity ? `rarity-${rarity}` : '';
 }
 
+function clearActive() {
+  sortAtkBtn.classList.remove('active-sort');
+  sortHpBtn.classList.remove('active-sort');
+}
+
 function renderCharacters(list) {
   currentList = list;
   tableBody.innerHTML = '';
@@ -182,10 +186,7 @@ function renderCharacters(list) {
       <tr>
         <td><img src="${char.icon}"></td>
         <td>${char.name}</td>
-        <td class="${rarityClass(char.rarity)}">
-          ${rarityStars(char.rarity)}
-        </td>
-        <!-- ▼ HP → ATK -->
+        <td class="${rarityClass(char.rarity)}">${rarityStars(char.rarity)}</td>
         <td>${char.hp ?? '-'}</td>
         <td>${char.atk ?? '-'}</td>
         <td>${char.mg1 ?? '-'}</td>
@@ -198,9 +199,7 @@ function renderCharacters(list) {
       <div class="icon-item">
         <img src="${char.icon}">
         <div>${char.name}</div>
-        <div class="${rarityClass(char.rarity)}">
-          ${rarityStars(char.rarity)}
-        </div>
+        <div class="${rarityClass(char.rarity)}">${rarityStars(char.rarity)}</div>
       </div>
     `;
   });
@@ -220,19 +219,31 @@ searchInput.oninput = () => {
   );
 };
 
-sortAtkBtn.onclick = () => {
-  atkAsc = !atkAsc;
-  sortAtkBtn.textContent = atkAsc ? 'ATK ↑' : 'ATK ↓';
-  renderCharacters([...currentList].sort((a, b) =>
-    atkAsc ? (a.atk ?? 0) - (b.atk ?? 0) : (b.atk ?? 0) - (a.atk ?? 0)
-  ));
-};
-
 sortHpBtn.onclick = () => {
   hpAsc = !hpAsc;
   sortHpBtn.textContent = hpAsc ? 'HP ↑' : 'HP ↓';
+  atkAsc = false;
+  sortAtkBtn.textContent = 'ATK ↓';
+
+  clearActive();
+  sortHpBtn.classList.add('active-sort');
+
   renderCharacters([...currentList].sort((a, b) =>
     hpAsc ? (a.hp ?? 0) - (b.hp ?? 0) : (b.hp ?? 0) - (a.hp ?? 0)
+  ));
+};
+
+sortAtkBtn.onclick = () => {
+  atkAsc = !atkAsc;
+  sortAtkBtn.textContent = atkAsc ? 'ATK ↑' : 'ATK ↓';
+  hpAsc = false;
+  sortHpBtn.textContent = 'HP ↓';
+
+  clearActive();
+  sortAtkBtn.classList.add('active-sort');
+
+  renderCharacters([...currentList].sort((a, b) =>
+    atkAsc ? (a.atk ?? 0) - (b.atk ?? 0) : (b.atk ?? 0) - (a.atk ?? 0)
   ));
 };
 
@@ -242,6 +253,7 @@ resetBtn.onclick = () => {
   sortAtkBtn.textContent = 'ATK ↓';
   sortHpBtn.textContent = 'HP ↓';
   searchInput.value = '';
+  clearActive();
   renderCharacters(originalOrder);
 };
 </script>
