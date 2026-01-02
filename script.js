@@ -10,7 +10,7 @@ const body = document.getElementById('character-table-body');
 const toggleBtn = document.getElementById('toggleBtn');
 const listSection = document.getElementById('character-list-section');
 const overlay = document.getElementById('overlay');
-
+const tableWrapper = document.getElementById('tableWrapper');
 const sortHpBtn = document.getElementById('sortHpBtn');
 const sortAtkBtn = document.getElementById('sortAtkBtn');
 const resetBtn = document.getElementById('resetBtn');
