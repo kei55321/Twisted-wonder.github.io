@@ -5,7 +5,129 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ツイステ キャラ管理</title>
 
-<link rel="stylesheet" href="style.css">
+<style>
+body {
+  margin: 0;
+  background: #f4f4f4;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+header, footer {
+  background: #333;
+  color: #fff;
+  text-align: center;
+  padding: 15px;
+}
+
+main {
+  padding: 10px;
+}
+
+/* ===== ボタン ===== */
+button {
+  padding: 8px 14px;
+  margin: 4px;
+  font-size: 14px;
+}
+
+button.active {
+  background: #333;
+  color: #fff;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+}
+
+/* ===== テーブル枠 ===== */
+.table-wrapper {
+  background: #f4f4f4;
+}
+
+.table-scroll {
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-scroll table {
+  min-width: 700px;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  font-size: 13px;
+  text-align: center;
+}
+
+th:first-child,
+td:first-child {
+  min-width: 260px;
+}
+
+/* 名前セル */
+.name-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+}
+
+.name-cell img {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+/* ===== モーダル ===== */
+#overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 1000;
+}
+
+#detail-modal {
+  background: #fff;
+  max-height: 100vh;
+  overflow-y: auto;
+  padding: 12px;
+  position: relative;
+}
+
+.close-btn {
+  position: sticky;
+  top: 0;
+  text-align: right;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* 画像 */
+#detail-modal img {
+  width: 100%;
+  height: auto;
+}
+
+/* PC用 */
+@media (min-width: 768px) {
+  #detail-modal {
+    width: 90%;
+    max-width: 560px;
+    margin: 40px auto;
+    border-radius: 12px;
+  }
+}
+</style>
 </head>
 
 <body>
@@ -67,6 +189,150 @@
   </div>
 </div>
 
-<script src="script.js"></script>
+<script>
+/* ===== 変数 ===== */
+let characters = [];
+let currentList = [];
+let statusOn = true;
+let hpAsc = false;
+let atkAsc = false;
+let groovy = false;
+
+/* ===== 要素 ===== */
+const body = document.getElementById('character-table-body');
+const toggleBtn = document.getElementById('toggleBtn');
+const listSection = document.getElementById('character-list-section');
+const overlay = document.getElementById('overlay');
+
+const sortHpBtn = document.getElementById('sortHpBtn');
+const sortAtkBtn = document.getElementById('sortAtkBtn');
+const resetBtn = document.getElementById('resetBtn');
+const searchInput = document.getElementById('searchInput');
+
+/* ===== データ読み込み ===== */
+fetch('./characters.json')
+  .then(res => res.json())
+  .then(data => {
+    characters = data;
+    render(characters);
+  });
+
+/* ===== 描画 ===== */
+function render(list) {
+  currentList = list;
+  body.innerHTML = '';
+
+  list.forEach(c => {
+    body.innerHTML += `
+      <tr onclick='openDetail(${JSON.stringify(c)})'>
+        <td>
+          <div class="name-cell">
+            <img src="${c.icon}">
+            <span>${c.name}</span>
+          </div>
+        </td>
+        <td>${c.hp ?? '-'}</td>
+        <td>${c.atk ?? '-'}</td>
+        <td>${c.mg1 ?? '-'}</td>
+        <td>${c.mg2 ?? '-'}</td>
+        <td>${c.mg3 ?? '-'}</td>
+      </tr>
+    `;
+  });
+}
+
+/* ===== ステータス ON / OFF ===== */
+toggleBtn.onclick = () => {
+  statusOn = !statusOn;
+  listSection.style.display = statusOn ? 'block' : 'none';
+  toggleBtn.textContent = statusOn
+    ? 'ステータス表示：ON'
+    : 'ステータス表示：OFF';
+};
+
+/* ===== ソート共通 ===== */
+function clearActive() {
+  [sortHpBtn, sortAtkBtn, resetBtn].forEach(b => b.classList.remove('active'));
+}
+
+/* HP ソート */
+sortHpBtn.onclick = () => {
+  hpAsc = !hpAsc;
+  atkAsc = false;
+
+  sortHpBtn.textContent = hpAsc ? 'HP ↑' : 'HP ↓';
+  sortAtkBtn.textContent = 'ATK ↓';
+
+  clearActive();
+  sortHpBtn.classList.add('active');
+
+  render([...currentList].sort((a, b) =>
+    hpAsc ? (a.hp ?? 0) - (b.hp ?? 0) : (b.hp ?? 0) - (a.hp ?? 0)
+  ));
+};
+
+/* ATK ソート */
+sortAtkBtn.onclick = () => {
+  atkAsc = !atkAsc;
+  hpAsc = false;
+
+  sortAtkBtn.textContent = atkAsc ? 'ATK ↑' : 'ATK ↓';
+  sortHpBtn.textContent = 'HP ↓';
+
+  clearActive();
+  sortAtkBtn.classList.add('active');
+
+  render([...currentList].sort((a, b) =>
+    atkAsc ? (a.atk ?? 0) - (b.atk ?? 0) : (b.atk ?? 0) - (a.atk ?? 0)
+  ));
+};
+
+/* デフォルト */
+resetBtn.onclick = () => {
+  hpAsc = false;
+  atkAsc = false;
+
+  sortHpBtn.textContent = 'HP ↓';
+  sortAtkBtn.textContent = 'ATK ↓';
+
+  clearActive();
+  resetBtn.classList.add('active');
+
+  render(characters);
+};
+
+/* ===== 検索 ===== */
+searchInput.oninput = () => {
+  const key = searchInput.value;
+  render(characters.filter(c => c.name.includes(key)));
+};
+
+/* ===== 詳細モーダル ===== */
+function openDetail(c) {
+  groovy = false;
+  overlay.style.display = 'block';
+  updateImage(c);
+
+  detailName.textContent = c.name;
+  detailHp.textContent = c.hp ?? '-';
+  detailAtk.textContent = c.atk ?? '-';
+  detailS1.textContent = c.mg1 ?? '-';
+  detailS2.textContent = c.mg2 ?? '-';
+  detailS3.textContent = c.mg3 ?? '-';
+
+  groovyBtn.onclick = () => {
+    groovy = !groovy;
+    updateImage(c);
+  };
+}
+
+function updateImage(c) {
+  detailImage.src = groovy ? c.groovyAfter : c.groovyBefore;
+  groovyBtn.textContent = groovy ? 'Groovy Before' : 'Groovy After';
+}
+
+closeModal.onclick = () => overlay.style.display = 'none';
+</script>
+
 </body>
 </html>
