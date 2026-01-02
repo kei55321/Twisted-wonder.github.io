@@ -51,17 +51,24 @@ table {
 
 th, td {
   border: 1px solid #ddd;
-  padding: 6px;
-  text-align: center;
-  font-size: 12px;
+  padding: 8px;
+  font-size: 13px;
 }
 
 tr { cursor: pointer; }
 
-img.icon {
-  width: 50px;
-  height: 50px;
+/* 名前セル（アイコン＋名前） */
+.name-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.name-cell img {
+  width: 48px;
+  height: 48px;
   object-fit: cover;
+  border-radius: 4px;
 }
 
 /* ===== アイコン表示 ===== */
@@ -73,23 +80,19 @@ img.icon {
 
 .icon-item {
   background: #fff;
-  padding: 5px;
+  padding: 8px;
   border: 1px solid #ddd;
-  text-align: center;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-/* ===== レア度 ===== */
-.rarity-R { color: #777; }
-.rarity-SR { color: #1e88e5; font-weight: bold; }
-.rarity-SSR {
-  color: #f9a825;
-  font-weight: bold;
-}
-
-/* ===== ソート ===== */
-#sort-buttons {
-  margin-bottom: 10px;
+.icon-item img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 4px;
 }
 
 /* ===== 詳細モーダル ===== */
@@ -176,9 +179,7 @@ img.icon {
 <table>
 <thead>
 <tr>
-  <th>アイコン</th>
   <th>名前</th>
-  <th>レア度</th>
   <th>HP</th>
   <th>ATK</th>
   <th>Skill1</th>
@@ -206,7 +207,6 @@ img.icon {
     <button id="groovyBtn">Groovy After</button>
 
     <h2 id="detailName"></h2>
-    <p id="detailRarity"></p>
 
     <table>
       <tr><th>HP</th><td id="detailHp"></td></tr>
@@ -250,14 +250,6 @@ fetch('./characters.json')
     renderCharacters(data);
   });
 
-function rarityStars(r) {
-  return r === 'SSR' ? '★★★' : r === 'SR' ? '★★' : '★';
-}
-function rarityClass(r) {
-  return r ? `rarity-${r}` : '';
-}
-
-/* ===== 詳細 ===== */
 function showDetail(char) {
   currentChar = char;
   isGroovy = false;
@@ -265,9 +257,6 @@ function showDetail(char) {
   detailOverlay.style.display = 'flex';
 
   detailName.textContent = char.name;
-  detailRarity.textContent = rarityStars(char.rarity);
-  detailRarity.className = rarityClass(char.rarity);
-
   detailHp.textContent = char.hp ?? '-';
   detailAtk.textContent = char.atk ?? '-';
   detailMg1.textContent = char.mg1 ?? '-';
@@ -287,7 +276,6 @@ groovyBtn.onclick = () => {
 
 closeDetail.onclick = () => detailOverlay.style.display = 'none';
 
-/* ===== 表示切替 ===== */
 toggleBtn.onclick = () => {
   statusOn = !statusOn;
   toggleBtn.textContent = statusOn ? 'ステータス表示：ON' : 'ステータス表示：OFF';
@@ -357,9 +345,12 @@ function renderCharacters(list) {
   list.forEach(char => {
     tableBody.innerHTML += `
       <tr onclick='showDetail(${JSON.stringify(char)})'>
-        <td><img class="icon" src="${char.icon}"></td>
-        <td>${char.name}</td>
-        <td class="${rarityClass(char.rarity)}">${rarityStars(char.rarity)}</td>
+        <td>
+          <div class="name-cell">
+            <img src="${char.icon}">
+            <span>${char.name}</span>
+          </div>
+        </td>
         <td>${char.hp ?? '-'}</td>
         <td>${char.atk ?? '-'}</td>
         <td>${char.mg1 ?? '-'}</td>
@@ -370,7 +361,7 @@ function renderCharacters(list) {
 
     iconGrid.innerHTML += `
       <div class="icon-item" onclick='showDetail(${JSON.stringify(char)})'>
-        <img class="icon" src="${char.icon}">
+        <img src="${char.icon}">
         <div>${char.name}</div>
       </div>
     `;
