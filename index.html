@@ -41,17 +41,12 @@ input {
   margin: 10px 0;
 }
 
-/* ===== テーブル枠 ===== */
-.table-wrapper {
-  background: #f4f4f4;
-}
-
+/* ===== テーブル ===== */
 .table-scroll {
   background: #fff;
   border-radius: 8px;
   border: 1px solid #ddd;
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
 }
 
 .table-scroll table {
@@ -72,7 +67,6 @@ td:first-child {
   min-width: 260px;
 }
 
-/* 名前セル */
 .name-cell {
   display: flex;
   align-items: center;
@@ -84,7 +78,26 @@ td:first-child {
   width: 48px;
   height: 48px;
   border-radius: 6px;
-  flex-shrink: 0;
+}
+
+/* ===== ステータスOFF用 ===== */
+#icon-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.icon-item {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+}
+
+.icon-item img {
+  width: 64px;
+  height: 64px;
 }
 
 /* ===== モーダル ===== */
@@ -101,7 +114,6 @@ td:first-child {
   max-height: 100vh;
   overflow-y: auto;
   padding: 12px;
-  position: relative;
 }
 
 .close-btn {
@@ -112,13 +124,11 @@ td:first-child {
   cursor: pointer;
 }
 
-/* 画像 */
 #detail-modal img {
   width: 100%;
-  height: auto;
 }
 
-/* PC用 */
+/* PC */
 @media (min-width: 768px) {
   #detail-modal {
     width: 90%;
@@ -148,24 +158,28 @@ td:first-child {
   <button id="resetBtn" class="active">デフォルト</button>
 </div>
 
+<!-- ステータスON -->
 <section id="character-list-section">
-  <div class="table-wrapper">
-    <div class="table-scroll">
-      <table>
-        <thead>
-          <tr>
-            <th>名前</th>
-            <th>HP</th>
-            <th>ATK</th>
-            <th>Skill1</th>
-            <th>Skill2</th>
-            <th>Skill3</th>
-          </tr>
-        </thead>
-        <tbody id="character-table-body"></tbody>
-      </table>
-    </div>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>名前</th>
+          <th>HP</th>
+          <th>ATK</th>
+          <th>Skill1</th>
+          <th>Skill2</th>
+          <th>Skill3</th>
+        </tr>
+      </thead>
+      <tbody id="character-table-body"></tbody>
+    </table>
   </div>
+</section>
+
+<!-- ステータスOFF -->
+<section id="icon-only-section" style="display:none;">
+  <div id="icon-grid"></div>
 </section>
 
 </main>
@@ -190,7 +204,6 @@ td:first-child {
 </div>
 
 <script>
-/* ===== 変数 ===== */
 let characters = [];
 let currentList = [];
 let statusOn = true;
@@ -198,10 +211,11 @@ let hpAsc = false;
 let atkAsc = false;
 let groovy = false;
 
-/* ===== 要素 ===== */
 const body = document.getElementById('character-table-body');
+const iconGrid = document.getElementById('icon-grid');
 const toggleBtn = document.getElementById('toggleBtn');
 const listSection = document.getElementById('character-list-section');
+const iconSection = document.getElementById('icon-only-section');
 const overlay = document.getElementById('overlay');
 
 const sortHpBtn = document.getElementById('sortHpBtn');
@@ -209,7 +223,6 @@ const sortAtkBtn = document.getElementById('sortAtkBtn');
 const resetBtn = document.getElementById('resetBtn');
 const searchInput = document.getElementById('searchInput');
 
-/* ===== データ読み込み ===== */
 fetch('./characters.json')
   .then(res => res.json())
   .then(data => {
@@ -217,10 +230,10 @@ fetch('./characters.json')
     render(characters);
   });
 
-/* ===== 描画 ===== */
 function render(list) {
   currentList = list;
   body.innerHTML = '';
+  iconGrid.innerHTML = '';
 
   list.forEach(c => {
     body.innerHTML += `
@@ -238,92 +251,76 @@ function render(list) {
         <td>${c.mg3 ?? '-'}</td>
       </tr>
     `;
+
+    iconGrid.innerHTML += `
+      <div class="icon-item" onclick='openDetail(${JSON.stringify(c)})'>
+        <img src="${c.icon}">
+        <div>${c.name}</div>
+      </div>
+    `;
   });
 }
 
-/* ===== ステータス ON / OFF ===== */
+/* ステータス切り替え */
 toggleBtn.onclick = () => {
   statusOn = !statusOn;
   listSection.style.display = statusOn ? 'block' : 'none';
-  toggleBtn.textContent = statusOn
-    ? 'ステータス表示：ON'
-    : 'ステータス表示：OFF';
+  iconSection.style.display = statusOn ? 'none' : 'block';
+  toggleBtn.textContent = statusOn ? 'ステータス表示：ON' : 'ステータス表示：OFF';
 };
 
-/* ===== ソート共通 ===== */
+/* ソート */
 function clearActive() {
   [sortHpBtn, sortAtkBtn, resetBtn].forEach(b => b.classList.remove('active'));
 }
 
-/* HP ソート */
 sortHpBtn.onclick = () => {
   hpAsc = !hpAsc;
   atkAsc = false;
-
   sortHpBtn.textContent = hpAsc ? 'HP ↑' : 'HP ↓';
   sortAtkBtn.textContent = 'ATK ↓';
-
   clearActive();
   sortHpBtn.classList.add('active');
-
-  render([...currentList].sort((a, b) =>
-    hpAsc ? (a.hp ?? 0) - (b.hp ?? 0) : (b.hp ?? 0) - (a.hp ?? 0)
-  ));
+  render([...currentList].sort((a,b)=>hpAsc?(a.hp??0)-(b.hp??0):(b.hp??0)-(a.hp??0)));
 };
 
-/* ATK ソート */
 sortAtkBtn.onclick = () => {
   atkAsc = !atkAsc;
   hpAsc = false;
-
   sortAtkBtn.textContent = atkAsc ? 'ATK ↑' : 'ATK ↓';
   sortHpBtn.textContent = 'HP ↓';
-
   clearActive();
   sortAtkBtn.classList.add('active');
-
-  render([...currentList].sort((a, b) =>
-    atkAsc ? (a.atk ?? 0) - (b.atk ?? 0) : (b.atk ?? 0) - (a.atk ?? 0)
-  ));
+  render([...currentList].sort((a,b)=>atkAsc?(a.atk??0)-(b.atk??0):(b.atk??0)-(a.atk??0)));
 };
 
-/* デフォルト */
 resetBtn.onclick = () => {
-  hpAsc = false;
-  atkAsc = false;
-
+  hpAsc = atkAsc = false;
   sortHpBtn.textContent = 'HP ↓';
   sortAtkBtn.textContent = 'ATK ↓';
-
   clearActive();
   resetBtn.classList.add('active');
-
   render(characters);
 };
 
-/* ===== 検索 ===== */
+/* 検索 */
 searchInput.oninput = () => {
   const key = searchInput.value;
   render(characters.filter(c => c.name.includes(key)));
 };
 
-/* ===== 詳細モーダル ===== */
+/* モーダル */
 function openDetail(c) {
   groovy = false;
   overlay.style.display = 'block';
   updateImage(c);
-
   detailName.textContent = c.name;
   detailHp.textContent = c.hp ?? '-';
   detailAtk.textContent = c.atk ?? '-';
   detailS1.textContent = c.mg1 ?? '-';
   detailS2.textContent = c.mg2 ?? '-';
   detailS3.textContent = c.mg3 ?? '-';
-
-  groovyBtn.onclick = () => {
-    groovy = !groovy;
-    updateImage(c);
-  };
+  groovyBtn.onclick = () => { groovy=!groovy; updateImage(c); };
 }
 
 function updateImage(c) {
