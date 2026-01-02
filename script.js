@@ -30,21 +30,34 @@ function render(list) {
   body.innerHTML = '';
 
   list.forEach(c => {
-    body.innerHTML += `
-      <tr onclick='openDetail(${JSON.stringify(c)})'>
-        <td>
-          <div class="name-cell">
-            <img src="${c.icon}">
-            <span>${c.name}</span>
-          </div>
-        </td>
-        <td>${c.hp ?? '-'}</td>
-        <td>${c.atk ?? '-'}</td>
-        <td>${c.mg1 ?? '-'}</td>
-        <td>${c.mg2 ?? '-'}</td>
-        <td>${c.mg3 ?? '-'}</td>
-      </tr>
-    `;
+    if (statusOn) {
+      body.innerHTML += `
+        <tr onclick='openDetail(${JSON.stringify(c)})'>
+          <td>
+            <div class="name-cell">
+              <img src="${c.icon}">
+              <span>${c.name}</span>
+            </div>
+          </td>
+          <td>${c.hp ?? '-'}></td>
+          <td>${c.atk ?? '-'}></td>
+          <td>${c.mg1 ?? '-'}></td>
+          <td>${c.mg2 ?? '-'}></td>
+          <td>${c.mg3 ?? '-'}></td>
+        </tr>
+      `;
+    } else {
+      body.innerHTML += `
+        <tr onclick='openDetail(${JSON.stringify(c)})'>
+          <td style="text-align: center;">
+            <div>
+              <img src="${c.icon}" style="display: block; margin: 0 auto;">
+              <div>${c.name}</div>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
   });
 }
 
@@ -55,6 +68,7 @@ toggleBtn.onclick = () => {
   toggleBtn.textContent = statusOn
     ? 'ステータス表示：ON'
     : 'ステータス表示：OFF';
+  render(currentList);
 };
 
 /* ===== ソート ===== */
