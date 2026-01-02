@@ -12,7 +12,6 @@ body {
   background: #f4f4f4;
 }
 
-/* ===== ヘッダー ===== */
 header, footer {
   background: #333;
   color: #fff;
@@ -22,7 +21,7 @@ header, footer {
 
 main { padding: 10px; }
 
-/* ===== ボタン共通 ===== */
+/* ===== ボタン ===== */
 button {
   padding: 8px 14px;
   margin: 4px;
@@ -88,6 +87,11 @@ img.icon {
   font-weight: bold;
 }
 
+/* ===== ソート ===== */
+#sort-buttons {
+  margin-bottom: 10px;
+}
+
 /* ===== 詳細モーダル ===== */
 #detail-overlay {
   position: fixed;
@@ -99,20 +103,16 @@ img.icon {
   z-index: 1000;
 }
 
-/* スマホ基準 */
 #detail-modal {
   background: #fff;
   width: 100%;
   max-width: 100%;
   padding: 12px;
-  border-radius: 0;
   position: relative;
-
   max-height: 100vh;
   overflow-y: auto;
 }
 
-/* クローズボタン（被らない） */
 #closeDetail {
   position: sticky;
   top: 0;
@@ -121,17 +121,15 @@ img.icon {
   background: #fff;
   border: none;
   font-size: 22px;
-  z-index: 10;
+  cursor: pointer;
 }
 
-/* 立ち絵 */
 #detailImage {
   width: 100%;
   height: auto;
   object-fit: contain;
 }
 
-/* Groovyボタン */
 #groovyBtn {
   width: 100%;
   margin: 10px 0;
@@ -164,12 +162,16 @@ img.icon {
 
 <main>
 
-<!-- ===== 操作ボタン復活 ===== -->
 <button id="toggleStatusBtn" class="active">ステータス表示：ON</button>
 
 <input id="searchInput" placeholder="キャラ名で検索">
 
-<!-- ===== 表 ===== -->
+<div id="sort-buttons">
+  <button id="sortHpBtn">HP ↓</button>
+  <button id="sortAtkBtn">ATK ↓</button>
+  <button id="resetBtn" class="active">デフォルト</button>
+</div>
+
 <section id="table-section">
 <table>
 <thead>
@@ -188,7 +190,6 @@ img.icon {
 </table>
 </section>
 
-<!-- ===== アイコンのみ ===== -->
 <section id="icon-section" style="display:none;">
   <div id="icon-grid"></div>
 </section>
@@ -201,9 +202,7 @@ img.icon {
 <div id="detail-overlay">
   <div id="detail-modal">
     <button id="closeDetail">✕</button>
-
     <img id="detailImage">
-
     <button id="groovyBtn">Groovy After</button>
 
     <h2 id="detailName"></h2>
@@ -222,18 +221,27 @@ img.icon {
 <script>
 const tableBody = document.getElementById('character-table-body');
 const iconGrid = document.getElementById('icon-grid');
+
 const toggleBtn = document.getElementById('toggleStatusBtn');
 const tableSection = document.getElementById('table-section');
 const iconSection = document.getElementById('icon-section');
+
+const searchInput = document.getElementById('searchInput');
+const sortHpBtn = document.getElementById('sortHpBtn');
+const sortAtkBtn = document.getElementById('sortAtkBtn');
+const resetBtn = document.getElementById('resetBtn');
 
 const detailOverlay = document.getElementById('detail-overlay');
 const closeDetail = document.getElementById('closeDetail');
 const groovyBtn = document.getElementById('groovyBtn');
 
 let characters = [];
+let currentList = [];
 let currentChar = null;
 let isGroovy = false;
 let statusOn = true;
+let hpAsc = false;
+let atkAsc = false;
 
 fetch('./characters.json')
   .then(res => res.json())
@@ -249,36 +257,37 @@ function rarityClass(r) {
   return r ? `rarity-${r}` : '';
 }
 
+/* ===== 詳細 ===== */
 function showDetail(char) {
   currentChar = char;
   isGroovy = false;
 
   detailOverlay.style.display = 'flex';
 
-  document.getElementById('detailName').textContent = char.name;
-  document.getElementById('detailRarity').textContent = rarityStars(char.rarity);
-  document.getElementById('detailRarity').className = rarityClass(char.rarity);
+  detailName.textContent = char.name;
+  detailRarity.textContent = rarityStars(char.rarity);
+  detailRarity.className = rarityClass(char.rarity);
 
-  document.getElementById('detailHp').textContent = char.hp ?? '-';
-  document.getElementById('detailAtk').textContent = char.atk ?? '-';
-  document.getElementById('detailMg1').textContent = char.mg1 ?? '-';
-  document.getElementById('detailMg2').textContent = char.mg2 ?? '-';
-  document.getElementById('detailMg3').textContent = char.mg3 ?? '-';
+  detailHp.textContent = char.hp ?? '-';
+  detailAtk.textContent = char.atk ?? '-';
+  detailMg1.textContent = char.mg1 ?? '-';
+  detailMg2.textContent = char.mg2 ?? '-';
+  detailMg3.textContent = char.mg3 ?? '-';
 
-  document.getElementById('detailImage').src = char.imageBefore || char.icon;
+  detailImage.src = char.imageBefore || char.icon;
   groovyBtn.style.display = char.imageAfter ? 'block' : 'none';
   groovyBtn.textContent = 'Groovy After';
 }
 
 groovyBtn.onclick = () => {
   isGroovy = !isGroovy;
-  document.getElementById('detailImage').src =
-    isGroovy ? currentChar.imageAfter : currentChar.imageBefore;
+  detailImage.src = isGroovy ? currentChar.imageAfter : currentChar.imageBefore;
   groovyBtn.textContent = isGroovy ? 'Groovy Before' : 'Groovy After';
 };
 
 closeDetail.onclick = () => detailOverlay.style.display = 'none';
 
+/* ===== 表示切替 ===== */
 toggleBtn.onclick = () => {
   statusOn = !statusOn;
   toggleBtn.textContent = statusOn ? 'ステータス表示：ON' : 'ステータス表示：OFF';
@@ -287,7 +296,61 @@ toggleBtn.onclick = () => {
   iconSection.style.display = statusOn ? 'none' : 'block';
 };
 
+/* ===== ソート ===== */
+function clearSortActive() {
+  sortHpBtn.classList.remove('active');
+  sortAtkBtn.classList.remove('active');
+  resetBtn.classList.remove('active');
+}
+
+sortHpBtn.onclick = () => {
+  hpAsc = !hpAsc;
+  atkAsc = false;
+  sortHpBtn.textContent = hpAsc ? 'HP ↑' : 'HP ↓';
+
+  clearSortActive();
+  sortHpBtn.classList.add('active');
+
+  renderCharacters([...currentList].sort((a,b)=>
+    hpAsc ? (a.hp??0)-(b.hp??0) : (b.hp??0)-(a.hp??0)
+  ));
+};
+
+sortAtkBtn.onclick = () => {
+  atkAsc = !atkAsc;
+  hpAsc = false;
+  sortAtkBtn.textContent = atkAsc ? 'ATK ↑' : 'ATK ↓';
+
+  clearSortActive();
+  sortAtkBtn.classList.add('active');
+
+  renderCharacters([...currentList].sort((a,b)=>
+    atkAsc ? (a.atk??0)-(b.atk??0) : (b.atk??0)-(a.atk??0)
+  ));
+};
+
+resetBtn.onclick = () => {
+  hpAsc = atkAsc = false;
+  sortHpBtn.textContent = 'HP ↓';
+  sortAtkBtn.textContent = 'ATK ↓';
+
+  clearSortActive();
+  resetBtn.classList.add('active');
+
+  renderCharacters(characters);
+};
+
+/* ===== 検索 ===== */
+searchInput.oninput = () => {
+  const key = searchInput.value.toLowerCase();
+  renderCharacters(characters.filter(c =>
+    c.name.toLowerCase().includes(key)
+  ));
+};
+
+/* ===== 描画 ===== */
 function renderCharacters(list) {
+  currentList = list;
   tableBody.innerHTML = '';
   iconGrid.innerHTML = '';
 
