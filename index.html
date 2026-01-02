@@ -7,28 +7,27 @@
 
 <style>
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   margin: 0;
   background: #f4f4f4;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 header, footer {
   background: #333;
   color: #fff;
   text-align: center;
-  padding: 14px;
+  padding: 15px;
 }
 
-main { padding: 10px; }
+main {
+  padding: 10px;
+}
 
 /* ===== ボタン ===== */
 button {
   padding: 8px 14px;
   margin: 4px;
   font-size: 14px;
-  border: 1px solid #ccc;
-  background: #fff;
-  cursor: pointer;
 }
 
 button.active {
@@ -42,116 +41,90 @@ input {
   margin: 10px 0;
 }
 
-/* ===== テーブル ===== */
-table {
+/* ===== テーブル枠 ===== */
+.table-wrapper {
+  background: #f4f4f4;
+}
+
+.table-scroll {
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-scroll table {
+  min-width: 700px;
   width: 100%;
   border-collapse: collapse;
-  background: #fff;
 }
 
 th, td {
   border: 1px solid #ddd;
   padding: 8px;
   font-size: 13px;
+  text-align: center;
 }
 
-tr { cursor: pointer; }
+th:first-child,
+td:first-child {
+  min-width: 260px;
+}
 
-/* 名前セル（アイコン＋名前） */
+/* 名前セル */
 .name-cell {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  text-align: left;
 }
 
 .name-cell img {
   width: 48px;
   height: 48px;
-  object-fit: cover;
-  border-radius: 4px;
+  border-radius: 6px;
+  flex-shrink: 0;
 }
 
-/* ===== アイコン表示 ===== */
-#icon-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-.icon-item {
-  background: #fff;
-  padding: 8px;
-  border: 1px solid #ddd;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.icon-item img {
-  width: 48px;
-  height: 48px;
-  object-fit: cover;
-  border-radius: 4px;
-}
-
-/* ===== 詳細モーダル ===== */
-#detail-overlay {
+/* ===== モーダル ===== */
+#overlay {
+  display: none;
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.6);
-  display: none;
-  justify-content: center;
-  align-items: center;
   z-index: 1000;
 }
 
 #detail-modal {
   background: #fff;
-  width: 100%;
-  max-width: 100%;
-  padding: 12px;
-  position: relative;
   max-height: 100vh;
   overflow-y: auto;
+  padding: 12px;
+  position: relative;
 }
 
-#closeDetail {
+.close-btn {
   position: sticky;
   top: 0;
-  margin-left: auto;
-  display: block;
-  background: #fff;
-  border: none;
-  font-size: 22px;
+  text-align: right;
+  font-size: 24px;
   cursor: pointer;
 }
 
-#detailImage {
+/* 画像 */
+#detail-modal img {
   width: 100%;
   height: auto;
-  object-fit: contain;
 }
 
-#groovyBtn {
-  width: 100%;
-  margin: 10px 0;
-  background: #333;
-  color: #fff;
-  border: none;
-}
-
-/* PC */
+/* PC用 */
 @media (min-width: 768px) {
   #detail-modal {
     width: 90%;
     max-width: 560px;
+    margin: 40px auto;
     border-radius: 12px;
-    max-height: 90vh;
-  }
-
-  #detailImage {
-    max-height: 80vh;
   }
 }
 </style>
@@ -165,208 +138,141 @@ tr { cursor: pointer; }
 
 <main>
 
-<button id="toggleStatusBtn" class="active">ステータス表示：ON</button>
+<button id="toggleBtn">ステータス表示：ON</button>
 
 <input id="searchInput" placeholder="キャラ名で検索">
 
-<div id="sort-buttons">
+<div>
   <button id="sortHpBtn">HP ↓</button>
   <button id="sortAtkBtn">ATK ↓</button>
   <button id="resetBtn" class="active">デフォルト</button>
 </div>
 
-<section id="table-section">
-<table>
-<thead>
-<tr>
-  <th>名前</th>
-  <th>HP</th>
-  <th>ATK</th>
-  <th>Skill1</th>
-  <th>Skill2</th>
-  <th>Skill3</th>
-</tr>
-</thead>
-<tbody id="character-table-body"></tbody>
-</table>
-</section>
-
-<section id="icon-section" style="display:none;">
-  <div id="icon-grid"></div>
+<section id="character-list-section">
+  <div class="table-wrapper">
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>名前</th>
+            <th>HP</th>
+            <th>ATK</th>
+            <th>Skill1</th>
+            <th>Skill2</th>
+            <th>Skill3</th>
+          </tr>
+        </thead>
+        <tbody id="character-table-body"></tbody>
+      </table>
+    </div>
+  </div>
 </section>
 
 </main>
 
 <footer>© 非公式ファンサイト</footer>
 
-<!-- ===== 詳細 ===== -->
-<div id="detail-overlay">
+<!-- ===== モーダル ===== -->
+<div id="overlay">
   <div id="detail-modal">
-    <button id="closeDetail">✕</button>
+    <div class="close-btn" id="closeModal">×</div>
     <img id="detailImage">
     <button id="groovyBtn">Groovy After</button>
-
     <h2 id="detailName"></h2>
-
     <table>
       <tr><th>HP</th><td id="detailHp"></td></tr>
       <tr><th>ATK</th><td id="detailAtk"></td></tr>
-      <tr><th>Skill1</th><td id="detailMg1"></td></tr>
-      <tr><th>Skill2</th><td id="detailMg2"></td></tr>
-      <tr><th>Skill3</th><td id="detailMg3"></td></tr>
+      <tr><th>Skill1</th><td id="detailS1"></td></tr>
+      <tr><th>Skill2</th><td id="detailS2"></td></tr>
+      <tr><th>Skill3</th><td id="detailS3"></td></tr>
     </table>
   </div>
 </div>
 
 <script>
-const tableBody = document.getElementById('character-table-body');
-const iconGrid = document.getElementById('icon-grid');
-
-const toggleBtn = document.getElementById('toggleStatusBtn');
-const tableSection = document.getElementById('table-section');
-const iconSection = document.getElementById('icon-section');
-
-const searchInput = document.getElementById('searchInput');
-const sortHpBtn = document.getElementById('sortHpBtn');
-const sortAtkBtn = document.getElementById('sortAtkBtn');
-const resetBtn = document.getElementById('resetBtn');
-
-const detailOverlay = document.getElementById('detail-overlay');
-const closeDetail = document.getElementById('closeDetail');
-const groovyBtn = document.getElementById('groovyBtn');
-
 let characters = [];
 let currentList = [];
-let currentChar = null;
-let isGroovy = false;
-let statusOn = true;
-let hpAsc = false;
-let atkAsc = false;
+let groovy = false;
 
 fetch('./characters.json')
   .then(res => res.json())
   .then(data => {
     characters = data;
-    renderCharacters(data);
+    render(data);
   });
 
-function showDetail(char) {
-  currentChar = char;
-  isGroovy = false;
+const body = document.getElementById('character-table-body');
+const overlay = document.getElementById('overlay');
 
-  detailOverlay.style.display = 'flex';
-
-  detailName.textContent = char.name;
-  detailHp.textContent = char.hp ?? '-';
-  detailAtk.textContent = char.atk ?? '-';
-  detailMg1.textContent = char.mg1 ?? '-';
-  detailMg2.textContent = char.mg2 ?? '-';
-  detailMg3.textContent = char.mg3 ?? '-';
-
-  detailImage.src = char.imageBefore || char.icon;
-  groovyBtn.style.display = char.imageAfter ? 'block' : 'none';
-  groovyBtn.textContent = 'Groovy After';
+function render(list) {
+  currentList = list;
+  body.innerHTML = '';
+  list.forEach(c => {
+    body.innerHTML += `
+      <tr onclick='openDetail(${JSON.stringify(c)})'>
+        <td>
+          <div class="name-cell">
+            <img src="${c.icon}">
+            <span>${c.name}</span>
+          </div>
+        </td>
+        <td>${c.hp}</td>
+        <td>${c.atk}</td>
+        <td>${c.mg1 ?? '-'}</td>
+        <td>${c.mg2 ?? '-'}</td>
+        <td>${c.mg3 ?? '-'}</td>
+      </tr>
+    `;
+  });
 }
 
-groovyBtn.onclick = () => {
-  isGroovy = !isGroovy;
-  detailImage.src = isGroovy ? currentChar.imageAfter : currentChar.imageBefore;
-  groovyBtn.textContent = isGroovy ? 'Groovy Before' : 'Groovy After';
-};
+function openDetail(c) {
+  groovy = false;
+  overlay.style.display = 'block';
+  updateImage(c);
+  document.getElementById('detailName').textContent = c.name;
+  detailHp.textContent = c.hp;
+  detailAtk.textContent = c.atk;
+  detailS1.textContent = c.mg1 ?? '-';
+  detailS2.textContent = c.mg2 ?? '-';
+  detailS3.textContent = c.mg3 ?? '-';
+  document.getElementById('groovyBtn').onclick = () => {
+    groovy = !groovy;
+    updateImage(c);
+  };
+}
 
-closeDetail.onclick = () => detailOverlay.style.display = 'none';
+function updateImage(c) {
+  detailImage.src = groovy ? c.groovyAfter : c.groovyBefore;
+  groovyBtn.textContent = groovy ? 'Groovy Before' : 'Groovy After';
+}
 
-toggleBtn.onclick = () => {
-  statusOn = !statusOn;
-  toggleBtn.textContent = statusOn ? 'ステータス表示：ON' : 'ステータス表示：OFF';
-  toggleBtn.classList.toggle('active', statusOn);
-  tableSection.style.display = statusOn ? 'block' : 'none';
-  iconSection.style.display = statusOn ? 'none' : 'block';
-};
+closeModal.onclick = () => overlay.style.display = 'none';
 
 /* ===== ソート ===== */
-function clearSortActive() {
-  sortHpBtn.classList.remove('active');
-  sortAtkBtn.classList.remove('active');
-  resetBtn.classList.remove('active');
-}
-
 sortHpBtn.onclick = () => {
-  hpAsc = !hpAsc;
-  atkAsc = false;
-  sortHpBtn.textContent = hpAsc ? 'HP ↑' : 'HP ↓';
-
-  clearSortActive();
-  sortHpBtn.classList.add('active');
-
-  renderCharacters([...currentList].sort((a,b)=>
-    hpAsc ? (a.hp??0)-(b.hp??0) : (b.hp??0)-(a.hp??0)
-  ));
+  setActive(sortHpBtn);
+  render([...currentList].sort((a,b)=>b.hp-a.hp));
 };
-
 sortAtkBtn.onclick = () => {
-  atkAsc = !atkAsc;
-  hpAsc = false;
-  sortAtkBtn.textContent = atkAsc ? 'ATK ↑' : 'ATK ↓';
-
-  clearSortActive();
-  sortAtkBtn.classList.add('active');
-
-  renderCharacters([...currentList].sort((a,b)=>
-    atkAsc ? (a.atk??0)-(b.atk??0) : (b.atk??0)-(a.atk??0)
-  ));
+  setActive(sortAtkBtn);
+  render([...currentList].sort((a,b)=>b.atk-a.atk));
 };
-
 resetBtn.onclick = () => {
-  hpAsc = atkAsc = false;
-  sortHpBtn.textContent = 'HP ↓';
-  sortAtkBtn.textContent = 'ATK ↓';
-
-  clearSortActive();
-  resetBtn.classList.add('active');
-
-  renderCharacters(characters);
+  setActive(resetBtn);
+  render(characters);
 };
+
+function setActive(btn) {
+  [sortHpBtn, sortAtkBtn, resetBtn].forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
 
 /* ===== 検索 ===== */
 searchInput.oninput = () => {
-  const key = searchInput.value.toLowerCase();
-  renderCharacters(characters.filter(c =>
-    c.name.toLowerCase().includes(key)
-  ));
+  const k = searchInput.value;
+  render(characters.filter(c=>c.name.includes(k)));
 };
-
-/* ===== 描画 ===== */
-function renderCharacters(list) {
-  currentList = list;
-  tableBody.innerHTML = '';
-  iconGrid.innerHTML = '';
-
-  list.forEach(char => {
-    tableBody.innerHTML += `
-      <tr onclick='showDetail(${JSON.stringify(char)})'>
-        <td>
-          <div class="name-cell">
-            <img src="${char.icon}">
-            <span>${char.name}</span>
-          </div>
-        </td>
-        <td>${char.hp ?? '-'}</td>
-        <td>${char.atk ?? '-'}</td>
-        <td>${char.mg1 ?? '-'}</td>
-        <td>${char.mg2 ?? '-'}</td>
-        <td>${char.mg3 ?? '-'}</td>
-      </tr>
-    `;
-
-    iconGrid.innerHTML += `
-      <div class="icon-item" onclick='showDetail(${JSON.stringify(char)})'>
-        <img src="${char.icon}">
-        <div>${char.name}</div>
-      </div>
-    `;
-  });
-}
 </script>
 
 </body>
