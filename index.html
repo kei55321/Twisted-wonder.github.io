@@ -12,15 +12,17 @@ body {
   background: #f4f4f4;
 }
 
+/* ===== ヘッダー ===== */
 header, footer {
   background: #333;
   color: #fff;
   text-align: center;
-  padding: 15px;
+  padding: 14px;
 }
 
 main { padding: 10px; }
 
+/* ===== ボタン共通 ===== */
 button {
   padding: 8px 14px;
   margin: 4px;
@@ -30,12 +32,18 @@ button {
   cursor: pointer;
 }
 
+button.active {
+  background: #333;
+  color: #fff;
+}
+
 input {
   width: 100%;
   padding: 8px;
   margin: 10px 0;
 }
 
+/* ===== テーブル ===== */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -51,13 +59,13 @@ th, td {
 
 tr { cursor: pointer; }
 
-img {
+img.icon {
   width: 50px;
   height: 50px;
   object-fit: cover;
 }
 
-/* アイコン表示 */
+/* ===== アイコン表示 ===== */
 #icon-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -72,13 +80,12 @@ img {
   cursor: pointer;
 }
 
-/* レア度色 */
+/* ===== レア度 ===== */
 .rarity-R { color: #777; }
 .rarity-SR { color: #1e88e5; font-weight: bold; }
 .rarity-SSR {
   color: #f9a825;
   font-weight: bold;
-  text-shadow: 0 0 2px rgba(0,0,0,0.3);
 }
 
 /* ===== 詳細モーダル ===== */
@@ -92,61 +99,58 @@ img {
   z-index: 1000;
 }
 
-/* ===== スマホ（デフォルト） ===== */
+/* スマホ基準 */
 #detail-modal {
   background: #fff;
   width: 100%;
   max-width: 100%;
-  padding: 10px;
+  padding: 12px;
   border-radius: 0;
-  text-align: center;
   position: relative;
 
-  max-height: 100vh;     /* ★ 画面高まで使う */
-  overflow-y: auto;      /* ★ 縦スクロール許可 */
+  max-height: 100vh;
+  overflow-y: auto;
 }
 
-#detail-modal img {
+/* クローズボタン（被らない） */
+#closeDetail {
+  position: sticky;
+  top: 0;
+  margin-left: auto;
+  display: block;
+  background: #fff;
+  border: none;
+  font-size: 22px;
+  z-index: 10;
+}
+
+/* 立ち絵 */
+#detailImage {
   width: 100%;
   height: auto;
-  max-height: none;      /* ★ 縮小させない */
   object-fit: contain;
 }
 
-#detail-modal table {
-  width: 100%;
-  margin-top: 10px;
-}
-
-#closeDetail {
-  position: absolute;
-  top: 8px;
-  right: 10px;
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-}
-
+/* Groovyボタン */
 #groovyBtn {
-  margin: 8px 0;
+  width: 100%;
+  margin: 10px 0;
   background: #333;
   color: #fff;
   border: none;
 }
 
-/* ===== PC・タブレット ===== */
+/* PC */
 @media (min-width: 768px) {
   #detail-modal {
     width: 90%;
     max-width: 560px;
-    padding: 16px;
     border-radius: 12px;
     max-height: 90vh;
   }
 
-  #detail-modal img {
-    max-height: 80vh;  /* PCは少し制限 */
+  #detailImage {
+    max-height: 80vh;
   }
 }
 </style>
@@ -160,9 +164,13 @@ img {
 
 <main>
 
+<!-- ===== 操作ボタン復活 ===== -->
+<button id="toggleStatusBtn" class="active">ステータス表示：ON</button>
+
 <input id="searchInput" placeholder="キャラ名で検索">
 
-<section id="character-list-section">
+<!-- ===== 表 ===== -->
+<section id="table-section">
 <table>
 <thead>
 <tr>
@@ -171,25 +179,31 @@ img {
   <th>レア度</th>
   <th>HP</th>
   <th>ATK</th>
-  <th>Skill 1</th>
-  <th>Skill 2</th>
-  <th>Skill 3</th>
+  <th>Skill1</th>
+  <th>Skill2</th>
+  <th>Skill3</th>
 </tr>
 </thead>
 <tbody id="character-table-body"></tbody>
 </table>
 </section>
 
+<!-- ===== アイコンのみ ===== -->
+<section id="icon-section" style="display:none;">
+  <div id="icon-grid"></div>
+</section>
+
 </main>
 
 <footer>© 非公式ファンサイト</footer>
 
-<!-- ===== キャラ詳細 ===== -->
+<!-- ===== 詳細 ===== -->
 <div id="detail-overlay">
   <div id="detail-modal">
     <button id="closeDetail">✕</button>
 
     <img id="detailImage">
+
     <button id="groovyBtn">Groovy After</button>
 
     <h2 id="detailName"></h2>
@@ -198,15 +212,20 @@ img {
     <table>
       <tr><th>HP</th><td id="detailHp"></td></tr>
       <tr><th>ATK</th><td id="detailAtk"></td></tr>
-      <tr><th>Skill 1</th><td id="detailMg1"></td></tr>
-      <tr><th>Skill 2</th><td id="detailMg2"></td></tr>
-      <tr><th>Skill 3</th><td id="detailMg3"></td></tr>
+      <tr><th>Skill1</th><td id="detailMg1"></td></tr>
+      <tr><th>Skill2</th><td id="detailMg2"></td></tr>
+      <tr><th>Skill3</th><td id="detailMg3"></td></tr>
     </table>
   </div>
 </div>
 
 <script>
 const tableBody = document.getElementById('character-table-body');
+const iconGrid = document.getElementById('icon-grid');
+const toggleBtn = document.getElementById('toggleStatusBtn');
+const tableSection = document.getElementById('table-section');
+const iconSection = document.getElementById('icon-section');
+
 const detailOverlay = document.getElementById('detail-overlay');
 const closeDetail = document.getElementById('closeDetail');
 const groovyBtn = document.getElementById('groovyBtn');
@@ -214,6 +233,7 @@ const groovyBtn = document.getElementById('groovyBtn');
 let characters = [];
 let currentChar = null;
 let isGroovy = false;
+let statusOn = true;
 
 fetch('./characters.json')
   .then(res => res.json())
@@ -223,12 +243,8 @@ fetch('./characters.json')
   });
 
 function rarityStars(r) {
-  if (r === 'SSR') return '★★★';
-  if (r === 'SR') return '★★';
-  if (r === 'R') return '★';
-  return '-';
+  return r === 'SSR' ? '★★★' : r === 'SR' ? '★★' : '★';
 }
-
 function rarityClass(r) {
   return r ? `rarity-${r}` : '';
 }
@@ -236,6 +252,8 @@ function rarityClass(r) {
 function showDetail(char) {
   currentChar = char;
   isGroovy = false;
+
+  detailOverlay.style.display = 'flex';
 
   document.getElementById('detailName').textContent = char.name;
   document.getElementById('detailRarity').textContent = rarityStars(char.rarity);
@@ -247,40 +265,36 @@ function showDetail(char) {
   document.getElementById('detailMg2').textContent = char.mg2 ?? '-';
   document.getElementById('detailMg3').textContent = char.mg3 ?? '-';
 
-  document.getElementById('detailImage').src =
-    char.imageBefore || char.icon;
-
+  document.getElementById('detailImage').src = char.imageBefore || char.icon;
+  groovyBtn.style.display = char.imageAfter ? 'block' : 'none';
   groovyBtn.textContent = 'Groovy After';
-  groovyBtn.style.display = char.imageAfter ? 'inline-block' : 'none';
-
-  detailOverlay.style.display = 'flex';
 }
 
 groovyBtn.onclick = () => {
   isGroovy = !isGroovy;
-  document.getElementById('detailImage').src = isGroovy
-    ? (currentChar.imageAfter || currentChar.imageBefore)
-    : (currentChar.imageBefore || currentChar.icon);
-
-  groovyBtn.textContent = isGroovy
-    ? 'Groovy Before'
-    : 'Groovy After';
+  document.getElementById('detailImage').src =
+    isGroovy ? currentChar.imageAfter : currentChar.imageBefore;
+  groovyBtn.textContent = isGroovy ? 'Groovy Before' : 'Groovy After';
 };
 
-closeDetail.onclick = () => {
-  detailOverlay.style.display = 'none';
-};
+closeDetail.onclick = () => detailOverlay.style.display = 'none';
 
-detailOverlay.onclick = e => {
-  if (e.target === detailOverlay) detailOverlay.style.display = 'none';
+toggleBtn.onclick = () => {
+  statusOn = !statusOn;
+  toggleBtn.textContent = statusOn ? 'ステータス表示：ON' : 'ステータス表示：OFF';
+  toggleBtn.classList.toggle('active', statusOn);
+  tableSection.style.display = statusOn ? 'block' : 'none';
+  iconSection.style.display = statusOn ? 'none' : 'block';
 };
 
 function renderCharacters(list) {
   tableBody.innerHTML = '';
+  iconGrid.innerHTML = '';
+
   list.forEach(char => {
     tableBody.innerHTML += `
       <tr onclick='showDetail(${JSON.stringify(char)})'>
-        <td><img src="${char.icon}"></td>
+        <td><img class="icon" src="${char.icon}"></td>
         <td>${char.name}</td>
         <td class="${rarityClass(char.rarity)}">${rarityStars(char.rarity)}</td>
         <td>${char.hp ?? '-'}</td>
@@ -289,6 +303,13 @@ function renderCharacters(list) {
         <td>${char.mg2 ?? '-'}</td>
         <td>${char.mg3 ?? '-'}</td>
       </tr>
+    `;
+
+    iconGrid.innerHTML += `
+      <div class="icon-item" onclick='showDetail(${JSON.stringify(char)})'>
+        <img class="icon" src="${char.icon}">
+        <div>${char.name}</div>
+      </div>
     `;
   });
 }
