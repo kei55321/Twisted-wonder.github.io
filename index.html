@@ -30,12 +30,6 @@ button {
   cursor: pointer;
 }
 
-button.active-sort {
-  background: #1e88e5;
-  color: #fff;
-  border-color: #1e88e5;
-}
-
 input {
   width: 100%;
   padding: 8px;
@@ -98,7 +92,7 @@ img {
   z-index: 1000;
 }
 
-/* --- スマホ（デフォルト） --- */
+/* ===== スマホ（デフォルト） ===== */
 #detail-modal {
   background: #fff;
   width: 100%;
@@ -107,11 +101,15 @@ img {
   border-radius: 0;
   text-align: center;
   position: relative;
+
+  max-height: 100vh;     /* ★ 画面高まで使う */
+  overflow-y: auto;      /* ★ 縦スクロール許可 */
 }
 
 #detail-modal img {
   width: 100%;
-  max-height: 75vh;
+  height: auto;
+  max-height: none;      /* ★ 縮小させない */
   object-fit: contain;
 }
 
@@ -137,17 +135,18 @@ img {
   border: none;
 }
 
-/* --- PC・タブレット --- */
+/* ===== PC・タブレット ===== */
 @media (min-width: 768px) {
   #detail-modal {
     width: 90%;
     max-width: 560px;
     padding: 16px;
     border-radius: 12px;
+    max-height: 90vh;
   }
 
   #detail-modal img {
-    max-height: 70vh;
+    max-height: 80vh;  /* PCは少し制限 */
   }
 }
 </style>
@@ -161,15 +160,7 @@ img {
 
 <main>
 
-<button id="toggleStatusBtn">ステータス表示：ON</button>
-
 <input id="searchInput" placeholder="キャラ名で検索">
-
-<div>
-  <button id="sortHpBtn">HP ↓</button>
-  <button id="sortAtkBtn">ATK ↓</button>
-  <button id="resetBtn">デフォルト</button>
-</div>
 
 <section id="character-list-section">
 <table>
@@ -180,17 +171,13 @@ img {
   <th>レア度</th>
   <th>HP</th>
   <th>ATK</th>
-  <th>スキル1</th>
-  <th>スキル2</th>
-  <th>スキル3</th>
+  <th>Skill 1</th>
+  <th>Skill 2</th>
+  <th>Skill 3</th>
 </tr>
 </thead>
 <tbody id="character-table-body"></tbody>
 </table>
-</section>
-
-<section id="icon-only-section" style="display:none;">
-  <div id="icon-grid"></div>
 </section>
 
 </main>
@@ -220,7 +207,6 @@ img {
 
 <script>
 const tableBody = document.getElementById('character-table-body');
-const iconGrid = document.getElementById('icon-grid');
 const detailOverlay = document.getElementById('detail-overlay');
 const closeDetail = document.getElementById('closeDetail');
 const groovyBtn = document.getElementById('groovyBtn');
@@ -291,8 +277,6 @@ detailOverlay.onclick = e => {
 
 function renderCharacters(list) {
   tableBody.innerHTML = '';
-  iconGrid.innerHTML = '';
-
   list.forEach(char => {
     tableBody.innerHTML += `
       <tr onclick='showDetail(${JSON.stringify(char)})'>
@@ -305,14 +289,6 @@ function renderCharacters(list) {
         <td>${char.mg2 ?? '-'}</td>
         <td>${char.mg3 ?? '-'}</td>
       </tr>
-    `;
-
-    iconGrid.innerHTML += `
-      <div class="icon-item" onclick='showDetail(${JSON.stringify(char)})'>
-        <img src="${char.icon}">
-        <div>${char.name}</div>
-        <div class="${rarityClass(char.rarity)}">${rarityStars(char.rarity)}</div>
-      </div>
     `;
   });
 }
