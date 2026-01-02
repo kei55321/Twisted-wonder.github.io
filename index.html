@@ -99,9 +99,10 @@ img {
 
 <input id="searchInput" placeholder="キャラ名で検索">
 
+<!-- ▼ ボタン順：HP → ATK -->
 <div>
-  <button id="sortAtkBtn">ATK ↓</button>
   <button id="sortHpBtn">HP ↓</button>
+  <button id="sortAtkBtn">ATK ↓</button>
   <button id="resetBtn">デフォルト</button>
 </div>
 
@@ -112,8 +113,9 @@ img {
   <th>アイコン</th>
   <th>名前</th>
   <th>レア度</th>
-  <th>ATK</th>
+  <!-- ▼ 列順：HP → ATK -->
   <th>HP</th>
+  <th>ATK</th>
   <th>スキル1</th>
   <th>スキル2</th>
   <th>スキル3</th>
@@ -183,8 +185,9 @@ function renderCharacters(list) {
         <td class="${rarityClass(char.rarity)}">
           ${rarityStars(char.rarity)}
         </td>
-        <td>${char.atk ?? '-'}</td>
+        <!-- ▼ HP → ATK -->
         <td>${char.hp ?? '-'}</td>
+        <td>${char.atk ?? '-'}</td>
         <td>${char.mg1 ?? '-'}</td>
         <td>${char.mg2 ?? '-'}</td>
         <td>${char.mg3 ?? '-'}</td>
