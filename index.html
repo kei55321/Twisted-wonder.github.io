@@ -32,7 +32,6 @@ button {
   cursor: pointer;
 }
 
-/* ▼ 押されているボタン */
 button.active-sort {
   background: #1e88e5;
   color: #fff;
@@ -59,12 +58,17 @@ th, td {
   font-size: 12px;
 }
 
+tr {
+  cursor: pointer;
+}
+
 img {
   width: 50px;
   height: 50px;
   object-fit: cover;
 }
 
+/* アイコン表示 */
 #icon-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -76,14 +80,63 @@ img {
   padding: 5px;
   border: 1px solid #ddd;
   text-align: center;
+  cursor: pointer;
 }
 
+/* レア度色 */
 .rarity-R { color: #777; }
 .rarity-SR { color: #1e88e5; font-weight: bold; }
 .rarity-SSR {
   color: #f9a825;
   font-weight: bold;
   text-shadow: 0 0 2px rgba(0,0,0,0.3);
+}
+
+/* ===== 詳細モーダル ===== */
+#detail-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+#detail-modal {
+  background: #fff;
+  width: 90%;
+  max-width: 420px;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  position: relative;
+}
+
+#detail-modal img {
+  width: 100%;
+  max-height: 320px;
+  object-fit: contain;
+}
+
+#detail-modal table {
+  width: 100%;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+#detail-modal th {
+  background: #f0f0f0;
+}
+
+#closeDetail {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
 }
 </style>
 </head>
@@ -132,6 +185,24 @@ img {
 
 <footer>© 非公式ファンサイト</footer>
 
+<!-- ===== キャラ詳細 ===== -->
+<div id="detail-overlay">
+  <div id="detail-modal">
+    <button id="closeDetail">✕</button>
+    <img id="detailImage">
+    <h2 id="detailName"></h2>
+    <p id="detailRarity"></p>
+
+    <table>
+      <tr><th>HP</th><td id="detailHp"></td></tr>
+      <tr><th>ATK</th><td id="detailAtk"></td></tr>
+      <tr><th>スキル1</th><td id="detailMg1"></td></tr>
+      <tr><th>スキル2</th><td id="detailMg2"></td></tr>
+      <tr><th>スキル3</th><td id="detailMg3"></td></tr>
+    </table>
+  </div>
+</div>
+
 <script>
 const tableBody = document.getElementById('character-table-body');
 const iconGrid = document.getElementById('icon-grid');
@@ -143,6 +214,9 @@ const resetBtn = document.getElementById('resetBtn');
 
 const tableSection = document.getElementById('character-list-section');
 const iconSection = document.getElementById('icon-only-section');
+
+const detailOverlay = document.getElementById('detail-overlay');
+const closeDetail = document.getElementById('closeDetail');
 
 let characters = [];
 let originalOrder = [];
@@ -176,6 +250,31 @@ function clearActive() {
   sortHpBtn.classList.remove('active-sort');
 }
 
+function showDetail(char) {
+  document.getElementById('detailImage').src = char.image || char.icon;
+  document.getElementById('detailName').textContent = char.name;
+  document.getElementById('detailRarity').textContent = rarityStars(char.rarity);
+  document.getElementById('detailRarity').className = rarityClass(char.rarity);
+
+  document.getElementById('detailHp').textContent = char.hp ?? '-';
+  document.getElementById('detailAtk').textContent = char.atk ?? '-';
+  document.getElementById('detailMg1').textContent = char.mg1 ?? '-';
+  document.getElementById('detailMg2').textContent = char.mg2 ?? '-';
+  document.getElementById('detailMg3').textContent = char.mg3 ?? '-';
+
+  detailOverlay.style.display = 'flex';
+}
+
+closeDetail.onclick = () => {
+  detailOverlay.style.display = 'none';
+};
+
+detailOverlay.onclick = e => {
+  if (e.target === detailOverlay) {
+    detailOverlay.style.display = 'none';
+  }
+};
+
 function renderCharacters(list) {
   currentList = list;
   tableBody.innerHTML = '';
@@ -183,7 +282,7 @@ function renderCharacters(list) {
 
   list.forEach(char => {
     tableBody.innerHTML += `
-      <tr>
+      <tr onclick='showDetail(${JSON.stringify(char)})'>
         <td><img src="${char.icon}"></td>
         <td>${char.name}</td>
         <td class="${rarityClass(char.rarity)}">${rarityStars(char.rarity)}</td>
@@ -196,7 +295,7 @@ function renderCharacters(list) {
     `;
 
     iconGrid.innerHTML += `
-      <div class="icon-item">
+      <div class="icon-item" onclick='showDetail(${JSON.stringify(char)})'>
         <img src="${char.icon}">
         <div>${char.name}</div>
         <div class="${rarityClass(char.rarity)}">${rarityStars(char.rarity)}</div>
@@ -221,10 +320,9 @@ searchInput.oninput = () => {
 
 sortHpBtn.onclick = () => {
   hpAsc = !hpAsc;
-  sortHpBtn.textContent = hpAsc ? 'HP ↑' : 'HP ↓';
   atkAsc = false;
+  sortHpBtn.textContent = hpAsc ? 'HP ↑' : 'HP ↓';
   sortAtkBtn.textContent = 'ATK ↓';
-
   clearActive();
   sortHpBtn.classList.add('active-sort');
 
@@ -235,10 +333,9 @@ sortHpBtn.onclick = () => {
 
 sortAtkBtn.onclick = () => {
   atkAsc = !atkAsc;
-  sortAtkBtn.textContent = atkAsc ? 'ATK ↑' : 'ATK ↓';
   hpAsc = false;
+  sortAtkBtn.textContent = atkAsc ? 'ATK ↑' : 'ATK ↓';
   sortHpBtn.textContent = 'HP ↓';
-
   clearActive();
   sortAtkBtn.classList.add('active-sort');
 
