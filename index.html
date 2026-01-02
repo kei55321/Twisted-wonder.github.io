@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -63,6 +63,7 @@ img {
   object-fit: cover;
 }
 
+/* アイコン表示 */
 #icon-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -77,6 +78,7 @@ img {
   cursor: pointer;
 }
 
+/* レア度色 */
 .rarity-R { color: #777; }
 .rarity-SR { color: #1e88e5; font-weight: bold; }
 .rarity-SSR {
@@ -96,19 +98,20 @@ img {
   z-index: 1000;
 }
 
+/* --- スマホ（デフォルト） --- */
 #detail-modal {
   background: #fff;
-  width: 90%;
-  max-width: 420px;
-  padding: 15px;
-  border-radius: 10px;
+  width: 100%;
+  max-width: 100%;
+  padding: 10px;
+  border-radius: 0;
   text-align: center;
   position: relative;
 }
 
 #detail-modal img {
   width: 100%;
-  max-height: 500px;
+  max-height: 75vh;
   object-fit: contain;
 }
 
@@ -128,20 +131,38 @@ img {
 }
 
 #groovyBtn {
-  margin-top: 8px;
+  margin: 8px 0;
   background: #333;
   color: #fff;
   border: none;
+}
+
+/* --- PC・タブレット --- */
+@media (min-width: 768px) {
+  #detail-modal {
+    width: 90%;
+    max-width: 560px;
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  #detail-modal img {
+    max-height: 70vh;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<header><h1>ツイステ キャラ管理</h1></header>
+<header>
+  <h1>ツイステ キャラ管理</h1>
+</header>
 
 <main>
+
 <button id="toggleStatusBtn">ステータス表示：ON</button>
+
 <input id="searchInput" placeholder="キャラ名で検索">
 
 <div>
@@ -154,9 +175,14 @@ img {
 <table>
 <thead>
 <tr>
-  <th>アイコン</th><th>名前</th><th>レア度</th>
-  <th>HP</th><th>ATK</th>
-  <th>スキル1</th><th>スキル2</th><th>スキル3</th>
+  <th>アイコン</th>
+  <th>名前</th>
+  <th>レア度</th>
+  <th>HP</th>
+  <th>ATK</th>
+  <th>スキル1</th>
+  <th>スキル2</th>
+  <th>スキル3</th>
 </tr>
 </thead>
 <tbody id="character-table-body"></tbody>
@@ -166,11 +192,12 @@ img {
 <section id="icon-only-section" style="display:none;">
   <div id="icon-grid"></div>
 </section>
+
 </main>
 
 <footer>© 非公式ファンサイト</footer>
 
-<!-- ===== 詳細 ===== -->
+<!-- ===== キャラ詳細 ===== -->
 <div id="detail-overlay">
   <div id="detail-modal">
     <button id="closeDetail">✕</button>
@@ -245,7 +272,6 @@ function showDetail(char) {
 
 groovyBtn.onclick = () => {
   isGroovy = !isGroovy;
-
   document.getElementById('detailImage').src = isGroovy
     ? (currentChar.imageAfter || currentChar.imageBefore)
     : (currentChar.imageBefore || currentChar.icon);
