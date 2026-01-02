@@ -19,9 +19,7 @@ header, footer {
   padding: 15px;
 }
 
-main {
-  padding: 10px;
-}
+main { padding: 10px; }
 
 button {
   padding: 8px 14px;
@@ -42,7 +40,6 @@ input {
   width: 100%;
   padding: 8px;
   margin: 10px 0;
-  font-size: 14px;
 }
 
 table {
@@ -58,9 +55,7 @@ th, td {
   font-size: 12px;
 }
 
-tr {
-  cursor: pointer;
-}
+tr { cursor: pointer; }
 
 img {
   width: 50px;
@@ -68,7 +63,6 @@ img {
   object-fit: cover;
 }
 
-/* アイコン表示 */
 #icon-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -83,7 +77,6 @@ img {
   cursor: pointer;
 }
 
-/* レア度色 */
 .rarity-R { color: #777; }
 .rarity-SR { color: #1e88e5; font-weight: bold; }
 .rarity-SSR {
@@ -122,11 +115,6 @@ img {
 #detail-modal table {
   width: 100%;
   margin-top: 10px;
-  font-size: 14px;
-}
-
-#detail-modal th {
-  background: #f0f0f0;
 }
 
 #closeDetail {
@@ -138,19 +126,22 @@ img {
   font-size: 20px;
   cursor: pointer;
 }
+
+#groovyBtn {
+  margin-top: 8px;
+  background: #333;
+  color: #fff;
+  border: none;
+}
 </style>
 </head>
 
 <body>
 
-<header>
-  <h1>ツイステ キャラ管理</h1>
-</header>
+<header><h1>ツイステ キャラ管理</h1></header>
 
 <main>
-
 <button id="toggleStatusBtn">ステータス表示：ON</button>
-
 <input id="searchInput" placeholder="キャラ名で検索">
 
 <div>
@@ -163,14 +154,9 @@ img {
 <table>
 <thead>
 <tr>
-  <th>アイコン</th>
-  <th>名前</th>
-  <th>レア度</th>
-  <th>HP</th>
-  <th>ATK</th>
-  <th>スキル1</th>
-  <th>スキル2</th>
-  <th>スキル3</th>
+  <th>アイコン</th><th>名前</th><th>レア度</th>
+  <th>HP</th><th>ATK</th>
+  <th>スキル1</th><th>スキル2</th><th>スキル3</th>
 </tr>
 </thead>
 <tbody id="character-table-body"></tbody>
@@ -180,25 +166,27 @@ img {
 <section id="icon-only-section" style="display:none;">
   <div id="icon-grid"></div>
 </section>
-
 </main>
 
 <footer>© 非公式ファンサイト</footer>
 
-<!-- ===== キャラ詳細 ===== -->
+<!-- ===== 詳細 ===== -->
 <div id="detail-overlay">
   <div id="detail-modal">
     <button id="closeDetail">✕</button>
+
     <img id="detailImage">
+    <button id="groovyBtn">Groovy After</button>
+
     <h2 id="detailName"></h2>
     <p id="detailRarity"></p>
 
     <table>
       <tr><th>HP</th><td id="detailHp"></td></tr>
       <tr><th>ATK</th><td id="detailAtk"></td></tr>
-      <tr><th>スキル1</th><td id="detailMg1"></td></tr>
-      <tr><th>スキル2</th><td id="detailMg2"></td></tr>
-      <tr><th>スキル3</th><td id="detailMg3"></td></tr>
+      <tr><th>Skill 1</th><td id="detailMg1"></td></tr>
+      <tr><th>Skill 2</th><td id="detailMg2"></td></tr>
+      <tr><th>Skill 3</th><td id="detailMg3"></td></tr>
     </table>
   </div>
 </div>
@@ -206,52 +194,36 @@ img {
 <script>
 const tableBody = document.getElementById('character-table-body');
 const iconGrid = document.getElementById('icon-grid');
-const toggleBtn = document.getElementById('toggleStatusBtn');
-const searchInput = document.getElementById('searchInput');
-const sortAtkBtn = document.getElementById('sortAtkBtn');
-const sortHpBtn = document.getElementById('sortHpBtn');
-const resetBtn = document.getElementById('resetBtn');
-
-const tableSection = document.getElementById('character-list-section');
-const iconSection = document.getElementById('icon-only-section');
-
 const detailOverlay = document.getElementById('detail-overlay');
 const closeDetail = document.getElementById('closeDetail');
+const groovyBtn = document.getElementById('groovyBtn');
 
 let characters = [];
-let originalOrder = [];
-let currentList = [];
-let statusOn = true;
-
-let atkAsc = false;
-let hpAsc = false;
+let currentChar = null;
+let isGroovy = false;
 
 fetch('./characters.json')
   .then(res => res.json())
   .then(data => {
     characters = data;
-    originalOrder = [...data];
     renderCharacters(data);
   });
 
-function rarityStars(rarity) {
-  if (rarity === 'SSR') return '★★★';
-  if (rarity === 'SR') return '★★';
-  if (rarity === 'R') return '★';
+function rarityStars(r) {
+  if (r === 'SSR') return '★★★';
+  if (r === 'SR') return '★★';
+  if (r === 'R') return '★';
   return '-';
 }
 
-function rarityClass(rarity) {
-  return rarity ? `rarity-${rarity}` : '';
-}
-
-function clearActive() {
-  sortAtkBtn.classList.remove('active-sort');
-  sortHpBtn.classList.remove('active-sort');
+function rarityClass(r) {
+  return r ? `rarity-${r}` : '';
 }
 
 function showDetail(char) {
-  document.getElementById('detailImage').src = char.image || char.icon;
+  currentChar = char;
+  isGroovy = false;
+
   document.getElementById('detailName').textContent = char.name;
   document.getElementById('detailRarity').textContent = rarityStars(char.rarity);
   document.getElementById('detailRarity').className = rarityClass(char.rarity);
@@ -262,21 +234,36 @@ function showDetail(char) {
   document.getElementById('detailMg2').textContent = char.mg2 ?? '-';
   document.getElementById('detailMg3').textContent = char.mg3 ?? '-';
 
+  document.getElementById('detailImage').src =
+    char.imageBefore || char.icon;
+
+  groovyBtn.textContent = 'Groovy After';
+  groovyBtn.style.display = char.imageAfter ? 'inline-block' : 'none';
+
   detailOverlay.style.display = 'flex';
 }
+
+groovyBtn.onclick = () => {
+  isGroovy = !isGroovy;
+
+  document.getElementById('detailImage').src = isGroovy
+    ? (currentChar.imageAfter || currentChar.imageBefore)
+    : (currentChar.imageBefore || currentChar.icon);
+
+  groovyBtn.textContent = isGroovy
+    ? 'Groovy Before'
+    : 'Groovy After';
+};
 
 closeDetail.onclick = () => {
   detailOverlay.style.display = 'none';
 };
 
 detailOverlay.onclick = e => {
-  if (e.target === detailOverlay) {
-    detailOverlay.style.display = 'none';
-  }
+  if (e.target === detailOverlay) detailOverlay.style.display = 'none';
 };
 
 function renderCharacters(list) {
-  currentList = list;
   tableBody.innerHTML = '';
   iconGrid.innerHTML = '';
 
@@ -303,56 +290,6 @@ function renderCharacters(list) {
     `;
   });
 }
-
-toggleBtn.onclick = () => {
-  statusOn = !statusOn;
-  tableSection.style.display = statusOn ? 'block' : 'none';
-  iconSection.style.display = statusOn ? 'none' : 'block';
-  toggleBtn.textContent = statusOn ? 'ステータス表示：ON' : 'ステータス表示：OFF';
-};
-
-searchInput.oninput = () => {
-  const key = searchInput.value.toLowerCase();
-  renderCharacters(
-    characters.filter(c => c.name.toLowerCase().includes(key))
-  );
-};
-
-sortHpBtn.onclick = () => {
-  hpAsc = !hpAsc;
-  atkAsc = false;
-  sortHpBtn.textContent = hpAsc ? 'HP ↑' : 'HP ↓';
-  sortAtkBtn.textContent = 'ATK ↓';
-  clearActive();
-  sortHpBtn.classList.add('active-sort');
-
-  renderCharacters([...currentList].sort((a, b) =>
-    hpAsc ? (a.hp ?? 0) - (b.hp ?? 0) : (b.hp ?? 0) - (a.hp ?? 0)
-  ));
-};
-
-sortAtkBtn.onclick = () => {
-  atkAsc = !atkAsc;
-  hpAsc = false;
-  sortAtkBtn.textContent = atkAsc ? 'ATK ↑' : 'ATK ↓';
-  sortHpBtn.textContent = 'HP ↓';
-  clearActive();
-  sortAtkBtn.classList.add('active-sort');
-
-  renderCharacters([...currentList].sort((a, b) =>
-    atkAsc ? (a.atk ?? 0) - (b.atk ?? 0) : (b.atk ?? 0) - (a.atk ?? 0)
-  ));
-};
-
-resetBtn.onclick = () => {
-  atkAsc = false;
-  hpAsc = false;
-  sortAtkBtn.textContent = 'ATK ↓';
-  sortHpBtn.textContent = 'HP ↓';
-  searchInput.value = '';
-  clearActive();
-  renderCharacters(originalOrder);
-};
 </script>
 
 </body>
