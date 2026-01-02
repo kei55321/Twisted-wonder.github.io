@@ -2,21 +2,21 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>ツイステッドワンダーランド キャラ管理</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ツイステ キャラ管理</title>
 
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       margin: 0;
-      background-color: #f4f4f4;
+      background: #f4f4f4;
     }
 
-    header {
-      background-color: #333;
-      color: #fff;
-      padding: 20px;
+    header, footer {
+      background: #333;
+      color: white;
       text-align: center;
+      padding: 15px;
     }
 
     main {
@@ -24,48 +24,37 @@
     }
 
     button {
+      padding: 8px 14px;
+      margin: 5px;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
       margin: 10px 0;
-      padding: 8px 16px;
       font-size: 14px;
     }
 
-    /* エラー表示 */
-    #error-box {
-      display: none;
-      color: #b00020;
-      background: #ffecec;
-      border: 1px solid #b00020;
-      padding: 10px;
-      margin-bottom: 10px;
-      font-size: 14px;
-    }
-
-    /* ===== テーブル表示 ===== */
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
-      background: #fff;
+      background: white;
     }
 
     th, td {
       border: 1px solid #ddd;
-      padding: 8px;
+      padding: 6px;
       text-align: center;
       font-size: 12px;
     }
 
-    td img {
+    img {
       width: 50px;
       height: 50px;
       object-fit: cover;
     }
 
-    th {
-      background-color: #eee;
-    }
-
-    /* ===== アイコンのみ表示 ===== */
     #icon-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -73,32 +62,10 @@
     }
 
     .icon-item {
-      text-align: center;
-      background: #fff;
+      background: white;
       padding: 5px;
-      border: 1px solid #ddd;
-    }
-
-    .icon-item img {
-      width: 80px;
-      height: 80px;
-      object-fit: cover;
-    }
-
-    /* ===== スマホ向け ===== */
-    @media (max-width: 600px) {
-      th, td {
-        font-size: 8px;
-      }
-      /* ボタンは消さない（重要） */
-    }
-
-    footer {
       text-align: center;
-      padding: 10px;
-      background-color: #333;
-      color: white;
-      font-size: 12px;
+      border: 1px solid #ddd;
     }
   </style>
 </head>
@@ -106,17 +73,20 @@
 <body>
 
 <header>
-  <h1>ツイステッドワンダーランド キャラ管理</h1>
-  <p>JSONからキャラクター情報を表示</p>
+  <h1>ツイステ キャラ管理</h1>
 </header>
 
 <main>
-  <!-- エラー表示 -->
-  <div id="error-box"></div>
 
   <button id="toggleStatusBtn">ステータス表示：ON</button>
 
-  <!-- ステータス表 -->
+  <input id="searchInput" placeholder="キャラ名で検索">
+
+  <div>
+    <button id="sortAtkBtn">ATK ↓</button>
+    <button id="sortHpBtn">HP ↓</button>
+  </div>
+
   <section id="character-list-section">
     <table>
       <thead>
@@ -134,101 +104,99 @@
     </table>
   </section>
 
-  <!-- アイコンのみ -->
   <section id="icon-only-section" style="display:none;">
     <div id="icon-grid"></div>
   </section>
+
 </main>
 
 <footer>
-  <p>© ツイステッドワンダーランド 非公式ファンサイト</p>
+  © 非公式ファンサイト
 </footer>
 
 <script>
   const tableBody = document.getElementById('character-table-body');
+  const iconGrid = document.getElementById('icon-grid');
   const toggleBtn = document.getElementById('toggleStatusBtn');
+  const searchInput = document.getElementById('searchInput');
+  const sortAtkBtn = document.getElementById('sortAtkBtn');
+  const sortHpBtn = document.getElementById('sortHpBtn');
+
   const tableSection = document.getElementById('character-list-section');
   const iconSection = document.getElementById('icon-only-section');
-  const iconGrid = document.getElementById('icon-grid');
-  const errorBox = document.getElementById('error-box');
 
-  let statusOn = true; // 初期は必ず表示
+  let characters = [];
+  let currentList = [];
+  let statusOn = true;
 
-  window.onload = () => {
-    fetch('./characters.json')
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status} : ${res.statusText}`);
-        }
-        return res.json();
-      })
-      .then(data => {
-        if (!Array.isArray(data)) {
-          throw new Error('JSONが配列ではありません');
-        }
+  let atkAsc = false;
+  let hpAsc = false;
 
-        data.forEach(char => {
-          addCharacterToTable(char);
-          addIconOnly(char);
-        });
+  fetch('./characters.json')
+    .then(res => res.json())
+    .then(data => {
+      characters = data;
+      renderCharacters(data);
+    });
 
-        updateDisplay();
-      })
-      .catch(err => {
-        console.error(err);
-        showError(
-          'キャラクターデータを読み込めませんでした。\n' +
-          err.message +
-          '\ncharacters.json の場所・名前・大文字小文字を確認してください。'
-        );
-      });
+  function renderCharacters(list) {
+    currentList = list;
+    tableBody.innerHTML = '';
+    iconGrid.innerHTML = '';
+
+    list.forEach(char => {
+      tableBody.innerHTML += `
+        <tr>
+          <td><img src="${char.icon}"></td>
+          <td>${char.name}</td>
+          <td>${char.hp ?? '-'}</td>
+          <td>${char.atk ?? '-'}</td>
+          <td>${char.mg1 ?? '-'}</td>
+          <td>${char.mg2 ?? '-'}</td>
+          <td>${char.mg3 ?? '-'}</td>
+        </tr>
+      `;
+
+      iconGrid.innerHTML += `
+        <div class="icon-item">
+          <img src="${char.icon}">
+          <div>${char.name}</div>
+        </div>
+      `;
+    });
+  }
+
+  toggleBtn.onclick = () => {
+    statusOn = !statusOn;
+    tableSection.style.display = statusOn ? 'block' : 'none';
+    iconSection.style.display = statusOn ? 'none' : 'block';
+    toggleBtn.textContent = statusOn ? 'ステータス表示：ON' : 'ステータス表示：OFF';
   };
 
-  function showError(message) {
-    errorBox.textContent = message;
-    errorBox.style.display = 'block';
-  }
+  searchInput.oninput = () => {
+    const key = searchInput.value.toLowerCase();
+    renderCharacters(
+      characters.filter(c => c.name.toLowerCase().includes(key))
+    );
+  };
 
-  function addCharacterToTable(char) {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><img src="${char.icon}" alt="${char.name}"></td>
-      <td>${char.name}</td>
-      <td>${char.hp ?? '-'}</td>
-      <td>${char.atk ?? '-'}</td>
-      <td>${char.mg1 ? `${char.mg1}：${char.mg1_description}` : '-'}</td>
-      <td>${char.mg2 ? `${char.mg2}：${char.mg2_description}` : '-'}</td>
-      <td>${char.mg3 ? `${char.mg3}：${char.mg3_description}` : '-'}</td>
-    `;
-    tableBody.appendChild(tr);
-  }
+  sortAtkBtn.onclick = () => {
+    atkAsc = !atkAsc;
+    const sorted = [...currentList].sort((a, b) =>
+      atkAsc ? (a.atk ?? 0) - (b.atk ?? 0) : (b.atk ?? 0) - (a.atk ?? 0)
+    );
+    sortAtkBtn.textContent = atkAsc ? 'ATK ↑' : 'ATK ↓';
+    renderCharacters(sorted);
+  };
 
-  function addIconOnly(char) {
-    const div = document.createElement('div');
-    div.className = 'icon-item';
-    div.innerHTML = `
-      <img src="${char.icon}" alt="${char.name}">
-      <div>${char.name}</div>
-    `;
-    iconGrid.appendChild(div);
-  }
-
-  toggleBtn.addEventListener('click', () => {
-    statusOn = !statusOn;
-    updateDisplay();
-  });
-
-  function updateDisplay() {
-    if (statusOn) {
-      toggleBtn.textContent = 'ステータス表示：ON';
-      tableSection.style.display = 'block';
-      iconSection.style.display = 'none';
-    } else {
-      toggleBtn.textContent = 'ステータス表示：OFF';
-      tableSection.style.display = 'none';
-      iconSection.style.display = 'block';
-    }
-  }
+  sortHpBtn.onclick = () => {
+    hpAsc = !hpAsc;
+    const sorted = [...currentList].sort((a, b) =>
+      hpAsc ? (a.hp ?? 0) - (b.hp ?? 0) : (b.hp ?? 0) - (a.hp ?? 0)
+    );
+    sortHpBtn.textContent = hpAsc ? 'HP ↑' : 'HP ↓';
+    renderCharacters(sorted);
+  };
 </script>
 
 </body>
