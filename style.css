@@ -1,113 +1,120 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f9;
-  color: #333;
+  margin: 0;
+  background: #f4f4f4;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-header {
-  text-align: center;
-  background-color: #2e3b4e;
+header, footer {
+  background: #333;
   color: #fff;
-  padding: 20px;
+  text-align: center;
+  padding: 15px;
 }
 
 main {
-  padding: 20px;
+  padding: 10px;
 }
 
-h2 {
-  margin-bottom: 10px;
-}
-
-form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 30px;
-}
-
-form label {
-  display: flex;
-  flex-direction: column;
+/* ===== ボタン ===== */
+button {
+  padding: 8px 14px;
+  margin: 4px;
   font-size: 14px;
 }
 
-form input {
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-form button {
-  padding: 8px 15px;
-  border: none;
-  background-color: #354f6b;
+button.active {
+  background: #333;
   color: #fff;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 20px;
 }
 
-form button:hover {
-  background-color: #2e3b4e;
-}
-
-.character-table {
+input {
   width: 100%;
-  max-width: 1000px;
-  margin: 0 auto;
-  border-collapse: collapse;
-  background-color: #fff;
+  padding: 8px;
+  margin: 10px 0;
 }
 
-.character-table th {
-  background-color: #354f6b;
-  color: #fff;
-  padding: 12px;
+/* ===== テーブル枠 ===== */
+.table-wrapper {
+  background: #f4f4f4;
+}
+
+.table-scroll {
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-scroll table {
+  min-width: 700px;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  font-size: 13px;
+  text-align: center;
+}
+
+th:first-child,
+td:first-child {
+  min-width: 260px;
+}
+
+/* 名前セル */
+.name-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   text-align: left;
 }
 
-.character-table td {
+.name-cell img {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+/* ===== モーダル ===== */
+#overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 1000;
+}
+
+#detail-modal {
+  background: #fff;
+  max-height: 100vh;
+  overflow-y: auto;
   padding: 12px;
-  border-bottom: 1px solid #ddd;
-  vertical-align: middle;
+  position: relative;
 }
 
-.char-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.char-img {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-.skills-cell {
-  display: flex;
-  gap: 15px;
-}
-
-.delete-btn {
-  padding: 5px 10px;
-  background-color: #e74c3c;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
+.close-btn {
+  position: sticky;
+  top: 0;
+  text-align: right;
+  font-size: 24px;
   cursor: pointer;
 }
 
-.delete-btn:hover {
-  background-color: #c0392b;
+#detail-modal img {
+  width: 100%;
+  height: auto;
 }
 
-.character-table
+/* PC用 */
+@media (min-width: 768px) {
+  #detail-modal {
+    width: 90%;
+    max-width: 560px;
+    margin: 40px auto;
+    border-radius: 12px;
+  }
+}
