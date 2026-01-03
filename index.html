@@ -6,28 +6,28 @@
 <title>ツイステ キャラ管理</title>
 
 <style>
+/* ===== 共通 ===== */
 body {
   margin: 0;
-  background: #f4f4f4;
+  background: #e6e3dc;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 header, footer {
-  background: #333;
+  background: #1e1e1e;
   color: #fff;
   text-align: center;
-  padding: 15px;
+  padding: 14px;
 }
 
 main {
-  padding: 10px;
+  padding: 12px;
 }
 
-/* ===== ボタン ===== */
 button {
-  padding: 8px 14px;
-  margin: 4px;
-  font-size: 14px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
 }
 
 button.active {
@@ -41,17 +41,17 @@ input {
   margin: 10px 0;
 }
 
-/* ===== テーブル ===== */
+/* ===== 一覧 ===== */
 .table-scroll {
   background: #fff;
-  border-radius: 8px;
-  border: 1px solid #ddd;
+  border-radius: 10px;
+  border: 1px solid #ccc;
   overflow-x: auto;
 }
 
-.table-scroll table {
-  min-width: 700px;
+table {
   width: 100%;
+  min-width: 720px;
   border-collapse: collapse;
 }
 
@@ -62,25 +62,19 @@ th, td {
   text-align: center;
 }
 
-th:first-child,
-td:first-child {
-  min-width: 260px;
-}
-
 .name-cell {
   display: flex;
   align-items: center;
   gap: 8px;
-  text-align: left;
 }
 
 .name-cell img {
-  width: 48px;
-  height: 48px;
+  width: 42px;
+  height: 42px;
   border-radius: 6px;
 }
 
-/* ===== ステータスOFF用 ===== */
+/* ===== アイコン表示 ===== */
 #icon-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -89,10 +83,10 @@ td:first-child {
 
 .icon-item {
   background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 8px;
+  border-radius: 10px;
+  padding: 10px;
   text-align: center;
+  border: 1px solid #ccc;
 }
 
 .icon-item img {
@@ -100,41 +94,108 @@ td:first-child {
   height: 64px;
 }
 
-/* ===== モーダル ===== */
+/* ===== モーダル背景 ===== */
 #overlay {
   display: none;
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.6);
-  z-index: 1000;
+  z-index: 999;
 }
 
+/* ===== カードUI ===== */
 #detail-modal {
-  background: #fff;
-  max-height: 100vh;
-  overflow-y: auto;
-  padding: 12px;
+  background: #faf8f3;
+  border: 2px solid #c9b37e;
+  max-width: 560px;
+  margin: 30px auto;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+}
+
+/* ヘッダー */
+.detail-header {
+  background: #1e1e1e;
+  color: #fff;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  letter-spacing: .15em;
+  font-size: 13px;
 }
 
 .close-btn {
-  position: sticky;
-  top: 0;
-  text-align: right;
-  font-size: 24px;
+  font-size: 22px;
   cursor: pointer;
 }
 
-#detail-modal img {
-  width: 100%;
+/* 本体 */
+.detail-body {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 14px;
+  padding: 14px;
 }
 
-/* PC */
-@media (min-width: 768px) {
-  #detail-modal {
-    width: 90%;
-    max-width: 560px;
-    margin: 40px auto;
-    border-radius: 12px;
+.detail-body img {
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid #bbb;
+}
+
+.groovy-btn {
+  width: 100%;
+  margin-top: 6px;
+}
+
+/* ステータス */
+.status-block {
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+}
+
+.status-name {
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+
+.status-row {
+  margin: 6px 0;
+}
+
+.status-row span {
+  display: inline-block;
+  width: 60px;
+}
+
+.status-value {
+  font-size: 20px;
+}
+
+.groovy {
+  color: #9a4fd6;
+  font-weight: bold;
+}
+
+/* MAGIC */
+.magic-section {
+  margin: 14px;
+  border-top: 2px solid #c9b37e;
+  padding-top: 10px;
+}
+
+.magic-title {
+  background: #c9b37e;
+  color: #fff;
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+/* スマホ */
+@media (max-width: 600px) {
+  .detail-body {
+    grid-template-columns: 1fr;
   }
 }
 </style>
@@ -147,29 +208,16 @@ td:first-child {
 </header>
 
 <main>
-
 <button id="toggleBtn">ステータス表示：ON</button>
-
 <input id="searchInput" placeholder="キャラ名で検索">
 
-<div>
-  <button id="sortHpBtn">HP ↓</button>
-  <button id="sortAtkBtn">ATK ↓</button>
-  <button id="resetBtn" class="active">デフォルト</button>
-</div>
-
-<!-- ステータスON -->
 <section id="character-list-section">
   <div class="table-scroll">
     <table>
       <thead>
         <tr>
-          <th>名前</th>
-          <th>HP</th>
-          <th>ATK</th>
-          <th>Skill1</th>
-          <th>Skill2</th>
-          <th>Skill3</th>
+          <th>名前</th><th>HP</th><th>ATK</th>
+          <th>Skill1</th><th>Skill2</th><th>Skill3</th>
         </tr>
       </thead>
       <tbody id="character-table-body"></tbody>
@@ -177,11 +225,9 @@ td:first-child {
   </div>
 </section>
 
-<!-- ステータスOFF -->
 <section id="icon-only-section" style="display:none;">
   <div id="icon-grid"></div>
 </section>
-
 </main>
 
 <footer>© 非公式ファンサイト</footer>
@@ -189,39 +235,46 @@ td:first-child {
 <!-- ===== モーダル ===== -->
 <div id="overlay">
   <div id="detail-modal">
-    <div class="close-btn" id="closeModal">×</div>
-    <img id="detailImage">
-    <button id="groovyBtn">Groovy After</button>
-    <h2 id="detailName"></h2>
-    <table>
-      <tr><th>HP</th><td id="detailHp"></td></tr>
-      <tr><th>ATK</th><td id="detailAtk"></td></tr>
-      <tr><th>Skill1</th><td id="detailS1"></td></tr>
-      <tr><th>Skill2</th><td id="detailS2"></td></tr>
-      <tr><th>Skill3</th><td id="detailS3"></td></tr>
-    </table>
+    <div class="detail-header">
+      <span>最大ステータス</span>
+      <span class="close-btn" id="closeModal">×</span>
+    </div>
+
+    <div class="detail-body">
+      <div>
+        <img id="detailImage">
+        <button id="groovyBtn" class="groovy-btn">Groovy After</button>
+      </div>
+
+      <div class="status-block">
+        <div class="status-name" id="detailName"></div>
+        <div class="status-row">
+          <span>HP</span>
+          <span class="status-value" id="detailHp"></span>
+        </div>
+        <div class="status-row">
+          <span>ATK</span>
+          <span class="status-value" id="detailAtk"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="magic-section">
+      <div class="magic-title">MAGIC</div>
+      <div>Skill1：<span id="detailS1"></span></div>
+      <div>Skill2：<span id="detailS2"></span></div>
+      <div>Skill3：<span id="detailS3"></span></div>
+    </div>
   </div>
 </div>
 
 <script>
 let characters = [];
-let currentList = [];
-let statusOn = true;
-let hpAsc = false;
-let atkAsc = false;
 let groovy = false;
 
 const body = document.getElementById('character-table-body');
 const iconGrid = document.getElementById('icon-grid');
-const toggleBtn = document.getElementById('toggleBtn');
-const listSection = document.getElementById('character-list-section');
-const iconSection = document.getElementById('icon-only-section');
 const overlay = document.getElementById('overlay');
-
-const sortHpBtn = document.getElementById('sortHpBtn');
-const sortAtkBtn = document.getElementById('sortAtkBtn');
-const resetBtn = document.getElementById('resetBtn');
-const searchInput = document.getElementById('searchInput');
 
 fetch('./characters.json')
   .then(res => res.json())
@@ -231,7 +284,6 @@ fetch('./characters.json')
   });
 
 function render(list) {
-  currentList = list;
   body.innerHTML = '';
   iconGrid.innerHTML = '';
 
@@ -249,82 +301,32 @@ function render(list) {
         <td>${c.mg1 ?? '-'}</td>
         <td>${c.mg2 ?? '-'}</td>
         <td>${c.mg3 ?? '-'}</td>
-      </tr>
-    `;
-
-    iconGrid.innerHTML += `
-      <div class="icon-item" onclick='openDetail(${JSON.stringify(c)})'>
-        <img src="${c.icon}">
-        <div>${c.name}</div>
-      </div>
-    `;
+      </tr>`;
   });
 }
 
-/* ステータス切り替え */
-toggleBtn.onclick = () => {
-  statusOn = !statusOn;
-  listSection.style.display = statusOn ? 'block' : 'none';
-  iconSection.style.display = statusOn ? 'none' : 'block';
-  toggleBtn.textContent = statusOn ? 'ステータス表示：ON' : 'ステータス表示：OFF';
-};
-
-/* ソート */
-function clearActive() {
-  [sortHpBtn, sortAtkBtn, resetBtn].forEach(b => b.classList.remove('active'));
-}
-
-sortHpBtn.onclick = () => {
-  hpAsc = !hpAsc;
-  atkAsc = false;
-  sortHpBtn.textContent = hpAsc ? 'HP ↑' : 'HP ↓';
-  sortAtkBtn.textContent = 'ATK ↓';
-  clearActive();
-  sortHpBtn.classList.add('active');
-  render([...currentList].sort((a,b)=>hpAsc?(a.hp??0)-(b.hp??0):(b.hp??0)-(a.hp??0)));
-};
-
-sortAtkBtn.onclick = () => {
-  atkAsc = !atkAsc;
-  hpAsc = false;
-  sortAtkBtn.textContent = atkAsc ? 'ATK ↑' : 'ATK ↓';
-  sortHpBtn.textContent = 'HP ↓';
-  clearActive();
-  sortAtkBtn.classList.add('active');
-  render([...currentList].sort((a,b)=>atkAsc?(a.atk??0)-(b.atk??0):(b.atk??0)-(a.atk??0)));
-};
-
-resetBtn.onclick = () => {
-  hpAsc = atkAsc = false;
-  sortHpBtn.textContent = 'HP ↓';
-  sortAtkBtn.textContent = 'ATK ↓';
-  clearActive();
-  resetBtn.classList.add('active');
-  render(characters);
-};
-
-/* 検索 */
-searchInput.oninput = () => {
-  const key = searchInput.value;
-  render(characters.filter(c => c.name.includes(key)));
-};
-
-/* モーダル */
 function openDetail(c) {
   groovy = false;
   overlay.style.display = 'block';
   updateImage(c);
+
   detailName.textContent = c.name;
   detailHp.textContent = c.hp ?? '-';
   detailAtk.textContent = c.atk ?? '-';
   detailS1.textContent = c.mg1 ?? '-';
   detailS2.textContent = c.mg2 ?? '-';
   detailS3.textContent = c.mg3 ?? '-';
-  groovyBtn.onclick = () => { groovy=!groovy; updateImage(c); };
+
+  groovyBtn.onclick = () => {
+    groovy = !groovy;
+    updateImage(c);
+  };
 }
 
 function updateImage(c) {
   detailImage.src = groovy ? c.groovyAfter : c.groovyBefore;
+  detailHp.classList.toggle('groovy', groovy);
+  detailAtk.classList.toggle('groovy', groovy);
   groovyBtn.textContent = groovy ? 'Groovy Before' : 'Groovy After';
 }
 
