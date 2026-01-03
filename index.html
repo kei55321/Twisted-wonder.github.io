@@ -9,7 +9,7 @@
 /* ===== 共通 ===== */
 body {
   margin: 0;
-  background: #e6e3dc;
+  background: #e3dfd4;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -28,11 +28,6 @@ button {
   padding: 6px 12px;
   font-size: 13px;
   cursor: pointer;
-}
-
-button.active {
-  background: #333;
-  color: #fff;
 }
 
 input {
@@ -74,27 +69,7 @@ th, td {
   border-radius: 6px;
 }
 
-/* ===== アイコン表示 ===== */
-#icon-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-.icon-item {
-  background: #fff;
-  border-radius: 10px;
-  padding: 10px;
-  text-align: center;
-  border: 1px solid #ccc;
-}
-
-.icon-item img {
-  width: 64px;
-  height: 64px;
-}
-
-/* ===== モーダル背景 ===== */
+/* ===== モーダル ===== */
 #overlay {
   display: none;
   position: fixed;
@@ -103,11 +78,12 @@ th, td {
   z-index: 999;
 }
 
-/* ===== カードUI ===== */
 #detail-modal {
-  background: #faf8f3;
+  background: #f6f1e7; /* 肌色寄せ */
   border: 2px solid #c9b37e;
   max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
   margin: 30px auto;
   box-shadow: 0 12px 30px rgba(0,0,0,0.35);
 }
@@ -122,6 +98,9 @@ th, td {
   align-items: center;
   letter-spacing: .15em;
   font-size: 13px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .close-btn {
@@ -176,20 +155,37 @@ th, td {
   font-weight: bold;
 }
 
-/* MAGIC */
-.magic-section {
+/* ===== セクション共通 ===== */
+.section {
   margin: 14px;
   border-top: 2px solid #c9b37e;
   padding-top: 10px;
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
 }
 
-.magic-title {
-  background: #c9b37e;
-  color: #fff;
+.section h3 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  background: #d8c8a0;
+  color: #4a3b1a;
   display: inline-block;
   padding: 4px 8px;
+}
+
+.desc {
   font-size: 12px;
+  color: #444;
+  margin-bottom: 6px;
+}
+
+/* Buddy */
+.buddy-row {
   margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.buddy-name {
+  font-weight: bold;
 }
 
 /* スマホ */
@@ -208,25 +204,20 @@ th, td {
 </header>
 
 <main>
-<button id="toggleBtn">ステータス表示：ON</button>
 <input id="searchInput" placeholder="キャラ名で検索">
 
-<section id="character-list-section">
+<section>
   <div class="table-scroll">
     <table>
       <thead>
         <tr>
           <th>名前</th><th>HP</th><th>ATK</th>
-          <th>Skill1</th><th>Skill2</th><th>Skill3</th>
+          <th>Magic1</th><th>Magic2</th><th>Magic3</th>
         </tr>
       </thead>
       <tbody id="character-table-body"></tbody>
     </table>
   </div>
-</section>
-
-<section id="icon-only-section" style="display:none;">
-  <div id="icon-grid"></div>
 </section>
 </main>
 
@@ -235,6 +226,7 @@ th, td {
 <!-- ===== モーダル ===== -->
 <div id="overlay">
   <div id="detail-modal">
+
     <div class="detail-header">
       <span>最大ステータス</span>
       <span class="close-btn" id="closeModal">×</span>
@@ -249,22 +241,47 @@ th, td {
       <div class="status-block">
         <div class="status-name" id="detailName"></div>
         <div class="status-row">
-          <span>HP</span>
-          <span class="status-value" id="detailHp"></span>
+          <span>HP</span><span class="status-value" id="detailHp"></span>
         </div>
         <div class="status-row">
-          <span>ATK</span>
-          <span class="status-value" id="detailAtk"></span>
+          <span>ATK</span><span class="status-value" id="detailAtk"></span>
         </div>
       </div>
     </div>
 
-    <div class="magic-section">
-      <div class="magic-title">MAGIC</div>
-      <div>Skill1：<span id="detailS1"></span></div>
-      <div>Skill2：<span id="detailS2"></span></div>
-      <div>Skill3：<span id="detailS3"></span></div>
+    <!-- MAGIC -->
+    <div class="section">
+      <h3>MAGIC</h3>
+      <div>Magic1：<span id="detailM1"></span></div>
+      <div class="desc" id="detailM1Desc"></div>
+
+      <div>Magic2：<span id="detailM2"></span></div>
+      <div class="desc" id="detailM2Desc"></div>
+
+      <div>Magic3：<span id="detailM3"></span></div>
+      <div class="desc" id="detailM3Desc"></div>
     </div>
+
+    <!-- BUDDY -->
+    <div class="section">
+      <h3>BUDDY</h3>
+
+      <div class="buddy-row">
+        <span class="buddy-name" id="buddy1"></span>
+        <div id="buddy1Bonus"></div>
+      </div>
+
+      <div class="buddy-row">
+        <span class="buddy-name" id="buddy2"></span>
+        <div id="buddy2Bonus"></div>
+      </div>
+
+      <div class="buddy-row">
+        <span class="buddy-name" id="buddy3"></span>
+        <div id="buddy3Bonus"></div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -273,20 +290,17 @@ let characters = [];
 let groovy = false;
 
 const body = document.getElementById('character-table-body');
-const iconGrid = document.getElementById('icon-grid');
 const overlay = document.getElementById('overlay');
 
 fetch('./characters.json')
   .then(res => res.json())
   .then(data => {
     characters = data;
-    render(characters);
+    render(data);
   });
 
 function render(list) {
   body.innerHTML = '';
-  iconGrid.innerHTML = '';
-
   list.forEach(c => {
     body.innerHTML += `
       <tr onclick='openDetail(${JSON.stringify(c)})'>
@@ -313,9 +327,24 @@ function openDetail(c) {
   detailName.textContent = c.name;
   detailHp.textContent = c.hp ?? '-';
   detailAtk.textContent = c.atk ?? '-';
-  detailS1.textContent = c.mg1 ?? '-';
-  detailS2.textContent = c.mg2 ?? '-';
-  detailS3.textContent = c.mg3 ?? '-';
+
+  detailM1.textContent = c.mg1 || '-';
+  detailM1Desc.textContent = c.mg1_description || '';
+
+  detailM2.textContent = c.mg2 || '-';
+  detailM2Desc.textContent = c.mg2_description || '';
+
+  detailM3.textContent = c.mg3 || '-';
+  detailM3Desc.textContent = c.mg3_description || '';
+
+  buddy1.textContent = c.buddy1 || '';
+  buddy1Bonus.textContent = c.buddy1_bonus || '';
+
+  buddy2.textContent = c.buddy2 || '';
+  buddy2Bonus.textContent = c.buddy2_bonus || '';
+
+  buddy3.textContent = c.buddy3 || '';
+  buddy3Bonus.textContent = c.buddy3_bonus || '';
 
   groovyBtn.onclick = () => {
     groovy = !groovy;
