@@ -72,12 +72,6 @@ th, td {
   border-radius: 6px;
 }
 
-/* Magic（一覧） */
-.magic-cell img {
-  width: 20px;
-  height: 20px;
-}
-
 /* ===== アイコンのみ ===== */
 #icon-grid {
   display: grid;
@@ -165,11 +159,6 @@ th, td {
   padding: 4px 8px;
 }
 
-.magic-line img {
-  width: 22px;
-  height: 22px;
-}
-
 .desc {
   font-size: 12px;
   margin-bottom: 8px;
@@ -241,21 +230,9 @@ th, td {
 
     <div class="section">
       <h3>MAGIC</h3>
-
-      <div id="magic1Row">
-        <img id="m1Icon">
-        <div class="desc" id="detailM1Desc"></div>
-      </div>
-
-      <div id="magic2Row">
-        <img id="m2Icon">
-        <div class="desc" id="detailM2Desc"></div>
-      </div>
-
-      <div id="magic3Row">
-        <img id="m3Icon">
-        <div class="desc" id="detailM3Desc"></div>
-      </div>
+      <div id="magic1Row"><img id="m1Icon"><div class="desc" id="detailM1Desc"></div></div>
+      <div id="magic2Row"><img id="m2Icon"><div class="desc" id="detailM2Desc"></div></div>
+      <div id="magic3Row"><img id="m3Icon"><div class="desc" id="detailM3Desc"></div></div>
     </div>
 
     <div class="section">
@@ -276,6 +253,7 @@ let atkAsc = false;
 let groovy = false;
 
 const body = document.getElementById('character-table-body');
+const iconGrid = document.getElementById('icon-grid');
 const listSection = document.getElementById('character-list-section');
 const iconSection = document.getElementById('icon-only-section');
 
@@ -284,6 +262,31 @@ const sortHpBtn = document.getElementById('sortHpBtn');
 const sortAtkBtn = document.getElementById('sortAtkBtn');
 const resetBtn = document.getElementById('resetBtn');
 const searchInput = document.getElementById('searchInput');
+
+const overlay = document.getElementById('overlay');
+const closeModal = document.getElementById('closeModal');
+const detailName = document.getElementById('detailName');
+const detailHp = document.getElementById('detailHp');
+const detailAtk = document.getElementById('detailAtk');
+const detailImage = document.getElementById('detailImage');
+const groovyBtn = document.getElementById('groovyBtn');
+
+const m1Icon = document.getElementById('m1Icon');
+const m2Icon = document.getElementById('m2Icon');
+const m3Icon = document.getElementById('m3Icon');
+const detailM1Desc = document.getElementById('detailM1Desc');
+const detailM2Desc = document.getElementById('detailM2Desc');
+const detailM3Desc = document.getElementById('detailM3Desc');
+const magic1Row = document.getElementById('magic1Row');
+const magic2Row = document.getElementById('magic2Row');
+const magic3Row = document.getElementById('magic3Row');
+
+const buddy1 = document.getElementById('buddy1');
+const buddy2 = document.getElementById('buddy2');
+const buddy3 = document.getElementById('buddy3');
+const buddy1Bonus = document.getElementById('buddy1Bonus');
+const buddy2Bonus = document.getElementById('buddy2Bonus');
+const buddy3Bonus = document.getElementById('buddy3Bonus');
 
 function getAttrIcon(attr) {
   if (!attr) return '';
@@ -304,6 +307,7 @@ fetch('./characters.json')
 function render(list) {
   currentList = list;
   body.innerHTML = '';
+  iconGrid.innerHTML = '';
 
   list.forEach(c => {
     body.innerHTML += `
@@ -316,6 +320,13 @@ function render(list) {
         <td>${c.mg3 ? `<img src="${getAttrIcon(c.mg3)}">` : ''}</td>
       </tr>
     `;
+
+    iconGrid.innerHTML += `
+      <div class="icon-item" onclick='openDetail(${JSON.stringify(c)})'>
+        <img src="${c.icon}">
+        <div>${c.name}</div>
+      </div>
+    `;
   });
 }
 
@@ -324,22 +335,55 @@ toggleBtn.onclick = () => {
   statusOn = !statusOn;
   listSection.style.display = statusOn ? 'block' : 'none';
   iconSection.style.display = statusOn ? 'none' : 'block';
+  toggleBtn.textContent = statusOn ? 'ステータス表示：ON' : 'ステータス表示：OFF';
 };
 
-/* ===== ソート（修正版） ===== */
+/* ===== ソート ===== */
 sortHpBtn.onclick = () => {
   hpAsc = !hpAsc;
   atkAsc = false;
-  render([...currentList].sort((a,b)=>hpAsc?(a.hp??0)-(b.hp??0):(b.hp??0)-(a.hp??0)));
+
+  sortHpBtn.textContent = hpAsc ? 'HP ↑' : 'HP ↓';
+  sortAtkBtn.textContent = 'ATK ↓';
+
+  sortHpBtn.classList.add('active');
+  sortAtkBtn.classList.remove('active');
+  resetBtn.classList.remove('active');
+
+  render([...currentList].sort((a,b)=>
+    hpAsc ? (a.hp??0)-(b.hp??0) : (b.hp??0)-(a.hp??0)
+  ));
 };
 
 sortAtkBtn.onclick = () => {
   atkAsc = !atkAsc;
   hpAsc = false;
-  render([...currentList].sort((a,b)=>atkAsc?(a.atk??0)-(b.atk??0):(b.atk??0)-(a.atk??0)));
+
+  sortAtkBtn.textContent = atkAsc ? 'ATK ↑' : 'ATK ↓';
+  sortHpBtn.textContent = 'HP ↓';
+
+  sortAtkBtn.classList.add('active');
+  sortHpBtn.classList.remove('active');
+  resetBtn.classList.remove('active');
+
+  render([...currentList].sort((a,b)=>
+    atkAsc ? (a.atk??0)-(b.atk??0) : (b.atk??0)-(a.atk??0)
+  ));
 };
 
-resetBtn.onclick = () => render(characters);
+resetBtn.onclick = () => {
+  hpAsc = false;
+  atkAsc = false;
+
+  sortHpBtn.textContent = 'HP ↓';
+  sortAtkBtn.textContent = 'ATK ↓';
+
+  sortHpBtn.classList.remove('active');
+  sortAtkBtn.classList.remove('active');
+  resetBtn.classList.add('active');
+
+  render(characters);
+};
 
 /* ===== 検索 ===== */
 searchInput.oninput = () => {
