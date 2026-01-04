@@ -297,7 +297,7 @@ function getAttrIcon(attr) {
   return '';
 }
 
-fetch('./characters.json')
+ fetch('./characters/characters.json')
   .then(res => res.json())
   .then(async (files) => {
     const list = [];
@@ -305,11 +305,16 @@ fetch('./characters.json')
     for (const file of files) {
       const res = await fetch(file);
       const data = await res.json();
-      list.push(...data);
+
+      // ★ data は「1キャラのオブジェクト」
+      list.push(data);
     }
 
     characters = list;
     render(characters);
+  })
+  .catch(err => {
+    console.error('JSON読み込みエラー', err);
   });
 
 function render(list) {
