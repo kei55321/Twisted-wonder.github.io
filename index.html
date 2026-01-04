@@ -297,7 +297,7 @@ function getAttrIcon(attr) {
   return '';
 }
 
- fetch('./characters/characters.json')
+ fetch('./characters.json')
   .then(res => res.json())
   .then(async (files) => {
     const list = [];
