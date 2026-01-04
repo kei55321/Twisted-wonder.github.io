@@ -224,6 +224,61 @@ td:nth-child(6) img {
 
 <footer>© 非公式ファンサイト</footer>
 
+<!-- ===== モーダル ===== -->
+<div id="overlay">
+  <div id="detail-modal">
+    <div class="detail-header">
+      <span>最大ステータス</span>
+      <span class="close-btn" id="closeModal">×</span>
+    </div>
+
+    <div class="detail-body">
+      <div>
+        <img id="detailImage">
+        <button id="groovyBtn" class="groovy-btn">Groovy After</button>
+      </div>
+
+      <div>
+        <h2 id="detailName"></h2>
+        <div>HP <span id="detailHp"></span></div>
+        <div>ATK <span id="detailAtk"></span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>MAGIC</h3>
+      <div id="magic1Row">
+        <img id="m1Icon">
+        <div class="desc" id="detailM1Desc"></div>
+      </div>
+      <div id="magic2Row">
+        <img id="m2Icon">
+        <div class="desc" id="detailM2Desc"></div>
+      </div>
+      <div id="magic3Row">
+        <img id="m3Icon">
+        <div class="desc" id="detailM3Desc"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>BUDDY</h3>
+      <div class="buddy-row">
+        <strong id="buddy1"></strong>
+        <div id="buddy1Bonus"></div>
+      </div>
+      <div class="buddy-row">
+        <strong id="buddy2"></strong>
+        <div id="buddy2Bonus"></div>
+      </div>
+      <div class="buddy-row">
+        <strong id="buddy3"></strong>
+        <div id="buddy3Bonus"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 let characters = [];
 let currentList = [];
