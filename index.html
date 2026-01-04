@@ -61,15 +61,29 @@ th, td {
 }
 
 .name-cell {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
+  white-space: nowrap;
 }
+
 
 .name-cell img {
   width: 42px;
   height: 42px;
   border-radius: 6px;
+}
+
+th:first-child,
+td:first-child {
+  width: 1%;
+  white-space: nowrap;
+}
+
+/* Magic属性アイコン */
+td img {
+  width: 20px;
+  height: 20px;
 }
 
 /* ===== アイコンのみ ===== */
