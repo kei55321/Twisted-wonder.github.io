@@ -259,7 +259,7 @@
     "buddy3": "ルーク",
     "buddy3_bonus": "自身のHPを増加(小)"
   },
-// ここから参照元( https://gamerch.com/twisted-wonderland/138899 )
+
   {
     "icon": "image/01_Heartslabyul/Riddle/icon/なりきり花婿.jpg",
     "rarity": "SR",
@@ -392,8 +392,7 @@
     "mg2": "水",
     "mg2_description": "2連撃の水属性ダメージ(強)&[DUO]ラギーと一緒に選択したとき3連撃に強化",
     "mg3": "無",
-    "mg3_description": "2連撃の無属性ダメージ(弱)
-&ダメージUP(中)(自/3T)",
+    "mg3_description": "2連撃の無属性ダメージ(弱)&ダメージUP(中)(自/3T)",
     "buddy1": "デュース",
     "buddy1_bonus": "自身のATKを増加(小)",
     "buddy2": "ラギー",
