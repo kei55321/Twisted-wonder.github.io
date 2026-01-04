@@ -85,8 +85,19 @@ td:first-child {
 td:nth-child(4) img,
 td:nth-child(5) img,
 td:nth-child(6) img {
-  width: 18px;
-  height: 18px;
+  width: 25px;
+  height: 25px;
+}
+
+/* ===== Magic列もオートサイズ ===== */
+th:nth-child(4),
+th:nth-child(5),
+th:nth-child(6),
+td:nth-child(4),
+td:nth-child(5),
+td:nth-child(6) {
+  width: 1%;
+  white-space: nowrap;
 }
 
 /* ===== アイコンのみ ===== */
