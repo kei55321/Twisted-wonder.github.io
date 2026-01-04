@@ -4,49 +4,216 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ツイステ キャラ管理</title>
-<link rel="stylesheet" href="style.css">
+
+<style>
+body {
+  margin: 0;
+  background: #e3dfd4;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+header, footer {
+  background: #1e1e1e;
+  color: #fff;
+  text-align: center;
+  padding: 14px;
+}
+
+main { padding: 12px; }
+
+button {
+  padding: 6px 12px;
+  margin: 4px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+button.active {
+  background: #333;
+  color: #fff;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+}
+
+/* ===== 一覧 ===== */
+.table-scroll {
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  font-size: 13px;
+  text-align: center;
+}
+
+.name-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.name-cell img {
+  width: 42px;
+  height: 42px;
+  border-radius: 6px;
+}
+
+/* Magic（一覧） */
+.magic-cell img {
+  width: 20px;
+  height: 20px;
+}
+
+/* ===== アイコンのみ ===== */
+#icon-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.icon-item {
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ccc;
+}
+
+.icon-item img {
+  width: 64px;
+  height: 64px;
+}
+
+/* ===== モーダル ===== */
+#overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 999;
+}
+
+#detail-modal {
+  background: #f6f1e7;
+  border: 2px solid #c9b37e;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: 30px auto;
+}
+
+.detail-header {
+  background: #1e1e1e;
+  color: #fff;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+}
+
+.close-btn {
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.detail-body {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 14px;
+  padding: 14px;
+}
+
+.detail-body img {
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid #bbb;
+}
+
+.groovy-btn {
+  width: 100%;
+  margin-top: 6px;
+}
+
+/* ===== セクション ===== */
+.section {
+  margin: 14px;
+  border-top: 2px solid #c9b37e;
+  padding-top: 10px;
+}
+
+.section h3 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  background: #d8c8a0;
+  color: #4a3b1a;
+  display: inline-block;
+  padding: 4px 8px;
+}
+
+.magic-line img {
+  width: 22px;
+  height: 22px;
+}
+
+.desc {
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.buddy-row { margin-bottom: 8px; }
+
+@media (max-width: 600px) {
+  .detail-body { grid-template-columns: 1fr; }
+}
+</style>
 </head>
 
 <body>
 
-<header>
-  <h1>ツイステ キャラ管理</h1>
-</header>
+<header><h1>ツイステ キャラ管理</h1></header>
 
 <main>
-  <button id="toggleBtn">ステータス表示：ON</button>
+<button id="toggleBtn">ステータス表示：ON</button>
+<input id="searchInput" placeholder="キャラ名で検索">
 
-  <input id="searchInput" placeholder="キャラ名で検索">
+<div>
+  <button id="sortHpBtn">HP ↓</button>
+  <button id="sortAtkBtn">ATK ↓</button>
+  <button id="resetBtn" class="active">デフォルト</button>
+</div>
 
-  <div>
-    <button id="sortHpBtn">HP ↓</button>
-    <button id="sortAtkBtn">ATK ↓</button>
-    <button id="resetBtn" class="active">デフォルト</button>
+<section id="character-list-section">
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>名前</th><th>HP</th><th>ATK</th>
+          <th>Magic1</th><th>Magic2</th><th>Magic3</th>
+        </tr>
+      </thead>
+      <tbody id="character-table-body"></tbody>
+    </table>
   </div>
+</section>
 
-  <!-- ステータスON -->
-  <section id="character-list-section">
-    <div class="table-scroll">
-      <table>
-        <thead>
-          <tr>
-            <th>名前</th>
-            <th>HP</th>
-            <th>ATK</th>
-            <th>Magic1</th>
-            <th>Magic2</th>
-            <th>Magic3</th>
-          </tr>
-        </thead>
-        <tbody id="character-table-body"></tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- ステータスOFF -->
-  <section id="icon-only-section" style="display:none;">
-    <div id="icon-grid"></div>
-  </section>
+<section id="icon-only-section" style="display:none;">
+  <div id="icon-grid"></div>
+</section>
 </main>
 
 <footer>© 非公式ファンサイト</footer>
@@ -100,6 +267,130 @@
   </div>
 </div>
 
-<script src="main.js"></script>
+<script>
+let characters = [];
+let currentList = [];
+let statusOn = true;
+let hpAsc = false;
+let atkAsc = false;
+let groovy = false;
+
+const body = document.getElementById('character-table-body');
+const listSection = document.getElementById('character-list-section');
+const iconSection = document.getElementById('icon-only-section');
+
+const toggleBtn = document.getElementById('toggleBtn');
+const sortHpBtn = document.getElementById('sortHpBtn');
+const sortAtkBtn = document.getElementById('sortAtkBtn');
+const resetBtn = document.getElementById('resetBtn');
+const searchInput = document.getElementById('searchInput');
+
+function getAttrIcon(attr) {
+  if (!attr) return '';
+  if (attr === '火') return 'image/attr/fire.png';
+  if (attr === '水') return 'image/attr/water.png';
+  if (attr === '木') return 'image/attr/wood.png';
+  if (attr === '無') return 'image/attr/none.png';
+  return '';
+}
+
+fetch('./characters.json')
+  .then(res => res.json())
+  .then(data => {
+    characters = data;
+    render(data);
+  });
+
+function render(list) {
+  currentList = list;
+  body.innerHTML = '';
+
+  list.forEach(c => {
+    body.innerHTML += `
+      <tr onclick='openDetail(${JSON.stringify(c)})'>
+        <td><div class="name-cell"><img src="${c.icon}">${c.name}</div></td>
+        <td>${c.hp ?? '-'}</td>
+        <td>${c.atk ?? '-'}</td>
+        <td>${c.mg1 ? `<img src="${getAttrIcon(c.mg1)}">` : ''}</td>
+        <td>${c.mg2 ? `<img src="${getAttrIcon(c.mg2)}">` : ''}</td>
+        <td>${c.mg3 ? `<img src="${getAttrIcon(c.mg3)}">` : ''}</td>
+      </tr>
+    `;
+  });
+}
+
+/* ===== ON/OFF ===== */
+toggleBtn.onclick = () => {
+  statusOn = !statusOn;
+  listSection.style.display = statusOn ? 'block' : 'none';
+  iconSection.style.display = statusOn ? 'none' : 'block';
+};
+
+/* ===== ソート（修正版） ===== */
+sortHpBtn.onclick = () => {
+  hpAsc = !hpAsc;
+  atkAsc = false;
+  render([...currentList].sort((a,b)=>hpAsc?(a.hp??0)-(b.hp??0):(b.hp??0)-(a.hp??0)));
+};
+
+sortAtkBtn.onclick = () => {
+  atkAsc = !atkAsc;
+  hpAsc = false;
+  render([...currentList].sort((a,b)=>atkAsc?(a.atk??0)-(b.atk??0):(b.atk??0)-(a.atk??0)));
+};
+
+resetBtn.onclick = () => render(characters);
+
+/* ===== 検索 ===== */
+searchInput.oninput = () => {
+  render(characters.filter(c => c.name.includes(searchInput.value)));
+};
+
+/* ===== モーダル ===== */
+function openDetail(c) {
+  overlay.style.display = 'block';
+
+  detailName.textContent = c.name;
+  detailHp.textContent = c.hp ?? '-';
+  detailAtk.textContent = c.atk ?? '-';
+
+  setupMagic(c.mg1, c.mg1_description, m1Icon, detailM1Desc, magic1Row);
+  setupMagic(c.mg2, c.mg2_description, m2Icon, detailM2Desc, magic2Row);
+  setupMagic(c.mg3, c.mg3_description, m3Icon, detailM3Desc, magic3Row);
+
+  buddy1.textContent = c.buddy1 || '';
+  buddy1Bonus.textContent = c.buddy1_bonus || '';
+  buddy2.textContent = c.buddy2 || '';
+  buddy2Bonus.textContent = c.buddy2_bonus || '';
+  buddy3.textContent = c.buddy3 || '';
+  buddy3Bonus.textContent = c.buddy3_bonus || '';
+
+  groovy = false;
+  detailImage.src = c.groovyBefore;
+
+  if (c.rarity === 'R') {
+    groovyBtn.style.display = 'none';
+  } else {
+    groovyBtn.style.display = 'block';
+    groovyBtn.onclick = () => {
+      groovy = !groovy;
+      detailImage.src = groovy ? c.groovyAfter : c.groovyBefore;
+    };
+  }
+}
+
+function setupMagic(attr, desc, iconEl, descEl, rowEl) {
+  if (!attr) {
+    rowEl.style.display = 'none';
+    return;
+  }
+  rowEl.style.display = '';
+  iconEl.src = getAttrIcon(attr);
+  descEl.textContent = desc || '';
+}
+
+closeModal.onclick = () => overlay.style.display = 'none';
+</script>
+
 </body>
 </html>
