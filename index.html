@@ -73,16 +73,9 @@ th, td {
 }
 
 /* Magic（一覧） */
-.magic-cell {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 4px;
-}
-
 .magic-cell img {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
 }
 
 /* ===== アイコンのみ ===== */
@@ -121,7 +114,6 @@ th, td {
   max-height: 90vh;
   overflow-y: auto;
   margin: 30px auto;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
 }
 
 .detail-header {
@@ -130,9 +122,6 @@ th, td {
   padding: 10px 14px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  letter-spacing: .15em;
-  font-size: 13px;
   position: sticky;
   top: 0;
 }
@@ -160,12 +149,6 @@ th, td {
   margin-top: 6px;
 }
 
-/* ステータス */
-.status-name { font-size: 18px; }
-.status-row { margin: 6px 0; }
-.status-value { font-size: 20px; }
-.groovy { color: #9a4fd6; font-weight: bold; }
-
 /* ===== セクション ===== */
 .section {
   margin: 14px;
@@ -182,20 +165,14 @@ th, td {
   padding: 4px 8px;
 }
 
-.magic-line {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
 .magic-line img {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
 }
 
 .desc {
   font-size: 12px;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .buddy-row { margin-bottom: 8px; }
@@ -256,29 +233,29 @@ th, td {
       </div>
 
       <div>
-        <div class="status-name" id="detailName"></div>
-        <div class="status-row">HP <span class="status-value" id="detailHp"></span></div>
-        <div class="status-row">ATK <span class="status-value" id="detailAtk"></span></div>
+        <h2 id="detailName"></h2>
+        <div>HP <span id="detailHp"></span></div>
+        <div>ATK <span id="detailAtk"></span></div>
       </div>
     </div>
 
-    <div class="section" id="magicSection">
+    <div class="section">
       <h3>MAGIC</h3>
 
-      <div class="magic-line" id="magic1Row">
-        <img id="m1Icon"><span id="detailM1"></span>
+      <div id="magic1Row">
+        <img id="m1Icon">
+        <div class="desc" id="detailM1Desc"></div>
       </div>
-      <div class="desc" id="detailM1Desc"></div>
 
-      <div class="magic-line" id="magic2Row">
-        <img id="m2Icon"><span id="detailM2"></span>
+      <div id="magic2Row">
+        <img id="m2Icon">
+        <div class="desc" id="detailM2Desc"></div>
       </div>
-      <div class="desc" id="detailM2Desc"></div>
 
-      <div class="magic-line" id="magic3Row">
-        <img id="m3Icon"><span id="detailM3"></span>
+      <div id="magic3Row">
+        <img id="m3Icon">
+        <div class="desc" id="detailM3Desc"></div>
       </div>
-      <div class="desc" id="detailM3Desc"></div>
     </div>
 
     <div class="section">
@@ -299,7 +276,6 @@ let atkAsc = false;
 let groovy = false;
 
 const body = document.getElementById('character-table-body');
-const iconGrid = document.getElementById('icon-grid');
 const listSection = document.getElementById('character-list-section');
 const iconSection = document.getElementById('icon-only-section');
 
@@ -310,12 +286,12 @@ const resetBtn = document.getElementById('resetBtn');
 const searchInput = document.getElementById('searchInput');
 
 function getAttrIcon(attr) {
-  if (!attr) return null;
+  if (!attr) return '';
   if (attr === '火') return 'image/attr/fire.png';
   if (attr === '水') return 'image/attr/water.png';
   if (attr === '木') return 'image/attr/wood.png';
   if (attr === '無') return 'image/attr/none.png';
-  return null;
+  return '';
 }
 
 fetch('./characters.json')
@@ -328,7 +304,6 @@ fetch('./characters.json')
 function render(list) {
   currentList = list;
   body.innerHTML = '';
-  iconGrid.innerHTML = '';
 
   list.forEach(c => {
     body.innerHTML += `
@@ -336,15 +311,42 @@ function render(list) {
         <td><div class="name-cell"><img src="${c.icon}">${c.name}</div></td>
         <td>${c.hp ?? '-'}</td>
         <td>${c.atk ?? '-'}</td>
-        <td>${c.mg1 ? `<div class="magic-cell"><img src="${getAttrIcon(c.mg1)}">${c.mg1}</div>` : ''}</td>
-        <td>${c.mg2 ? `<div class="magic-cell"><img src="${getAttrIcon(c.mg2)}">${c.mg2}</div>` : ''}</td>
-        <td>${c.mg3 ? `<div class="magic-cell"><img src="${getAttrIcon(c.mg3)}">${c.mg3}</div>` : ''}</td>
-      </tr>`;
+        <td>${c.mg1 ? `<img src="${getAttrIcon(c.mg1)}">` : ''}</td>
+        <td>${c.mg2 ? `<img src="${getAttrIcon(c.mg2)}">` : ''}</td>
+        <td>${c.mg3 ? `<img src="${getAttrIcon(c.mg3)}">` : ''}</td>
+      </tr>
+    `;
   });
 }
 
-/* 既存機能（ON/OFF、ソート、検索）はそのまま */
+/* ===== ON/OFF ===== */
+toggleBtn.onclick = () => {
+  statusOn = !statusOn;
+  listSection.style.display = statusOn ? 'block' : 'none';
+  iconSection.style.display = statusOn ? 'none' : 'block';
+};
 
+/* ===== ソート（修正版） ===== */
+sortHpBtn.onclick = () => {
+  hpAsc = !hpAsc;
+  atkAsc = false;
+  render([...currentList].sort((a,b)=>hpAsc?(a.hp??0)-(b.hp??0):(b.hp??0)-(a.hp??0)));
+};
+
+sortAtkBtn.onclick = () => {
+  atkAsc = !atkAsc;
+  hpAsc = false;
+  render([...currentList].sort((a,b)=>atkAsc?(a.atk??0)-(b.atk??0):(b.atk??0)-(a.atk??0)));
+};
+
+resetBtn.onclick = () => render(characters);
+
+/* ===== 検索 ===== */
+searchInput.oninput = () => {
+  render(characters.filter(c => c.name.includes(searchInput.value)));
+};
+
+/* ===== モーダル ===== */
 function openDetail(c) {
   overlay.style.display = 'block';
 
@@ -352,9 +354,9 @@ function openDetail(c) {
   detailHp.textContent = c.hp ?? '-';
   detailAtk.textContent = c.atk ?? '-';
 
-  setupMagic(c.mg1, c.mg1_description, m1Icon, detailM1, detailM1Desc, magic1Row);
-  setupMagic(c.mg2, c.mg2_description, m2Icon, detailM2, detailM2Desc, magic2Row);
-  setupMagic(c.mg3, c.mg3_description, m3Icon, detailM3, detailM3Desc, magic3Row);
+  setupMagic(c.mg1, c.mg1_description, m1Icon, detailM1Desc, magic1Row);
+  setupMagic(c.mg2, c.mg2_description, m2Icon, detailM2Desc, magic2Row);
+  setupMagic(c.mg3, c.mg3_description, m3Icon, detailM3Desc, magic3Row);
 
   buddy1.textContent = c.buddy1 || '';
   buddy1Bonus.textContent = c.buddy1_bonus || '';
@@ -363,25 +365,27 @@ function openDetail(c) {
   buddy3.textContent = c.buddy3 || '';
   buddy3Bonus.textContent = c.buddy3_bonus || '';
 
-  detailImage.src = c.groovyBefore;
   groovy = false;
+  detailImage.src = c.groovyBefore;
 
-  groovyBtn.onclick = () => {
-    groovy = !groovy;
-    detailImage.src = groovy ? c.groovyAfter : c.groovyBefore;
-  };
+  if (c.rarity === 'R') {
+    groovyBtn.style.display = 'none';
+  } else {
+    groovyBtn.style.display = 'block';
+    groovyBtn.onclick = () => {
+      groovy = !groovy;
+      detailImage.src = groovy ? c.groovyAfter : c.groovyBefore;
+    };
+  }
 }
 
-function setupMagic(attr, desc, iconEl, textEl, descEl, rowEl) {
+function setupMagic(attr, desc, iconEl, descEl, rowEl) {
   if (!attr) {
     rowEl.style.display = 'none';
-    descEl.style.display = 'none';
     return;
   }
   rowEl.style.display = '';
-  descEl.style.display = '';
   iconEl.src = getAttrIcon(attr);
-  textEl.textContent = attr;
   descEl.textContent = desc || '';
 }
 
