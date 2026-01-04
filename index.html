@@ -299,17 +299,9 @@ function getAttrIcon(attr) {
 
 fetch('./characters.json')
   .then(res => res.json())
-  .then(async (files) => {
-    const list = [];
-
-    for (const file of files) {
-      const res = await fetch(file);
-      const data = await res.json();
-      list.push(...data);
-    }
-
-    characters = list;
-    render(characters);
+  .then(data => {
+    characters = data;
+    render(data);
   });
 
 function render(list) {
