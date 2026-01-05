@@ -515,9 +515,15 @@ searchInput.oninput = () => {
 /* ===== モーダル ===== */
 function openDetail(c, el) {
 
-if (el) {
+function openDetail(c, el) {
+
+  // ★ すべての行のハイライトを解除
+  document.querySelectorAll('#character-table-body tr')
+    .forEach(tr => tr.classList.remove('clicked'));
+
+  // ★ 押した行だけハイライト
+  if (el) {
     el.classList.add('clicked');
-    setTimeout(() => el.classList.remove('clicked'), 150);
   }
 
   // ★ 先に読み込み開始
