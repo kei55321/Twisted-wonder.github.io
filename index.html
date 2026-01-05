@@ -7,6 +7,25 @@
 
 <style>
 
+.name-cell {
+  display: flex;          /* ← ここだけ変更 */
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  width: 100%;            /* ← 右端まで使う */
+}
+
+.detail-arrow {
+  margin-left: auto;      /* ← 右端へ */
+  color: #aaa;
+  font-size: 14px;
+  transition: color 0.15s ease;
+}
+
+tbody tr:hover .detail-arrow {
+  color: #333;
+}
+
 tbody tr {
   cursor: pointer;
   transition: background 0.15s ease;
@@ -90,12 +109,7 @@ td:first-child {
   text-align: left;   /* ← 左寄せ */
 }
 
-.name-cell {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  white-space: nowrap;
-}
+
 
 .name-cell img {
   width: 42px;
@@ -417,8 +431,13 @@ function render(list) {
     
     body.innerHTML += `
       <tr onclick='openDetail(${JSON.stringify(c)}, this)'>
-        <td><div class="name-cell"><img src="${c.icon}">${c.name}</div></td>
-        <td>${c.hp ?? '-'}</td>
+        <td>
+  <div class="name-cell">
+    <img src="${c.icon}">
+    <span>${c.name}</span>
+    <span class="detail-arrow">▶</span>
+  </div>
+</td><td>${c.hp ?? '-'}</td>
         <td>${c.atk ?? '-'}</td>
         <td>${c.mg1 ? `<img src="${getAttrIcon(c.mg1)}">` : ''}</td>
         <td>${c.mg2 ? `<img src="${getAttrIcon(c.mg2)}">` : ''}</td>
