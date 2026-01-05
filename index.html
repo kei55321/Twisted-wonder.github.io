@@ -356,12 +356,27 @@ fetch('./characters.json')
     render(data);
   });
 
+function createImagePaths(iconPath) {
+  // /icon/ を削除
+  const defaultImage = iconPath.replace('/icon/', '/');
+
+  // 拡張子の前に _G を付ける
+  const groovyImage = defaultImage.replace(/(\.[a-zA-Z]+)$/, '_G$1');
+
+  return { defaultImage, groovyImage };
+}
+
 function render(list) {
   currentList = list;
   body.innerHTML = '';
   iconGrid.innerHTML = '';
 
   list.forEach(c => {
+    
+    const images = createImagePaths(c.icon);
+c.defaultImage = images.defaultImage;
+c.groovyImage = images.groovyImage;
+    
     body.innerHTML += `
       <tr onclick='openDetail(${JSON.stringify(c)})'>
         <td><div class="name-cell"><img src="${c.icon}">${c.name}</div></td>
@@ -484,6 +499,8 @@ function setupMagic(attr, desc, iconEl, descEl, rowEl) {
   iconEl.src = getAttrIcon(attr);
   descEl.textContent = desc || '';
 }
+
+
 
 closeModal.onclick = () => overlay.style.display = 'none';
 </script>
