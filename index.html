@@ -6,7 +6,16 @@
 <title>ツイステ キャラ管理</title>
 
 <style>
+.detail-arrow {
+  color: #999;
+  font-size: 14px;
+  width: 1%;
+  white-space: nowrap;
+}
 
+tbody tr:hover .detail-arrow {
+  color: #333;
+}
 tbody tr {
   cursor: pointer;
   transition: background 0.15s ease;
@@ -266,7 +275,7 @@ td:nth-child(6) {
 </main>
 
 <footer>© 非公式ファンサイト</footer>
-
+<th></th>
 <!-- ===== モーダル ===== -->
 <div id="overlay">
   <div id="detail-modal">
@@ -321,6 +330,7 @@ td:nth-child(6) {
     </div>
   </div>
 </div>
+<td class="detail-arrow">▶</td>
 
 <script>
 let characters = [];
