@@ -379,8 +379,7 @@ function render(list) {
     
     /* ===== ここが重要：完全先読み ===== */
     preloadImage(c.icon);
-    preloadImage(c.defaultImage);
-    preloadImage(c.groovyImage);
+  
     
     body.innerHTML += `
       <tr onclick='openDetail(${JSON.stringify(c)})'>
@@ -464,6 +463,13 @@ searchInput.oninput = () => {
 
 /* ===== モーダル ===== */
 function openDetail(c) {
+
+  // ★ 先に読み込み開始
+  preloadImage(c.defaultImage);
+  preloadImage(c.groovyImage);
+
+  detailImage.src = c.defaultImage
+  
   overlay.style.display = 'block';
 
   detailName.textContent = c.name;
