@@ -515,50 +515,51 @@ searchInput.oninput = () => {
 /* ===== モーダル ===== */
 function openDetail(c, el) {
 
-  // ★ すべての行のハイライトを解除
+  // ① すべての行のハイライト解除
   document.querySelectorAll('#character-table-body tr')
     .forEach(tr => tr.classList.remove('clicked'));
 
-  // ★ 押した行だけハイライト
+  // ② 押した行を即ハイライト
   if (el) {
     el.classList.add('clicked');
-   }
+  }
 
-  // ★ 先に読み込み開始
+  // ③ 画像は先読みしておく
   preloadImage(c.defaultImage);
   preloadImage(c.groovyImage);
 
-  detailImage.src = c.defaultImage
-  
-  overlay.style.display = 'block';
+  // ④ モーダル表示を少し遅らせる
+  setTimeout(() => {
+    detailImage.src = c.defaultImage;
+    overlay.style.display = 'block';
 
-  detailName.textContent = c.name;
-  detailHp.textContent = c.hp ?? '-';
-  detailAtk.textContent = c.atk ?? '-';
+    detailName.textContent = c.name;
+    detailHp.textContent = c.hp ?? '-';
+    detailAtk.textContent = c.atk ?? '-';
 
-  setupMagic(c.mg1, c.mg1_description, m1Icon, detailM1Desc, magic1Row);
-  setupMagic(c.mg2, c.mg2_description, m2Icon, detailM2Desc, magic2Row);
-  setupMagic(c.mg3, c.mg3_description, m3Icon, detailM3Desc, magic3Row);
+    setupMagic(c.mg1, c.mg1_description, m1Icon, detailM1Desc, magic1Row);
+    setupMagic(c.mg2, c.mg2_description, m2Icon, detailM2Desc, magic2Row);
+    setupMagic(c.mg3, c.mg3_description, m3Icon, detailM3Desc, magic3Row);
 
-  buddy1.textContent = c.buddy1 || '';
-  buddy1Bonus.textContent = c.buddy1_bonus || '';
-  buddy2.textContent = c.buddy2 || '';
-  buddy2Bonus.textContent = c.buddy2_bonus || '';
-  buddy3.textContent = c.buddy3 || '';
-  buddy3Bonus.textContent = c.buddy3_bonus || '';
+    buddy1.textContent = c.buddy1 || '';
+    buddy1Bonus.textContent = c.buddy1_bonus || '';
+    buddy2.textContent = c.buddy2 || '';
+    buddy2Bonus.textContent = c.buddy2_bonus || '';
+    buddy3.textContent = c.buddy3 || '';
+    buddy3Bonus.textContent = c.buddy3_bonus || '';
 
-  groovy = false;
+    groovy = false;
 
-
-  if (c.rarity === 'R') {
-    groovyBtn.style.display = 'none';
-  } else {
-    groovyBtn.style.display = 'block';
-    groovyBtn.onclick = () => {
-      groovy = !groovy;
-      detailImage.src = groovy ? c.groovyImage : c.defaultImage;
-    };
-  }
+    if (c.rarity === 'R') {
+      groovyBtn.style.display = 'none';
+    } else {
+      groovyBtn.style.display = 'block';
+      groovyBtn.onclick = () => {
+        groovy = !groovy;
+        detailImage.src = groovy ? c.groovyImage : c.defaultImage;
+      };
+    }
+  }, 80); // ← 50〜100msがおすすめ
 }
 
 function setupMagic(attr, desc, iconEl, descEl, rowEl) {
