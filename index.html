@@ -7,6 +7,25 @@
 
 <style>
 
+tbody tr {
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+/* hover */
+tbody tr:hover {
+  background: #f1ece2;
+}
+
+/* 押している間 */
+tbody tr:active {
+  background: #d8c8a0;
+}
+
+/* 押したあと一瞬残る */
+tbody tr.clicked {
+  background: #d8c8a0;
+}
 
 /* 押した瞬間（クリック・タップ中） */
 tbody tr:active {
@@ -319,7 +338,7 @@ td:nth-child(6) {
     </div>
   </div>
 </div>
-<td class="detail-arrow">▶</td>
+
 
 <script>
 let characters = [];
@@ -407,7 +426,7 @@ function render(list) {
   
     
     body.innerHTML += `
-      <tr onclick='openDetail(${JSON.stringify(c)})'>
+      <tr onclick='openDetail(${JSON.stringify(c)}, this)'>
         <td><div class="name-cell"><img src="${c.icon}">${c.name}</div></td>
         <td>${c.hp ?? '-'}</td>
         <td>${c.atk ?? '-'}</td>
@@ -487,7 +506,12 @@ searchInput.oninput = () => {
 };
 
 /* ===== モーダル ===== */
-function openDetail(c) {
+function openDetail(c, el) {
+
+if (el) {
+    el.classList.add('clicked');
+    setTimeout(() => el.classList.remove('clicked'), 150);
+  }
 
   // ★ 先に読み込み開始
   preloadImage(c.defaultImage);
