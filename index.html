@@ -13,18 +13,15 @@ td:first-child {
 }
 
 .name-cell {
-  display: flex;          /* ← ここだけ変更 */
+  display: inline-flex;   /* ← オートサイズに戻す */
   align-items: center;
   gap: 8px;
   white-space: nowrap;
-  width: 100%;            /* ← 右端まで使う */
 }
 
 .detail-arrow {
-  margin-left: auto;      /* ← 右端へ */
+  margin-left: 6px;       /* 名前のすぐ右 */
   color: #aaa;
-  font-size: 14px;
-  transition: color 0.15s ease;
 }
 
 tbody tr:hover .detail-arrow {
