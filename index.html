@@ -462,7 +462,7 @@ function openDetail(c) {
   buddy3Bonus.textContent = c.buddy3_bonus || '';
 
   groovy = false;
-  detailImage.src = c.groovyBefore;
+  detailImage.src = c.default;
 
   if (c.rarity === 'R') {
     groovyBtn.style.display = 'none';
@@ -470,7 +470,7 @@ function openDetail(c) {
     groovyBtn.style.display = 'block';
     groovyBtn.onclick = () => {
       groovy = !groovy;
-      detailImage.src = groovy ? c.groovyAfter : c.groovyBefore;
+      detailImage.src = groovy ? c.groovy : c.default;
     };
   }
 }
