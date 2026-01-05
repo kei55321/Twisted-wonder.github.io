@@ -515,21 +515,27 @@ searchInput.oninput = () => {
 /* ===== モーダル ===== */
 function openDetail(c, el) {
 
-  // ① すべての行のハイライト解除
+  // 念のため全行リセット
   document.querySelectorAll('#character-table-body tr')
     .forEach(tr => tr.classList.remove('clicked'));
 
-  // ② 押した行を即ハイライト
+  // 押した行を一瞬ハイライト
   if (el) {
     el.classList.add('clicked');
   }
 
-  // ③ 画像は先読みしておく
+  // 画像は先読み
   preloadImage(c.defaultImage);
   preloadImage(c.groovyImage);
 
-  // ④ モーダル表示を少し遅らせる
+  // ★ 少しだけ待ってからモーダル表示
   setTimeout(() => {
+
+    // ハイライト解除
+    if (el) {
+      el.classList.remove('clicked');
+    }
+
     detailImage.src = c.defaultImage;
     overlay.style.display = 'block';
 
@@ -559,7 +565,8 @@ function openDetail(c, el) {
         detailImage.src = groovy ? c.groovyImage : c.defaultImage;
       };
     }
-  }, 80); // ← 50〜100msがおすすめ
+
+  }, 100); // ← 60〜100ms がちょうどいい
 }
 
 function setupMagic(attr, desc, iconEl, descEl, rowEl) {
