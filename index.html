@@ -129,6 +129,13 @@ td:nth-child(6) {
   z-index: 999;
 }
 
+#detailImage {
+  width: 100%;
+  aspect-ratio: 3 / 4;   /* 立ち絵比率 */
+  object-fit: contain;
+  background: #eee;     /* 白止まり防止 */
+}
+
 #detail-modal {
   background: #f6f1e7;
   border: 2px solid #c9b37e;
@@ -488,7 +495,7 @@ function openDetail(c) {
   buddy3Bonus.textContent = c.buddy3_bonus || '';
 
   groovy = false;
-  detailImage.src = c.defaultImage;
+
 
   if (c.rarity === 'R') {
     groovyBtn.style.display = 'none';
