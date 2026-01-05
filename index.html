@@ -131,9 +131,13 @@ td:nth-child(6) {
 
 #detailImage {
   width: 100%;
-  aspect-ratio: 3 / 4;   /* 立ち絵比率 */
+  max-height: 70vh;
+
+  aspect-ratio: 16 / 9;
   object-fit: contain;
-  background: #eee;     /* 白止まり防止 */
+
+  background: #000;   /* 黒帯になっても違和感なし */
+  border-radius: 6px;
 }
 
 #detail-modal {
