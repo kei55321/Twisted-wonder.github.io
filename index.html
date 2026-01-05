@@ -374,8 +374,13 @@ function render(list) {
   list.forEach(c => {
     
     const images = createImagePaths(c.icon);
-c.defaultImage = images.defaultImage;
-c.groovyImage = images.groovyImage;
+    c.defaultImage = images.defaultImage;
+    c.groovyImage = images.groovyImage;
+    
+    /* ===== ここが重要：完全先読み ===== */
+    preloadImage(c.icon);
+    preloadImage(c.defaultImage);
+    preloadImage(c.groovyImage);
     
     body.innerHTML += `
       <tr onclick='openDetail(${JSON.stringify(c)})'>
@@ -499,7 +504,11 @@ function setupMagic(attr, desc, iconEl, descEl, rowEl) {
   iconEl.src = getAttrIcon(attr);
   descEl.textContent = desc || '';
 }
-
+function preloadImage(src) {
+  if (!src) return;
+  const img = new Image();
+  img.src = src;
+}
 
 
 closeModal.onclick = () => overlay.style.display = 'none';
