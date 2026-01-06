@@ -1,3 +1,19 @@
+.magic-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.magic-head img {
+  width: 24px;
+  height: 24px;
+}
+
+.magic-head span {
+  font-weight: bold;
+  font-size: 13px;
+}
+
 /* 名前ヘッダーだけ中央揃え */
 th:first-child {
   width: 1%;
