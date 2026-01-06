@@ -46,7 +46,7 @@ td:first-child {
 
 tbody tr:hover .detail-arrow {
   color: #4a3b1a;
-}}
+}
 
 tbody tr {
   cursor: pointer;
