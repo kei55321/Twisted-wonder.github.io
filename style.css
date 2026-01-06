@@ -9,8 +9,8 @@ body {
 }
 
 .stat-label {
+  color: #c02bbf;   /* ← 数値と同じ紫 */
   font-weight: bold;
-  color: #4a3b1a;   /* 茶色 */
 }
 
 .stat-value {
