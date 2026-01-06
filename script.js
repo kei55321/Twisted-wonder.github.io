@@ -5,6 +5,18 @@ let hpAsc = false;
 let atkAsc = false;
 let groovy = false;
 
+const m1Attr = document.getElementById('m1Attr');
+const m2Attr = document.getElementById('m2Attr');
+const m3Attr = document.getElementById('m3Attr');
+
+const m1Type = document.getElementById('m1Type');
+const m2Type = document.getElementById('m2Type');
+const m3Type = document.getElementById('m3Type');
+
+const m1Name = document.getElementById('m1Name');
+const m2Name = document.getElementById('m2Name');
+const m3Name = document.getElementById('m3Name');
+
 const body = document.getElementById('character-table-body');
 const iconGrid = document.getElementById('icon-grid');
 const listSection = document.getElementById('character-list-section');
@@ -56,6 +68,13 @@ fetch('./characters.json')
     characters = data;
     render(data);
   });
+
+function getTypeIcon(desc) {
+  if (!desc) return '';
+  return desc.includes('回復')
+    ? 'image/Icon/heal.png'
+    : 'image/Icon/attack.png';
+}
 
 function createImagePaths(iconPath) {
   // /icon/ を削除
@@ -198,10 +217,32 @@ function openDetail(c, el) {
     detailHp.textContent = c.hp ?? '-';
     detailAtk.textContent = c.atk ?? '-';
 
-    setupMagic(c.mg1, c.mg1_description, m1Icon, detailM1Desc, magic1Row);
-    setupMagic(c.mg2, c.mg2_description, m2Icon, detailM2Desc, magic2Row);
-    setupMagic(c.mg3, c.mg3_description, m3Icon, detailM3Desc, magic3Row);
+    setupMagic(
+  c.mg1,
+  c.mg1_name,
+  c.mg1_description,
+  m1Attr, m1Type, m1Name,
+  detailM1Desc,
+  magic1Row
+);
 
+setupMagic(
+  c.mg2,
+  c.mg2_name,
+  c.mg2_description,
+  m2Attr, m2Type, m2Name,
+  detailM2Desc,
+  magic2Row
+);
+
+setupMagic(
+  c.mg3,
+  c.mg3_name,
+  c.mg3_description,
+  m3Attr, m3Type, m3Name,
+  detailM3Desc,
+  magic3Row
+);
     buddy1.textContent = c.buddy1 || '';
     buddy1Bonus.textContent = c.buddy1_bonus || '';
     buddy2.textContent = c.buddy2 || '';
@@ -224,13 +265,16 @@ function openDetail(c, el) {
   }, 100); // ← 60〜100ms がちょうどいい
 }
 
-function setupMagic(attr, desc, iconEl, descEl, rowEl) {
+function setupMagic(attr, name, desc, attrEl, typeEl, nameEl, descEl, rowEl) {
   if (!attr) {
     rowEl.style.display = 'none';
     return;
   }
+
   rowEl.style.display = '';
-  iconEl.src = getAttrIcon(attr);
+  attrEl.src = getAttrIcon(attr);
+  typeEl.src = getTypeIcon(desc);
+  nameEl.textContent = name || '';
   descEl.textContent = desc || '';
 }
 function preloadImage(src) {
