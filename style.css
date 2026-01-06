@@ -2,6 +2,13 @@ body {
   color: #4a3b1a;
 }
 
+/* モーダル内 HP / ATK の色 */
+#detailHp,
+#detailAtk {
+  color: #c02bbf;
+  font-weight: bold;
+}
+
 .magic-head {
   margin-top: 4px;
 }
