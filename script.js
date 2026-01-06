@@ -1,49 +1,59 @@
-let characters = [];
-let currentList = [];
-let statusOn = true;
-let hpAsc = false;
-let atkAsc = false;
-let groovy = false;
-
 const body = document.getElementById('character-table-body');
-const iconGrid = document.getElementById('icon-grid');
-const listSection = document.getElementById('character-list-section');
-const iconSection = document.getElementById('icon-only-section');
+const overlay = document.getElementById('overlay');
+const closeModal = document.getElementById('closeModal');
 
-const toggleBtn = document.getElementById('toggleBtn');
-const sortHpBtn = document.getElementById('sortHpBtn');
-const sortAtkBtn = document.getElementById('sortAtkBtn');
-const resetBtn = document.getElementById('resetBtn');
-const searchInput = document.getElementById('searchInput');
+const magic1Row = document.getElementById('magic1Row');
+const magic2Row = document.getElementById('magic2Row');
+const magic3Row = document.getElementById('magic3Row');
+
+const m1Attr = document.getElementById('m1Attr');
+const m1Type = document.getElementById('m1Type');
+const m1Name = document.getElementById('m1Name');
+const m1Desc = document.getElementById('m1Desc');
+
+const m2Attr = document.getElementById('m2Attr');
+const m2Type = document.getElementById('m2Type');
+const m2Name = document.getElementById('m2Name');
+const m2Desc = document.getElementById('m2Desc');
+
+const m3Attr = document.getElementById('m3Attr');
+const m3Type = document.getElementById('m3Type');
+const m3Name = document.getElementById('m3Name');
+const m3Desc = document.getElementById('m3Desc');
+
+let characters = [];
 
 function getAttrIcon(attr) {
-  if (!attr) return '';
-  if (attr === '火') return 'image/attr/fire.png';
-  if (attr === '水') return 'image/attr/water.png';
-  if (attr === '木') return 'image/attr/wood.png';
-  if (attr === '無') return 'image/attr/none.png';
-  return '';
+  return {
+    火: 'image/Element/Fire.png',
+    水: 'image/Element/Water.png',
+    木: 'image/Element/Leaf.png',
+    無: 'image/Element/ZERO.png'
+  }[attr] || '';
+}
+
+function getTypeIcon(desc) {
+  return desc && desc.includes('回復')
+    ? 'image/Icon/heal.png'
+    : 'image/Icon/attack.png';
 }
 
 fetch('./characters.json')
-  .then(res => res.json())
+  .then(r => r.json())
   .then(data => {
     characters = data;
-    render(characters);
+    render();
   });
 
-function render(list) {
-  currentList = list;
+function render() {
   body.innerHTML = '';
-  iconGrid.innerHTML = '';
-
-  list.forEach(c => {
+  characters.forEach((c, i) => {
     body.innerHTML += `
-      <tr onclick='openDetail(${JSON.stringify(c)})'>
+      <tr onclick="openDetail(${i})">
         <td>
           <div class="name-cell">
             <img src="${c.icon}">
-            ${c.name}
+            <span>${c.name}</span>
           </div>
         </td>
         <td>${c.hp ?? '-'}</td>
@@ -53,117 +63,28 @@ function render(list) {
         <td>${c.mg3 ? `<img src="${getAttrIcon(c.mg3)}">` : ''}</td>
       </tr>
     `;
-
-    iconGrid.innerHTML += `
-      <div class="icon-item" onclick='openDetail(${JSON.stringify(c)})'>
-        <img src="${c.icon}">
-        <div>${c.name}</div>
-      </div>
-    `;
   });
 }
 
-/* ===== ステータスON/OFF ===== */
-toggleBtn.onclick = () => {
-  statusOn = !statusOn;
-  listSection.style.display = statusOn ? 'block' : 'none';
-  iconSection.style.display = statusOn ? 'none' : 'block';
-  toggleBtn.textContent = statusOn ? 'ステータス表示：ON' : 'ステータス表示：OFF';
-};
-
-/* ===== ソート ===== */
-sortHpBtn.onclick = () => {
-  hpAsc = !hpAsc;
-  atkAsc = false;
-
-  sortHpBtn.textContent = hpAsc ? 'HP ↑' : 'HP ↓';
-  sortAtkBtn.textContent = 'ATK ↓';
-
-  sortHpBtn.classList.add('active');
-  sortAtkBtn.classList.remove('active');
-  resetBtn.classList.remove('active');
-
-  render([...currentList].sort((a,b)=>
-    hpAsc ? (a.hp??0)-(b.hp??0) : (b.hp??0)-(a.hp??0)
-  ));
-};
-
-sortAtkBtn.onclick = () => {
-  atkAsc = !atkAsc;
-  hpAsc = false;
-
-  sortAtkBtn.textContent = atkAsc ? 'ATK ↑' : 'ATK ↓';
-  sortHpBtn.textContent = 'HP ↓';
-
-  sortAtkBtn.classList.add('active');
-  sortHpBtn.classList.remove('active');
-  resetBtn.classList.remove('active');
-
-  render([...currentList].sort((a,b)=>
-    atkAsc ? (a.atk??0)-(b.atk??0) : (b.atk??0)-(a.atk??0)
-  ));
-};
-
-resetBtn.onclick = () => {
-  hpAsc = false;
-  atkAsc = false;
-
-  sortHpBtn.textContent = 'HP ↓';
-  sortAtkBtn.textContent = 'ATK ↓';
-
-  sortHpBtn.classList.remove('active');
-  sortAtkBtn.classList.remove('active');
-  resetBtn.classList.add('active');
-
-  render(characters);
-};
-
-/* ===== 検索 ===== */
-searchInput.oninput = () => {
-  render(characters.filter(c => c.name.includes(searchInput.value)));
-};
-
-/* ===== モーダル ===== */
-function openDetail(c) {
-  overlay.style.display = 'block';
-
-  detailName.textContent = c.name;
-  detailHp.textContent = c.hp ?? '-';
-  detailAtk.textContent = c.atk ?? '-';
-
-  setupMagic(c.mg1, c.mg1_description, m1Icon, detailM1Desc, magic1Row);
-  setupMagic(c.mg2, c.mg2_description, m2Icon, detailM2Desc, magic2Row);
-  setupMagic(c.mg3, c.mg3_description, m3Icon, detailM3Desc, magic3Row);
-
-  buddy1.textContent = c.buddy1 || '';
-  buddy1Bonus.textContent = c.buddy1_bonus || '';
-  buddy2.textContent = c.buddy2 || '';
-  buddy2Bonus.textContent = c.buddy2_bonus || '';
-  buddy3.textContent = c.buddy3 || '';
-  buddy3Bonus.textContent = c.buddy3_bonus || '';
-
-  groovy = false;
-  detailImage.src = c.groovyBefore;
-
-  if (c.rarity === 'R') {
-    groovyBtn.style.display = 'none';
-  } else {
-    groovyBtn.style.display = 'block';
-    groovyBtn.onclick = () => {
-      groovy = !groovy;
-      detailImage.src = groovy ? c.groovyAfter : c.groovyBefore;
-    };
-  }
-}
-
-function setupMagic(attr, desc, iconEl, descEl, rowEl) {
+function setupMagic(row, attr, name, desc, attrEl, typeEl, nameEl, descEl) {
   if (!attr) {
-    rowEl.style.display = 'none';
+    row.style.display = 'none';
     return;
   }
-  rowEl.style.display = '';
-  iconEl.src = getAttrIcon(attr);
+  row.style.display = '';
+  attrEl.src = getAttrIcon(attr);
+  typeEl.src = getTypeIcon(desc);
+  nameEl.textContent = name || '';
   descEl.textContent = desc || '';
+}
+
+function openDetail(i) {
+  const c = characters[i];
+  overlay.style.display = 'block';
+
+  setupMagic(magic1Row, c.mg1, c.mg1_name, c.mg1_description, m1Attr, m1Type, m1Name, m1Desc);
+  setupMagic(magic2Row, c.mg2, c.mg2_name, c.mg2_description, m2Attr, m2Type, m2Name, m2Desc);
+  setupMagic(magic3Row, c.mg3, c.mg3_name, c.mg3_description, m3Attr, m3Type, m3Name, m3Desc);
 }
 
 closeModal.onclick = () => overlay.style.display = 'none';
