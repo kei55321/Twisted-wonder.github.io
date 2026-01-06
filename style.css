@@ -1,3 +1,7 @@
+body {
+  color: #4a3b1a;
+}
+
 .magic-head {
   display: flex;
   align-items: center;
