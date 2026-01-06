@@ -2,6 +2,23 @@ body {
   color: #4a3b1a;
 }
 
+.stat-row {
+  display: grid;
+  grid-template-columns: 80px auto; /* ← ラベル幅固定 */
+  gap: 8px;
+}
+
+.stat-label {
+  font-weight: bold;
+  color: #4a3b1a;   /* 茶色 */
+}
+
+.stat-value {
+  color: #c02bbf;   /* 紫 */
+  font-weight: bold;
+}
+
+
 /* モーダル内 HP / ATK の色 */
 #detailHp,
 #detailAtk {
