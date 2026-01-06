@@ -5,7 +5,7 @@ body {
 .stat-row {
   display: grid;
   grid-template-columns: 80px auto; /* ← ラベル幅固定 */
-  gap: 12px;
+  gap: 16px;
 }
 
 .stat-label {
