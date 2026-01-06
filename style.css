@@ -3,6 +3,14 @@ body {
 }
 
 .magic-head {
+  margin-top: 4px;
+}
+
+.buddy-row {
+  margin-top: 4px;
+}
+
+.magic-head {
   display: flex;
   align-items: center;
   gap: 6px;
