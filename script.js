@@ -72,8 +72,8 @@ fetch('./characters.json')
 function getTypeIcon(desc) {
   if (!desc) return '';
   return desc.includes('回復')
-    ? 'image/Icon/heal.png'
-    : 'image/Icon/attack.png';
+    ? 'image/heal.png'
+    : 'image/attack.png';
 }
 
 function createImagePaths(iconPath) {
