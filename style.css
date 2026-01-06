@@ -11,27 +11,6 @@ header, footer {
   padding: 14px;
 }
 
-main { padding: 12px; }
-
-button {
-  padding: 6px 12px;
-  margin: 4px;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-button.active {
-  background: #333;
-  color: #fff;
-}
-
-input {
-  width: 100%;
-  padding: 8px;
-  margin: 10px 0;
-}
-
-/* ===== テーブル ===== */
 .table-scroll {
   background: #fff;
   border-radius: 10px;
@@ -53,9 +32,10 @@ th, td {
 }
 
 .name-cell {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
+  white-space: nowrap;
 }
 
 .name-cell img {
@@ -64,96 +44,41 @@ th, td {
   border-radius: 6px;
 }
 
-.magic-cell img {
-  width: 20px;
-  height: 20px;
+.magic-row {
+  margin-bottom: 10px;
 }
 
-/* ===== アイコン表示 ===== */
-#icon-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+.magic-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.icon-item {
-  background: #fff;
-  border-radius: 10px;
-  padding: 10px;
-  text-align: center;
-  border: 1px solid #ccc;
+.magic-head img {
+  width: 24px;
+  height: 24px;
 }
 
-.icon-item img {
-  width: 64px;
-  height: 64px;
+.magic-name {
+  font-weight: bold;
+  font-size: 13px;
 }
 
-/* ===== モーダル ===== */
+.desc {
+  font-size: 12px;
+}
+
 #overlay {
   display: none;
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.6);
+  z-index: 999;
 }
 
 #detail-modal {
   background: #f6f1e7;
   border: 2px solid #c9b37e;
   max-width: 560px;
-  max-height: 90vh;
-  overflow-y: auto;
   margin: 30px auto;
-}
-
-.detail-header {
-  background: #1e1e1e;
-  color: #fff;
-  padding: 10px 14px;
-  display: flex;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-}
-
-.close-btn {
-  font-size: 22px;
-  cursor: pointer;
-}
-
-.detail-body {
-  display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  gap: 14px;
-  padding: 14px;
-}
-
-.detail-body img {
-  width: 100%;
-  border-radius: 6px;
-  border: 1px solid #bbb;
-}
-
-.groovy-btn {
-  width: 100%;
-  margin-top: 6px;
-}
-
-.section {
-  margin: 14px;
-  border-top: 2px solid #c9b37e;
-  padding-top: 10px;
-}
-
-.section h3 {
-  font-size: 13px;
-  background: #d8c8a0;
-  color: #4a3b1a;
-  display: inline-block;
-  padding: 4px 8px;
-}
-
-.desc {
-  font-size: 12px;
-  margin-bottom: 8px;
 }
