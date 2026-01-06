@@ -214,8 +214,8 @@ function openDetail(c, el) {
     overlay.style.display = 'block';
 
     detailName.textContent = c.name;
-    detailHp.textContent = c.hp ?? '-';
-    detailAtk.textContent = c.atk ?? '-';
+    detailHp.textContent  = `MAX HP   ${c.hp ?? '-'}`;
+    detailAtk.textContent = `MAX ATK  ${c.atk ?? '-'}`;
 
     setupMagic(
   c.mg1,
