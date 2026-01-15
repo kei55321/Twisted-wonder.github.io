@@ -5,6 +5,9 @@ let hpAsc = false;
 let atkAsc = false;
 let groovy = false;
 
+const NO_IMAGE = 'image/noimage.png';
+
+/* ================= DOM ================= */
 const m1Attr = document.getElementById('m1Attr');
 const m2Attr = document.getElementById('m2Attr');
 const m3Attr = document.getElementById('m3Attr');
@@ -53,21 +56,14 @@ const buddy1Bonus = document.getElementById('buddy1Bonus');
 const buddy2Bonus = document.getElementById('buddy2Bonus');
 const buddy3Bonus = document.getElementById('buddy3Bonus');
 
+/* ================= Utility ================= */
 function getAttrIcon(attr) {
-  if (!attr) return '';
   if (attr === '火') return 'image/Element/Fire.png';
   if (attr === '水') return 'image/Element/Water.png';
   if (attr === '木') return 'image/Element/Leaf.png';
   if (attr === '無') return 'image/Element/ZERO.png';
   return '';
 }
-
-fetch('./characters.json')
-  .then(res => res.json())
-  .then(data => {
-    characters = data;
-    render(data);
-  });
 
 function getTypeIcon(desc) {
   if (!desc) return '';
@@ -76,17 +72,52 @@ function getTypeIcon(desc) {
     : 'image/attack.png';
 }
 
-/* =========================
-   拡張子完全対応版
-   .png / .jpg / .JPG / .jpeg
-========================= */
+/* ================= 画像拡張子完全対応 + NoImage ================= */
+function loadImageWithFallback(imgEl, originalPath) {
+  if (!originalPath) {
+    imgEl.src = NO_IMAGE;
+    return;
+  }
+
+  const base = originalPath.replace(/\.(png|jpe?g)$/i, '');
+  const exts = ['png', 'jpg', 'jpeg', 'JPG'];
+  let index = 0;
+
+  imgEl.onerror = () => {
+    index++;
+    if (index < exts.length) {
+      imgEl.src = `${base}.${exts[index]}`;
+    } else {
+      imgEl.onerror = null;
+      imgEl.src = NO_IMAGE;
+    }
+  };
+
+  imgEl.src = `${base}.${exts[index]}`;
+}
+
+function preloadImage(path) {
+  if (!path) return;
+
+  const base = path.replace(/\.(png|jpe?g)$/i, '');
+  const exts = ['png', 'jpg', 'jpeg', 'JPG'];
+  let index = 0;
+
+  const img = new Image();
+  img.onerror = () => {
+    index++;
+    if (index < exts.length) {
+      img.src = `${base}.${exts[index]}`;
+    }
+  };
+  img.src = `${base}.${exts[index]}`;
+}
+
+/* ================= Path生成 ================= */
 function createImagePaths(iconPath) {
   if (!iconPath) return { defaultImage: '', groovyImage: '' };
 
-  // /icon/ を削除
   const defaultImage = iconPath.replace('/icon/', '/');
-
-  // 拡張子を取得（png / jpg / jpeg 大文字小文字OK）
   const groovyImage = defaultImage.replace(
     /\.(png|jpe?g)$/i,
     '_G.$1'
@@ -95,6 +126,15 @@ function createImagePaths(iconPath) {
   return { defaultImage, groovyImage };
 }
 
+/* ================= Data ================= */
+fetch('./characters.json')
+  .then(res => res.json())
+  .then(data => {
+    characters = data;
+    render(data);
+  });
+
+/* ================= Render ================= */
 function render(list) {
   currentList = list;
   body.innerHTML = '';
@@ -113,7 +153,7 @@ function render(list) {
       <tr onclick='openDetail(${JSON.stringify(c)}, this)'>
         <td>
           <div class="name-cell">
-            <img src="${c.icon}">
+            <img src="${c.icon}" onerror="this.src='${NO_IMAGE}'">
             <span>${c.name}</span>
             <span class="detail-arrow">▶</span>
           </div>
@@ -128,92 +168,29 @@ function render(list) {
 
     iconGrid.innerHTML += `
       <div class="icon-item" onclick='openDetail(${JSON.stringify(c)})'>
-        <img src="${c.icon}">
+        <img src="${c.icon}" onerror="this.src='${NO_IMAGE}'">
         <div>${c.name}</div>
       </div>
     `;
   });
 }
 
-/* ===== ON/OFF ===== */
-toggleBtn.onclick = () => {
-  statusOn = !statusOn;
-  listSection.style.display = statusOn ? 'block' : 'none';
-  iconSection.style.display = statusOn ? 'none' : 'block';
-  toggleBtn.textContent = statusOn ? 'ステータス表示：ON' : 'ステータス表示：OFF';
-};
-
-/* ===== ソート ===== */
-sortHpBtn.onclick = () => {
-  hpAsc = !hpAsc;
-  atkAsc = false;
-
-  sortHpBtn.textContent = hpAsc ? 'HP ↑' : 'HP ↓';
-  sortAtkBtn.textContent = 'ATK ↓';
-
-  sortHpBtn.classList.add('active');
-  sortAtkBtn.classList.remove('active');
-  resetBtn.classList.remove('active');
-
-  render([...currentList].sort((a,b)=>
-    hpAsc ? (a.hp??0)-(b.hp??0) : (b.hp??0)-(a.hp??0)
-  ));
-};
-
-sortAtkBtn.onclick = () => {
-  atkAsc = !atkAsc;
-  hpAsc = false;
-
-  sortAtkBtn.textContent = atkAsc ? 'ATK ↑' : 'ATK ↓';
-  sortHpBtn.textContent = 'HP ↓';
-
-  sortAtkBtn.classList.add('active');
-  sortHpBtn.classList.remove('active');
-  resetBtn.classList.remove('active');
-
-  render([...currentList].sort((a,b)=>
-    atkAsc ? (a.atk??0)-(b.atk??0) : (b.atk??0)-(a.atk??0)
-  ));
-};
-
-resetBtn.onclick = () => {
-  hpAsc = false;
-  atkAsc = false;
-
-  sortHpBtn.textContent = 'HP ↓';
-  sortAtkBtn.textContent = 'ATK ↓';
-
-  sortHpBtn.classList.remove('active');
-  sortAtkBtn.classList.remove('active');
-  resetBtn.classList.add('active');
-
-  render(characters);
-};
-
-/* ===== 検索 ===== */
-searchInput.oninput = () => {
-  render(characters.filter(c => c.name.includes(searchInput.value)));
-};
-
-/* ===== モーダル ===== */
+/* ================= Modal ================= */
 function openDetail(c, el) {
   document.querySelectorAll('#character-table-body tr')
     .forEach(tr => tr.classList.remove('clicked'));
 
   if (el) el.classList.add('clicked');
 
-  preloadImage(c.defaultImage);
-  preloadImage(c.groovyImage);
-
   setTimeout(() => {
     if (el) el.classList.remove('clicked');
 
-    detailImage.src = c.defaultImage;
     overlay.style.display = 'block';
-
     detailName.textContent = c.name;
-    detailHp.textContent  = c.hp ?? '-';
+    detailHp.textContent = c.hp ?? '-';
     detailAtk.textContent = c.atk ?? '-';
+
+    loadImageWithFallback(detailImage, c.defaultImage);
 
     setupMagic(c.mg1, c.mg1_name, c.mg1_description, m1Attr, m1Type, m1Name, detailM1Desc, magic1Row);
     setupMagic(c.mg2, c.mg2_name, c.mg2_description, m2Attr, m2Type, m2Name, detailM2Desc, magic2Row);
@@ -234,7 +211,10 @@ function openDetail(c, el) {
       groovyBtn.style.display = 'block';
       groovyBtn.onclick = () => {
         groovy = !groovy;
-        detailImage.src = groovy ? c.groovyImage : c.defaultImage;
+        loadImageWithFallback(
+          detailImage,
+          groovy ? c.groovyImage : c.defaultImage
+        );
       };
     }
   }, 100);
@@ -251,12 +231,6 @@ function setupMagic(attr, name, desc, attrEl, typeEl, nameEl, descEl, rowEl) {
   typeEl.src = getTypeIcon(desc);
   nameEl.textContent = name || '';
   descEl.textContent = desc || '';
-}
-
-function preloadImage(src) {
-  if (!src) return;
-  const img = new Image();
-  img.src = src;
 }
 
 closeModal.onclick = () => overlay.style.display = 'none';
