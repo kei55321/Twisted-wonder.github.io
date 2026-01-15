@@ -76,12 +76,21 @@ function getTypeIcon(desc) {
     : 'image/attack.png';
 }
 
+/* =========================
+   拡張子完全対応版
+   .png / .jpg / .JPG / .jpeg
+========================= */
 function createImagePaths(iconPath) {
+  if (!iconPath) return { defaultImage: '', groovyImage: '' };
+
   // /icon/ を削除
   const defaultImage = iconPath.replace('/icon/', '/');
 
-  // 拡張子の前に _G を付ける
-  const groovyImage = defaultImage.replace(/(\.[a-zA-Z]+)$/, '_G$1');
+  // 拡張子を取得（png / jpg / jpeg 大文字小文字OK）
+  const groovyImage = defaultImage.replace(
+    /\.(png|jpe?g)$/i,
+    '_G.$1'
+  );
 
   return { defaultImage, groovyImage };
 }
@@ -92,24 +101,24 @@ function render(list) {
   iconGrid.innerHTML = '';
 
   list.forEach(c => {
-    
     const images = createImagePaths(c.icon);
     c.defaultImage = images.defaultImage;
     c.groovyImage = images.groovyImage;
-    
-    /* ===== ここが重要：完全先読み ===== */
+
     preloadImage(c.icon);
-  
-    
+    preloadImage(c.defaultImage);
+    preloadImage(c.groovyImage);
+
     body.innerHTML += `
       <tr onclick='openDetail(${JSON.stringify(c)}, this)'>
         <td>
-  <div class="name-cell">
-    <img src="${c.icon}">
-    <span>${c.name}</span>
-    <span class="detail-arrow">▶</span>
-  </div>
-</td><td>${c.hp ?? '-'}</td>
+          <div class="name-cell">
+            <img src="${c.icon}">
+            <span>${c.name}</span>
+            <span class="detail-arrow">▶</span>
+          </div>
+        </td>
+        <td>${c.hp ?? '-'}</td>
         <td>${c.atk ?? '-'}</td>
         <td>${c.mg1 ? `<img src="${getAttrIcon(c.mg1)}">` : ''}</td>
         <td>${c.mg2 ? `<img src="${getAttrIcon(c.mg2)}">` : ''}</td>
@@ -188,27 +197,16 @@ searchInput.oninput = () => {
 
 /* ===== モーダル ===== */
 function openDetail(c, el) {
-
-  // 念のため全行リセット
   document.querySelectorAll('#character-table-body tr')
     .forEach(tr => tr.classList.remove('clicked'));
 
-  // 押した行を一瞬ハイライト
-  if (el) {
-    el.classList.add('clicked');
-  }
+  if (el) el.classList.add('clicked');
 
-  // 画像は先読み
   preloadImage(c.defaultImage);
   preloadImage(c.groovyImage);
 
-  // ★ 少しだけ待ってからモーダル表示
   setTimeout(() => {
-
-    // ハイライト解除
-    if (el) {
-      el.classList.remove('clicked');
-    }
+    if (el) el.classList.remove('clicked');
 
     detailImage.src = c.defaultImage;
     overlay.style.display = 'block';
@@ -216,32 +214,11 @@ function openDetail(c, el) {
     detailName.textContent = c.name;
     detailHp.textContent  = c.hp ?? '-';
     detailAtk.textContent = c.atk ?? '-';
-    setupMagic(
-  c.mg1,
-  c.mg1_name,
-  c.mg1_description,
-  m1Attr, m1Type, m1Name,
-  detailM1Desc,
-  magic1Row
-);
 
-setupMagic(
-  c.mg2,
-  c.mg2_name,
-  c.mg2_description,
-  m2Attr, m2Type, m2Name,
-  detailM2Desc,
-  magic2Row
-);
+    setupMagic(c.mg1, c.mg1_name, c.mg1_description, m1Attr, m1Type, m1Name, detailM1Desc, magic1Row);
+    setupMagic(c.mg2, c.mg2_name, c.mg2_description, m2Attr, m2Type, m2Name, detailM2Desc, magic2Row);
+    setupMagic(c.mg3, c.mg3_name, c.mg3_description, m3Attr, m3Type, m3Name, detailM3Desc, magic3Row);
 
-setupMagic(
-  c.mg3,
-  c.mg3_name,
-  c.mg3_description,
-  m3Attr, m3Type, m3Name,
-  detailM3Desc,
-  magic3Row
-);
     buddy1.textContent = c.buddy1 || '';
     buddy1Bonus.textContent = c.buddy1_bonus || '';
     buddy2.textContent = c.buddy2 || '';
@@ -260,8 +237,7 @@ setupMagic(
         detailImage.src = groovy ? c.groovyImage : c.defaultImage;
       };
     }
-
-  }, 100); // ← 60〜100ms がちょうどいい
+  }, 100);
 }
 
 function setupMagic(attr, name, desc, attrEl, typeEl, nameEl, descEl, rowEl) {
@@ -276,11 +252,11 @@ function setupMagic(attr, name, desc, attrEl, typeEl, nameEl, descEl, rowEl) {
   nameEl.textContent = name || '';
   descEl.textContent = desc || '';
 }
+
 function preloadImage(src) {
   if (!src) return;
   const img = new Image();
   img.src = src;
 }
-
 
 closeModal.onclick = () => overlay.style.display = 'none';
