@@ -79,9 +79,9 @@ function loadImageWithFallback(imgEl, originalPath) {
     return;
   }
 
-  const base = originalPath.replace(/\.(png|jpe?g)$/i, '');
   const exts = ['png', 'jpg', 'jpeg', 'JPG'];
-  let index = 0;
+  const base = originalPath.replace(/\.(png|jpe?g)$/i, '');
+  let index = -1;
 
   imgEl.onerror = () => {
     index++;
@@ -93,15 +93,16 @@ function loadImageWithFallback(imgEl, originalPath) {
     }
   };
 
-  imgEl.src = `${base}.${exts[index]}`;
+  // ✅ まず「そのままのパス」を試す
+  imgEl.src = originalPath;
 }
 
 function preloadImage(path) {
   if (!path) return;
 
-  const base = path.replace(/\.(png|jpe?g)$/i, '');
   const exts = ['png', 'jpg', 'jpeg', 'JPG'];
-  let index = 0;
+  const base = path.replace(/\.(png|jpe?g)$/i, '');
+  let index = -1;
 
   const img = new Image();
   img.onerror = () => {
@@ -110,7 +111,8 @@ function preloadImage(path) {
       img.src = `${base}.${exts[index]}`;
     }
   };
-  img.src = `${base}.${exts[index]}`;
+
+  img.src = path;
 }
 
 /* ================= Path生成 ================= */
