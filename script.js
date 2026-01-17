@@ -62,44 +62,33 @@ function getAttrIcon(attr) {
   return '';
 }
 
-fetch('./characters.json')   // ← パス一覧JSON
-  .then(res => res.json())
-  .then(async data => {
-    const fileList = data.files;
-
-    const results = await Promise.all(
-      fileList.map(path => fetch(path).then(r => r.json()))
-    );
-
-    characters = results.flat();   // 全部まとめる
-    render(characters);
-  });
-
 function getTypeIcon(desc) {
   if (!desc) return '';
-  return desc.includes('回復')
-    ? 'image/heal.png'
-    : 'image/attack.png';
+  return desc.includes('回復') ? 'image/heal.png' : 'image/attack.png';
 }
 
-/* =========================
-   拡張子完全対応版
-   .png / .jpg / .JPG / .jpeg
-========================= */
+/* 拡張子対応版 */
 function createImagePaths(iconPath) {
   if (!iconPath) return { defaultImage: '', groovyImage: '' };
 
-  // /icon/ を削除
   const defaultImage = iconPath.replace('/icon/', '/');
-
-  // 拡張子を取得（png / jpg / jpeg 大文字小文字OK）
-  const groovyImage = defaultImage.replace(
-    /\.(png|jpe?g)$/i,
-    '_G.$1'
-  );
+  const groovyImage = defaultImage.replace(/\.(png|jpe?g)$/i, '_G.$1');
 
   return { defaultImage, groovyImage };
 }
+
+function preloadImage(src) {
+  if (!src) return;
+  const img = new Image();
+  img.src = src;
+}
+
+fetch('./characters.json')
+  .then(res => res.json())
+  .then(data => {
+    characters = data;
+    render(data);
+  });
 
 function render(list) {
   currentList = list;
@@ -115,33 +104,35 @@ function render(list) {
     preloadImage(c.defaultImage);
     preloadImage(c.groovyImage);
 
-    body.innerHTML += `
-      <tr onclick='openDetail(${JSON.stringify(c)}, this)'>
-        <td>
-          <div class="name-cell">
-            <img src="${c.icon}">
-            <span>${c.name}</span>
-            <span class="detail-arrow">▶</span>
-          </div>
-        </td>
-        <td>${c.hp ?? '-'}</td>
-        <td>${c.atk ?? '-'}</td>
-        <td>${c.mg1 ? `<img src="${getAttrIcon(c.mg1)}">` : ''}</td>
-        <td>${c.mg2 ? `<img src="${getAttrIcon(c.mg2)}">` : ''}</td>
-        <td>${c.mg3 ? `<img src="${getAttrIcon(c.mg3)}">` : ''}</td>
-      </tr>
+    // Table row
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>
+        <div class="name-cell">
+          <img src="${c.icon}">
+          <span>${c.name}</span>
+          <span class="detail-arrow">▶</span>
+        </div>
+      </td>
+      <td>${c.hp ?? '-'}</td>
+      <td>${c.atk ?? '-'}</td>
+      <td>${c.mg1 ? `<img src="${getAttrIcon(c.mg1)}">` : ''}</td>
+      <td>${c.mg2 ? `<img src="${getAttrIcon(c.mg2)}">` : ''}</td>
+      <td>${c.mg3 ? `<img src="${getAttrIcon(c.mg3)}">` : ''}</td>
     `;
+    tr.addEventListener('click', () => openDetail(c, tr));
+    body.appendChild(tr);
 
-    iconGrid.innerHTML += `
-      <div class="icon-item" onclick='openDetail(${JSON.stringify(c)})'>
-        <img src="${c.icon}">
-        <div>${c.name}</div>
-      </div>
-    `;
+    // Icon grid
+    const div = document.createElement('div');
+    div.className = 'icon-item';
+    div.innerHTML = `<img src="${c.icon}"><div>${c.name}</div>`;
+    div.addEventListener('click', () => openDetail(c));
+    iconGrid.appendChild(div);
   });
 }
 
-/* ===== ON/OFF ===== */
+/* ON/OFF トグル */
 toggleBtn.onclick = () => {
   statusOn = !statusOn;
   listSection.style.display = statusOn ? 'block' : 'none';
@@ -149,7 +140,7 @@ toggleBtn.onclick = () => {
   toggleBtn.textContent = statusOn ? 'ステータス表示：ON' : 'ステータス表示：OFF';
 };
 
-/* ===== ソート ===== */
+/* ソート */
 sortHpBtn.onclick = () => {
   hpAsc = !hpAsc;
   atkAsc = false;
@@ -161,9 +152,7 @@ sortHpBtn.onclick = () => {
   sortAtkBtn.classList.remove('active');
   resetBtn.classList.remove('active');
 
-  render([...currentList].sort((a,b)=>
-    hpAsc ? (a.hp??0)-(b.hp??0) : (b.hp??0)-(a.hp??0)
-  ));
+  render([...currentList].sort((a,b)=> hpAsc ? (a.hp??0)-(b.hp??0) : (b.hp??0)-(a.hp??0)));
 };
 
 sortAtkBtn.onclick = () => {
@@ -177,9 +166,7 @@ sortAtkBtn.onclick = () => {
   sortHpBtn.classList.remove('active');
   resetBtn.classList.remove('active');
 
-  render([...currentList].sort((a,b)=>
-    atkAsc ? (a.atk??0)-(b.atk??0) : (b.atk??0)-(a.atk??0)
-  ));
+  render([...currentList].sort((a,b)=> atkAsc ? (a.atk??0)-(b.atk??0) : (b.atk??0)-(a.atk??0)));
 };
 
 resetBtn.onclick = () => {
@@ -196,16 +183,14 @@ resetBtn.onclick = () => {
   render(characters);
 };
 
-/* ===== 検索 ===== */
+/* 検索 */
 searchInput.oninput = () => {
   render(characters.filter(c => c.name.includes(searchInput.value)));
 };
 
-/* ===== モーダル ===== */
+/* モーダル */
 function openDetail(c, el) {
-  document.querySelectorAll('#character-table-body tr')
-    .forEach(tr => tr.classList.remove('clicked'));
-
+  document.querySelectorAll('#character-table-body tr').forEach(tr => tr.classList.remove('clicked'));
   if (el) el.classList.add('clicked');
 
   preloadImage(c.defaultImage);
@@ -251,7 +236,6 @@ function setupMagic(attr, name, desc, attrEl, typeEl, nameEl, descEl, rowEl) {
     rowEl.style.display = 'none';
     return;
   }
-
   rowEl.style.display = '';
   attrEl.src = getAttrIcon(attr);
   typeEl.src = getTypeIcon(desc);
@@ -259,10 +243,4 @@ function setupMagic(attr, name, desc, attrEl, typeEl, nameEl, descEl, rowEl) {
   descEl.textContent = desc || '';
 }
 
-function preloadImage(src) {
-  if (!src) return;
-  const img = new Image();
-  img.src = src;
-}
-
-closeModal.onclick = () => overlay.style.display = 'none';
+closeModal.onclick = () => overlay.style.display = 'none'; // モーダルを閉じる
