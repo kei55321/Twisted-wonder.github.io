@@ -62,11 +62,17 @@ function getAttrIcon(attr) {
   return '';
 }
 
-fetch('./characters.json')
+fetch('./characters.json')   // ← パス一覧JSON
   .then(res => res.json())
-  .then(data => {
-    characters = data;
-    render(data);
+  .then(async data => {
+    const fileList = data.files;
+
+    const results = await Promise.all(
+      fileList.map(path => fetch(path).then(r => r.json()))
+    );
+
+    characters = results.flat();   // 全部まとめる
+    render(characters);
   });
 
 function getTypeIcon(desc) {
