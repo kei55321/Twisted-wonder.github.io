@@ -93,8 +93,9 @@ Promise.all(
     fetch(path).then(res => res.json())
   )
 ).then(results => {
-  // results は [json1, json2, json3] の配列
-  characters = results.flat(); // 全部1つの配列に結合
+  characters = results.flatMap(data =>
+    Array.isArray(data) ? data : [data]
+  );
   render(characters);
 });
 
