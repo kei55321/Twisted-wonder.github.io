@@ -83,12 +83,20 @@ function preloadImage(src) {
   img.src = src;
 }
 
-fetch('./characters.json')
-  .then(res => res.json())
-  .then(data => {
-    characters = data;
-    render(data);
-  });
+const jsonFiles = [
+  './data/Riddle.json',
+  './data/Ace.json'
+];
+
+Promise.all(
+  jsonFiles.map(path =>
+    fetch(path).then(res => res.json())
+  )
+).then(results => {
+  // results は [json1, json2, json3] の配列
+  characters = results.flat(); // 全部1つの配列に結合
+  render(characters);
+});
 
 function render(list) {
   currentList = list;
