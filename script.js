@@ -90,13 +90,18 @@ const jsonFiles = [
 
 Promise.all(
   jsonFiles.map(path =>
-    fetch(path).then(res => res.json())
+    fetch(path).then(res => {
+      if (!res.ok) throw new Error(path + ' 読み込み失敗');
+      return res.json();
+    })
   )
 ).then(results => {
   characters = results.flatMap(data =>
     Array.isArray(data) ? data : [data]
   );
   render(characters);
+}).catch(err => {
+  console.error('JSON読み込みエラー:', err);
 });
 
 function render(list) {
