@@ -1,6 +1,6 @@
 [
   {
-    "icon": "image/01_Heartslabyul/Ace/icon/制服.jpg",
+    "icon": "image/01_Heartslabyul/Ace/icon/制服.JPG",
     "rarity": "R",
     "genre": "バランス",
     "name": "エース（R/制服）",
@@ -20,7 +20,7 @@
     "buddy3_bonus": ""
   },
   {
-    "icon": "image/01_Heartslabyul/Ace/icon/運動着.jpg",
+    "icon": "image/01_Heartslabyul/Ace/icon/運動着.JPG",
     "rarity": "R",
     "genre": "ディフェンス",
     "name": "エース（R/運動着）",
@@ -40,7 +40,7 @@
     "buddy3_bonus": ""
   },
   {
-    "icon": "image/01_Heartslabyul/Ace/icon/リュクスクチュール.jpg",
+    "icon": "image/01_Heartslabyul/Ace/icon/リュクスクチュール.JPG",
     "rarity": "R",
     "genre": "バランス",
     "name": "エース（R/リュクスクチュール）",
@@ -60,7 +60,7 @@
     "buddy3_bonus": ""
   },
 {
-    "icon": "image/01_Heartslabyul/Ace/icon/ツムステ.jpg",
+    "icon": "image/01_Heartslabyul/Ace/icon/ツムステ.JPG",
     "rarity": "R",
     "genre": "アタック",
     "name": "エース（R/ツムステ）",
@@ -80,7 +80,7 @@
     "buddy3_bonus": ""
   },
   {
-    "icon": "image/01_Heartslabyul/Ace/icon/ナイトメアークーリエ.jpg",
+    "icon": "image/01_Heartslabyul/Ace/icon/ナイトメアークーリエ.JPG",
     "rarity": "R",
     "genre": "バランス",
     "name": "エース（R/ナイトメアークーリエ）",
@@ -100,7 +100,7 @@
     "buddy3_bonus": ""
   },
   {
-    "icon": "image/01_Heartslabyul/Ace/icon/実験着.jpg",
+    "icon": "image/01_Heartslabyul/Ace/icon/実験着.JPG",
     "rarity": "SR",
     "genre": "ディフェンス",
     "name": "エース（SR/実験着）",
@@ -120,7 +120,7 @@
     "buddy3_bonus": ""
   },
   {
-    "icon": "image/01_Heartslabyul/Ace/icon/式典服.jpg",
+    "icon": "image/01_Heartslabyul/Ace/icon/式典服.JPG",
     "rarity": "SR",
     "genre": "アタック",
     "name": "エース（SR/式典服）",
@@ -140,7 +140,7 @@
     "buddy3_bonus": ""
   },
   {
-    "icon": "image/01_Heartslabyul/Ace/icon/見習いシェフ.jpg",
+    "icon": "image/01_Heartslabyul/Ace/icon/見習いシェフ.JPG",
     "rarity": "SR",
     "genre": "バランス",
     "name": "エース（SR/見習いシェフ）",
@@ -160,7 +160,7 @@
     "buddy3_bonus": ""
   },
   {
-    "icon": "image/01_Heartslabyul/Ace/icon/スイスイ・ウェア.jpg",
+    "icon": "image/01_Heartslabyul/Ace/icon/スイスイ・ウェア.JPG",
     "rarity": "SR",
     "genre": "ディフェンス",
     "name": "エース（SR/スイスイ・ウェア）",
@@ -180,7 +180,7 @@
     "buddy3_bonus": ""
   },
   {
-    "icon": "image/01_Heartslabyul/Ace/icon/寮服.jpg",
+    "icon": "image/01_Heartslabyul/Ace/icon/寮服.JPG",
     "rarity": "SSR",
     "genre": "アタック",
     "name": "エース（SSR/寮服）",
@@ -200,7 +200,7 @@
     "buddy3_bonus": "自身のHPを増加(小)"
   },
   {
-    "icon": "image/01_Heartslabyul/Ace/icon/新春の衣.jpg",
+    "icon": "image/01_Heartslabyul/Ace/icon/新春の衣.JPG",
     "rarity": "SSR",
     "genre": "アタック",
     "name": "エース（SSR/新春の衣）",
@@ -220,7 +220,7 @@
     "buddy3_bonus": "自身のATKを増加(小)"
   },
   {
-    "icon": "image/01_Heartslabyul/Ace/icon/なりきり花婿.jpg",
+    "icon": "image/01_Heartslabyul/Ace/icon/なりきり花婿.JPG",
     "rarity": "SSR",
     "genre": "アタック",
     "name": "エース（SSR/なりきり花婿）",
@@ -240,7 +240,7 @@
     "buddy3_bonus": "自身のHPを増加(小)"
   },
   {
-    "icon": "image/01_Heartslabyul/Ace/icon/ラ・ボンボニエール.jpg",
+    "icon": "image/01_Heartslabyul/Ace/icon/ラ・ボンボニエール.JPG",
     "rarity": "SSR",
     "genre": "ディフェンス",
     "name": "エース（SSR/ラ・ボンボニエール）",
@@ -260,7 +260,7 @@
     "buddy3_bonus": "自身のATKを増加(小)"
   },
   {
-    "icon": "image/01_Heartslabyul/Ace/icon/ガラ・クチュール.jpg",
+    "icon": "image/01_Heartslabyul/Ace/icon/ガラ・クチュール.JPG",
     "rarity": "SR",
     "genre": "アタック",
     "name": "エース（SR/ガラ・クチュール）",
@@ -280,7 +280,7 @@
     "buddy3_bonus": ""
   },
   {
-    "icon": "image/01_Heartslabyul/Ace/icon/スケアリー・ドレス.jpg",
+    "icon": "image/01_Heartslabyul/Ace/icon/スケアリー・ドレス.JPG",
     "rarity": "SR",
     "genre": "バランス",
     "name": "エース（SR/スケアリー・ドレス）",
@@ -300,7 +300,7 @@
     "buddy3_bonus": ""
   },
   {
-    "icon": "image/01_Heartslabyul/Ace/icon/おめかしバースデー.jpg",
+    "icon": "image/01_Heartslabyul/Ace/icon/おめかしバースデー.JPG",
     "rarity": "SSR",
     "genre": "ディフェンス",
     "name": "エース（SSR/おめかしバースデー）",
@@ -320,7 +320,7 @@
     "buddy3_bonus": "自身のHPを増加(中)"
   },
   {
-    "icon": "image/01_Heartslabyul/Ace/icon/ユニオンバースデー.jpg",
+    "icon": "image/01_Heartslabyul/Ace/icon/ユニオンバースデー.JPG",
     "rarity": "SSR",
     "genre": "バランス",
     "name": "エース（SSR/ユニオンバースデー）",
@@ -340,7 +340,7 @@
     "buddy3_bonus": "自身のHPを増加(小)"
   },
   {
-    "icon": "image/01_Heartslabyul/Ace/icon/ブルームバースデー.jpg",
+    "icon": "image/01_Heartslabyul/Ace/icon/ブルームバースデー.JPG",
     "rarity": "SSR",
     "genre": "バランス",
     "name": "エース（SSR/ブルームバースデー）",
@@ -360,7 +360,7 @@
     "buddy3_bonus": "自身のHPを増加(中)"
   },
   {
-    "icon": "image/01_Heartslabyul/Ace/icon/クラブ・ウェア.jpg",
+    "icon": "image/01_Heartslabyul/Ace/icon/クラブ・ウェア.JPG",
     "rarity": "SSR",
     "genre": "アタック",
     "name": "エース（SSR/クラブ・ウェア）",
@@ -380,7 +380,7 @@
     "buddy3_bonus": "自身のATKを増加(小)"
   },
   {
-    "icon": "image/01_Heartslabyul/Ace/icon/プラチナジャケット.jpg",
+    "icon": "image/01_Heartslabyul/Ace/icon/プラチナジャケット.JPG",
     "rarity": "SSR",
     "genre": "ディフェンス",
     "name": "エース（SSR/プラチナジャケット）",
@@ -400,7 +400,7 @@
     "buddy3_bonus": "自身のATKとHPを増加(小)"
   },
   {
-    "icon": "image/01_Heartslabyul/Ace/icon/プレイフル・ドレス.jpg",
+    "icon": "image/01_Heartslabyul/Ace/icon/プレイフル・ドレス.JPG",
     "rarity": "SSR",
     "genre": "バランス",
     "name": "エース（SSR/プレイフル・ドレス）",
@@ -420,7 +420,7 @@
     "buddy3_bonus": "自身のHPを増加(小)"
   },
   {
-    "icon": "image/01_Heartslabyul/Ace/icon/くつろぎマイルーム.jpg",
+    "icon": "image/01_Heartslabyul/Ace/icon/くつろぎマイルーム.JPG",
     "rarity": "SSR",
     "genre": "バランス",
     "name": "エース（SSR/くつろぎマイルーム）",
