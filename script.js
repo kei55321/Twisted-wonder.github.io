@@ -84,8 +84,8 @@ function preloadImage(src) {
 }
 
 const jsonFiles = [
-  './data/Riddle.json',
-  './data/Ace.json'
+  './data/01_Heartslabyul/Riddle.json',
+  './data/01_Heartslabyul/Ace.json'
 ];
 
 Promise.all(
