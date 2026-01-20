@@ -2,6 +2,10 @@ body {
   color: #4a3b1a;
 }
 
+.magic-type-icon {
+  margin-left: -6px; /* 数値は好みで調整 */
+}
+
 .stat-row {
   display: grid;
   grid-template-columns: 80px auto; /* ← ラベル幅固定 */
