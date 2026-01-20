@@ -3,7 +3,8 @@ body {
 }
 
 .magic-type-icon {
-  margin-left: -6px; /* 数値は好みで調整 */
+  position: relative;
+  left: -6px;
 }
 
 .stat-row {
