@@ -1,7 +1,9 @@
 body {
   color: #4a3b1a;
 }
-
+.magic-type-icon {
+  outline: 2px solid red;
+}
 .magic-type-icon {
   position: relative !important;
   left: -12px;
