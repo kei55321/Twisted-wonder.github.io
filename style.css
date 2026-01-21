@@ -3,7 +3,7 @@ body {
 }
 
 .magic-type-icon {
-  position: relative;
+  position: relative !important;
   left: -12px;
 }
 
