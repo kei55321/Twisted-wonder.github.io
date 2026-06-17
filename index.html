@@ -16,6 +16,95 @@
 <button id="toggleBtn">ステータス表示：ON</button>
 <input id="searchInput" placeholder="キャラ名で検索">
 
+<button id="openFilterBtn">ソート＆フィルタ 🔍</button>
+
+<div id="filter-overlay">
+  <div id="filter-modal">
+    <div class="filter-header">
+      <span>ソート＆フィルタ</span>
+      <span id="closeFilterModal" class="filter-close-btn">&times;</span>
+    </div>
+
+    <div class="filter-subheader">
+      <span class="filter-notice">選択した項目のみ表示します</span>
+      <div class="filter-tabs">
+        <button class="tab-btn">ソート</button>
+        <button class="tab-btn active">フィルタ</button>
+      </div>
+    </div>
+
+ <div class="filter-body">
+      
+      <div class="filter-section">
+        <h4>レアリティ</h4>
+        <div class="filter-options">
+          <button id="filterAllBtn" class="filter-opt-btn active"><span class="radio-circle"></span>すべて</button>
+          <button id="filterRBtn" class="filter-opt-btn"><span class="radio-circle"></span>R</button>
+          <button id="filterSrBtn" class="filter-opt-btn"><span class="radio-circle"></span>SR</button>
+          <button id="filterSsrBtn" class="filter-opt-btn"><span class="radio-circle"></span>SSR</button>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <h4>魔法属性</h4>
+        <div class="filter-options grid-options">
+          <button id="attrAllBtn" class="filter-opt-btn active"><span class="radio-circle"></span>すべて</button>
+          <button id="attrFireBtn" class="filter-opt-btn"><span class="radio-circle"></span><img src="image/Element/Fire.png" class="filter-icon">火属性</button>
+          <button id="attrWaterBtn" class="filter-opt-btn"><span class="radio-circle"></span><img src="image/Element/Water.png" class="filter-icon">水属性</button>
+          <button id="attrLeafBtn" class="filter-opt-btn"><span class="radio-circle"></span><img src="image/Element/Leaf.png" class="filter-icon">木属性</button>
+          <button id="attrZeroBtn" class="filter-opt-btn"><span class="radio-circle"></span><img src="image/Element/ZERO.png" class="filter-icon">無属性</button>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <h4>タイプ</h4>
+        <div class="filter-options">
+          <button id="typeAllBtn" class="filter-opt-btn active"><span class="radio-circle"></span>すべて</button>
+          <button id="typeBalanceBtn" class="filter-opt-btn"><span class="radio-circle"></span>バランス</button>
+          <button id="typeDefenseBtn" class="filter-opt-btn"><span class="radio-circle"></span>ディフェンス</button>
+          <button id="typeAttackBtn" class="filter-opt-btn"><span class="radio-circle"></span>アタック</button>
+        </div>
+      </div>
+
+<div class="filter-section">
+        <h4>魔法効果</h4>
+        <div class="effect-grid-options">
+          <button id="effectAllBtn" class="filter-opt-btn active"><span class="radio-circle"></span>すべて</button>
+          
+          <button class="filter-opt-btn effect-btn" data-effect="ATK UP"><span class="radio-circle"></span>ATK UP</button>
+          <button class="filter-opt-btn effect-btn" data-effect="ダメージUP"><span class="radio-circle"></span>ダメージUP</button>
+          
+          <button class="filter-opt-btn effect-btn" data-effect="属性ダメージUP"><span class="radio-circle"></span>属性ダメージUP</button>
+          <button class="filter-opt-btn effect-btn" data-effect="ATK DOWN"><span class="radio-circle"></span>ATK DOWN</button>
+          <button class="filter-opt-btn effect-btn" data-effect="ダメージDOWN"><span class="radio-circle"></span>ダメージDOWN</button>
+          
+          <button class="filter-opt-btn effect-btn" data-effect="属性ダメージDOWN"><span class="radio-circle"></span>属性ダメージDOWN</button>
+          <button class="filter-opt-btn effect-btn" data-effect="被ダメージUP"><span class="radio-circle"></span>被ダメージUP</button>
+          <button class="filter-opt-btn effect-btn" data-effect="被ダメージDOWN"><span class="radio-circle"></span>被ダメージDOWN</button>
+          
+          <button class="filter-opt-btn effect-btn" data-effect="クリティカル"><span class="radio-circle"></span>クリティカル</button>
+          <button class="filter-opt-btn effect-btn" data-effect="HP回復"><span class="radio-circle"></span>HP回復</button>
+          <button class="filter-opt-btn effect-btn" data-effect="HP継続回復"><span class="radio-circle"></span>HP継続回復</button>
+          
+          <button class="filter-opt-btn effect-btn" data-effect="デバフ解除"><span class="radio-circle"></span>デバフ解除</button>
+          <button class="filter-opt-btn effect-btn" data-effect="呪い無効"><span class="radio-circle"></span>呪い無効</button>
+          <button class="filter-opt-btn effect-btn" data-effect="暗闇無効"><span class="radio-circle"></span>暗闇無効</button>
+          
+          <button class="filter-opt-btn effect-btn" data-effect="凍結無効"><span class="radio-circle"></span>凍結無効</button>
+          <button class="filter-opt-btn effect-btn" data-effect="呪い"><span class="radio-circle"></span>呪い</button>
+          <button class="filter-opt-btn effect-btn" data-effect="暗闇"><span class="radio-circle"></span>暗闇</button>
+          
+          <button class="filter-opt-btn effect-btn" data-effect="凍結"><span class="radio-circle"></span>凍結</button>
+          <button class="filter-opt-btn effect-btn" data-effect="回避"><span class="radio-circle"></span>回避</button>
+        </div>
+      </div>
+
+    </div>
+
+    </div>
+  </div>
+</div>
+
 <div>
   <button id="sortHpBtn">HP ↓</button>
   <button id="sortAtkBtn">ATK ↓</button>
@@ -43,7 +132,6 @@
 
 <footer>© 非公式ファンサイト</footer>
 
-<!-- ===== モーダル ===== -->
 <div id="overlay">
   <div id="detail-modal">
     <div class="detail-header">
@@ -72,7 +160,6 @@
       </div>
     </div>
 
-    <!-- ===== MAGIC ===== -->
     <div class="section">
       <h3>MAGIC</h3>
 
@@ -104,23 +191,30 @@
       </div>
     </div>
 
-    <!-- ===== BUDDY ===== -->
-    <div class="section">
+<div class="section">
       <h3>BUDDY</h3>
 
       <div class="buddy-row">
-        <strong id="buddy1"></strong>
-        <div id="buddy1Bonus"></div>
+        <img id="buddy1Img" class="buddy-icon" src="" alt="">
+        <div class="buddy-info">
+          <strong id="buddy1"></strong>
+          <div id="buddy1Bonus"></div>
+        </div>
       </div>
 
       <div class="buddy-row">
-        <strong id="buddy2"></strong>
-        <div id="buddy2Bonus"></div>
+        <img id="buddy2Img" class="buddy-icon" src="" alt="">
+        <div class="buddy-info">
+          <strong id="buddy2"></strong>
+          <div id="buddy2Bonus"></div>
+        </div>
       </div>
 
       <div class="buddy-row">
-        <strong id="buddy3"></strong>
-        <div id="buddy3Bonus"></div>
+        <img id="buddy3Img" class="buddy-icon" src="" alt="">
+        <div class="buddy-info">
+          <strong id="buddy3"></strong>
+          <div id="buddy3Bonus"></div>        </div>
       </div>
     </div>
 

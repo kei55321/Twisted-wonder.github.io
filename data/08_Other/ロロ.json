@@ -1,0 +1,28 @@
+﻿[
+  {
+    "icon": "image/08_Other/ロロ/icon/会長服.JPG",
+    "rarity": "SSR",
+    "genre": "アタック",
+    "minHP": "2264",
+    "minATK": "1402",
+    "maxHP": "10912",
+    "maxATK": "7262",
+    "mg1": "火",
+    "mg2": "火",
+    "mg3": "火",
+    "mg1name": "フレイムブラスト",
+    "mg2name": "フレイムブラスト[II]",
+    "mg3name": "ファイアショット[II]",
+    "mg1_description": "火属性ダメージ(強)＆ATK UP（大）",
+    "mg2_description": "2連撃の火属性ダメージ(強)＆[DUO]グリムと一緒に選択したとき3連撃に強化",
+    "mg3_description": "2連撃の火属性ダメージ(弱)＆火属性ダメージUP（極大）",
+    "buddy1": "マレウス",
+    "buddy_bonus1": "ATK UP(小)＆HP UP(小)",
+    "buddy2": "アズール",
+    "buddy_bonus2": "HP UP(小)",
+    "buddy3": "イデア",
+    "buddy_bonus3": "HP UP(小)",
+    "buddyEx": "マレウス",
+    "buddy_bonusEx": "凍結無効"
+  }
+]

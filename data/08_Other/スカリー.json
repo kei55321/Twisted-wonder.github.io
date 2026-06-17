@@ -1,0 +1,28 @@
+﻿[
+  {
+    "icon": "image/08_Other/スカリー/icon/ナイトメアースーツ.JPG",
+    "rarity": "SSR",
+    "genre": "ディフェンス",
+    "minHP": "2905",
+    "minATK": "1133",
+    "maxHP": "15047",
+    "maxATK": "5461",
+    "mg1": "無",
+    "mg2": "無",
+    "mg3": "火",
+    "mg1name": "ゼロレイ",
+    "mg2name": "ゼロレイ[II]",
+    "mg3name": "ファイアショット[II]",
+    "mg1_description": "無属性ダメージ(強)＆暗闇（中）",
+    "mg2_description": "2連撃の無属性ダメージ(強)＆[DUO]グリムと一緒に選択したとき3連撃に強化",
+    "mg3_description": "2連撃の火属性ダメージ(弱)＆HP回復（小）＆ATK UP（小）",
+    "buddy1": "レオナ",
+    "buddy_bonus1": "ATK UP(小)",
+    "buddy2": "セベク",
+    "buddy_bonus2": "HP UP(中)",
+    "buddy3": "ジャミル",
+    "buddy_bonus3": "HP UP(小)",
+    "buddyEx": "セベク",
+    "buddy_bonusEx": "無属性被ダメージDOWN（大）"
+  }
+]

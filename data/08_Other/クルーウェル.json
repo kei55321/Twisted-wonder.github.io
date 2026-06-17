@@ -1,0 +1,28 @@
+﻿[
+  {
+    "icon": "image/08_Other/クルーウェル/icon/リッチファーコート.JPG",
+    "rarity": "SSR",
+    "genre": "アタック",
+    "minHP": "2376",
+    "minATK": "1551",
+    "maxHP": "10596",
+    "maxATK": "8592",
+    "mg1": "水",
+    "mg2": "木",
+    "mg3": "火",
+    "mg1name": "アクアウェーブ[II]",
+    "mg2name": "フォレストストライク[II]",
+    "mg3name": "ファイアショット[II]",
+    "mg1_description": "2連撃の水属性ダメージ(強)",
+    "mg2_description": "2連撃の木属性ダメージ(強)＆[DUO]クロウリーと一緒に選択したとき3連撃に強化",
+    "mg3_description": "2連撃の火属性ダメージ(弱)＆クリティカル（中/味方選択/3T）",
+    "buddy1": "クロウリー",
+    "buddy_bonus1": "ATK UP(小)＆HP UP(小)",
+    "buddy2": "ルーク",
+    "buddy_bonus2": "HP UP(小)",
+    "buddy3": "シルバー",
+    "buddy_bonus3": "HP UP(小)",
+    "buddyEx": "クロウリー",
+    "buddy_bonusEx": "凍結無効"
+  }
+]

@@ -1,101 +1,8 @@
-body {
-  color: #4a3b1a;
-}
-
-.stat-row {
-  display: grid;
-  grid-template-columns: 80px auto; /* ← ラベル幅固定 */
-  gap: 16px;
-}
-
-.stat-label {
-  color: #c02bbf;   /* ← 数値と同じ紫 */
-  font-weight: bold;
-}
-
-.stat-value {
-  color: #4a3b1a;
-  font-weight: bold;
-}
-
-.magic-head {
-  margin-top: 4px;
-}
-
-.buddy-row {
-  margin-top: 4px;
-}
-
-.magic-head {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.magic-head img {
-  width: 24px;
-  height: 24px;
-}
-
-.magic-head span {
-  font-weight: bold;
-  font-size: 13px;
-}
-
-/* 名前ヘッダーだけ中央揃え */
-th:first-child {
-  width: 1%;
-  white-space: nowrap;
-  text-align: center;
-}
-
-/* 名前セルは左揃えのまま */
-td:first-child {
-  width: 1%;
-  white-space: nowrap;
-  text-align: left;
-}
-
-.name-cell {
-  display: inline-flex;   /* ← オートサイズに戻す */
-  align-items: center;
-  gap: 8px;
-  white-space: nowrap;
-}
-
-.detail-arrow {
-  margin-left: 6px;       /* 名前のすぐ右 */
-  color: #aaa;
-}
-
-tbody tr:hover .detail-arrow {
-  color: #4a3b1a;
-}
-
-tbody tr {
-  cursor: pointer;
-  transition: background 0.15s ease;
-}
-
-/* hover */
-tbody tr:hover {
-  background: #f1ece2;
-}
-
-/* 押している間 */
-tbody tr:active {
-  background: #d8c8a0;
-}
-
-/* 押したあと一瞬残る */
-tbody tr.clicked {
-  background: #d8c8a0;
-}
-
-
+/* ===== 全体設定 ===== */
 body {
   margin: 0;
   background: #e3dfd4;
+  color: #4a3b1a;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -106,8 +13,11 @@ header, footer {
   padding: 14px;
 }
 
-main { padding: 12px; }
+main { 
+  padding: 12px; 
+}
 
+/* ===== 共通コンポーネント ===== */
 button {
   padding: 6px 12px;
   margin: 4px;
@@ -126,17 +36,18 @@ input {
   margin: 10px 0;
 }
 
-/* ===== 一覧 ===== */
+/* ===== 一覧テーブル ===== */
 .table-scroll {
   background: #fff;
   border-radius: 10px;
   border: 1px solid #ccc;
-  overflow-x: auto;
+  overflow-x: auto; /* 横スクロールを可能にする */
+  -webkit-overflow-scrolling: touch;
 }
 
 table {
   width: 100%;
-  min-width: 720px;
+  min-width: 960px; /* 余裕を持たせる */
   border-collapse: collapse;
 }
 
@@ -147,9 +58,22 @@ th, td {
   text-align: center;
 }
 
-/* ===== 名前列：左寄せ＆オートサイズ ===== */
+/* 1列目（名前）の設定 */
+th:first-child, td:first-child {
+  width: 15%;
+  white-space: nowrap;
+}
 
+td:first-child {
+  text-align: left;
+}
 
+.name-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
 
 .name-cell img {
   width: 42px;
@@ -157,26 +81,46 @@ th, td {
   border-radius: 6px;
 }
 
-/* ===== Magic属性アイコンだけ小さく（安全） ===== */
+.detail-arrow {
+  margin-left: 6px;
+  color: #aaa;
+}
+
+tbody tr {
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+tbody tr:hover {
+  background: #f1ece2;
+}
+
+tbody tr:hover .detail-arrow {
+  color: #4a3b1a;
+}
+
+tbody tr:active,
+tbody tr.clicked {
+  background: #d8c8a0;
+}
+
+/* 4・5・6列目（Magic1〜3）の幅設定とアイコンサイズ固定 */
+th:nth-child(4), th:nth-child(5), th:nth-child(6),
+td:nth-child(4), td:nth-child(5), td:nth-child(6) {
+  width: 22%;
+}
+
+/* 一覧内の技アイコンが大きく引き伸ばされるのを防ぐ修正 */
 td:nth-child(4) img,
 td:nth-child(5) img,
 td:nth-child(6) img {
-  width: 25px;
-  height: 25px;
+  width: 24px !important;
+  height: 24px !important;
+  object-fit: contain;
+  vertical-align: middle;
 }
 
-/* ===== Magic列もオートサイズ ===== */
-th:nth-child(4),
-th:nth-child(5),
-th:nth-child(6),
-td:nth-child(4),
-td:nth-child(5),
-td:nth-child(6) {
-  width: 1%;
-  white-space: nowrap;
-}
-
-/* ===== アイコンのみ ===== */
+/* ===== アイコンのみ表示モード ===== */
 #icon-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -196,24 +140,13 @@ td:nth-child(6) {
   height: 64px;
 }
 
-/* ===== モーダル ===== */
+/* ===== 詳細モーダル ===== */
 #overlay {
   display: none;
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.6);
   z-index: 999;
-}
-
-#detailImage {
-  width: 100%;
-  max-height: 70vh;
-
-  aspect-ratio: 16 / 9;
-  object-fit: contain;
-
-  background: #000;   /* 黒帯になっても違和感なし */
-  border-radius: 6px;
 }
 
 #detail-modal {
@@ -253,18 +186,21 @@ td:nth-child(6) {
   border: 1px solid #bbb;
 }
 
+#detailImage {
+  width: 100%;
+  max-height: 70vh;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  background: #000;
+  border-radius: 6px;
+}
+
 .groovy-btn {
   width: 100%;
   margin-top: 6px;
 }
 
-/* ===== モーダル内 MAGIC 属性アイコンサイズ ===== */
-#detail-modal .section img {
-  width: 25px;
-  height: 25px;
-}
-
-/* ===== セクション ===== */
+/* モーダル内セクション基本設定 */
 .section {
   margin: 14px;
   border-top: 2px solid #c9b37e;
@@ -280,13 +216,265 @@ td:nth-child(6) {
   padding: 4px 8px;
 }
 
+/* モーダル内 MAGIC 属性アイコンサイズ */
+#detail-modal .section img {
+  width: 25px;
+  height: 25px;
+}
+
+/* ステータス関連 */
+.stat-row {
+  display: grid;
+  grid-template-columns: 80px auto;
+  gap: 16px;
+}
+
+.stat-label {
+  color: #c02bbf;
+  font-weight: bold;
+}
+
+.stat-value {
+  color: #4a3b1a;
+  font-weight: bold;
+}
+
+/* 魔法ヘッダー・各アイコン個別サイズ調整 */
+.magic-head {
+  display: flex;
+  align-items: center;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+  justify-content: flex-start;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.magic-head img {
+  width: 20px;
+  height: 20px;
+}
+
+#m1Type, #m2Type, #m3Type {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.magic-head span {
+  font-weight: bold;
+  font-size: 13px;
+}
+
 .desc {
   font-size: 12px;
   margin-bottom: 8px;
 }
 
-.buddy-row { margin-bottom: 8px; }
+/* ------ バディセクションのレイアウト調整 ------------------ */
+.buddy-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+  background: #fff;
+  padding: 10px;
+  border-radius: 4px;
+}
 
+/* バディアイコンの見た目 */
+.buddy-icon {
+  width: 50px !important;
+  height: 50px !important;
+  object-fit: cover;
+  border: 2px solid #333; /* 黒い縁取り */
+  background-color: #eee;
+}
+
+/* テキストエリア */
+.buddy-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.buddy-info strong {
+  font-size: 16px;
+  color: #333;
+}
+
+.buddy-info div {
+  font-size: 14px;
+  color: #666;
+}
+
+/* レスポンシブ */
 @media (max-width: 600px) {
-  .detail-body { grid-template-columns: 1fr; }
+  .detail-body { 
+    grid-template-columns: 1fr; 
+  }
+}
+
+/* ===== 新設：フィルタモーダル専用スタイル ===== */
+#filter-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+}
+
+#filter-modal {
+  background: #f6f1e7;
+  border: 3px solid #c9b37e;
+  max-width: 640px;
+  width: 90%;
+  margin: 80px auto;
+  border-radius: 4px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  overflow: hidden;
+}
+
+.filter-header {
+  background: #1e1e1e;
+  color: #fff;
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.filter-close-btn {
+  font-size: 24px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.filter-subheader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #fdfbf7;
+  border-bottom: 1px dashed #c9b37e;
+}
+
+.filter-notice {
+  font-size: 12px;
+  color: #4a3b1a;
+}
+
+.filter-tabs {
+  display: flex;
+  background: #ccc;
+  padding: 2px;
+  border-radius: 4px;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  padding: 4px 16px;
+  font-size: 12px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.tab-btn.active {
+  background: #1e1e1e;
+  color: #fff;
+  border-radius: 2px;
+}
+
+.filter-body {
+  padding: 16px;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.filter-section {
+  margin-bottom: 16px;
+}
+
+.filter-section h4 {
+  margin: 0 0 8px 0;
+  font-size: 13px;
+  color: #a39274;
+  background: #eadecc;
+  padding: 4px 12px;
+  border-radius: 2px;
+}
+
+.filter-options {
+  display: flex;
+  gap: 10px;
+  padding: 4px;
+}
+
+.filter-opt-btn {
+  background: #fff;
+  border: 1px solid #c9b37e;
+  color: #4a3b1a;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.radio-circle {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #c9b37e;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  background: #fff;
+}
+
+.filter-opt-btn.active .radio-circle {
+  border-color: #1e1e1e;
+}
+
+.filter-opt-btn.active .radio-circle::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: #1e1e1e;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.filter-icon {
+  width: 16px;
+  height: 20px;
+  object-fit: contain;
+  vertical-align: middle;
+}
+
+.grid-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 15px;
+}
+
+.effect-grid-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px 10px;
+  align-items: center;
+}
+
+.effect-grid-options .filter-opt-btn {
+  width: 100%;
+  box-sizing: border-box;
+  justify-content: flex-start;
 }

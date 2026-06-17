@@ -1,0 +1,28 @@
+﻿[
+  {
+    "icon": "image/08_Other/バルガス/icon/ハンサムジャージ.JPG",
+    "rarity": "SSR",
+    "genre": "アタック",
+    "minHP": "1940",
+    "minATK": "1733",
+    "maxHP": "8652",
+    "maxATK": "9600",
+    "mg1": "木",
+    "mg2": "火",
+    "mg3": "水",
+    "mg1name": "フォレストストライク[II]",
+    "mg2name": "フレイムブラスト[II]",
+    "mg3name": "ウォータショット[II]",
+    "mg1_description": "2連撃の木属性ダメージ(強)",
+    "mg2_description": "2連撃の火属性ダメージ(強)＆[DUO]トレインと一緒に選択したとき3連撃に強化",
+    "mg3_description": "2連撃の水属性ダメージ(弱)＆ガッツ（味方全体/3T）",
+    "buddy1": "ケイト",
+    "buddy_bonus1": "ATK UP(中)",
+    "buddy2": "ジャック",
+    "buddy_bonus2": "HP UP(小)",
+    "buddy3": "トレイン",
+    "buddy_bonus3": "HP UP(小)",
+    "buddyEx": "トレイン",
+    "buddy_bonusEx": "暗闇無効"
+  }
+]

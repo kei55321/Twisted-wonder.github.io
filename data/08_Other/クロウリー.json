@@ -1,0 +1,28 @@
+﻿[
+  {
+    "icon": "image/08_Other/クロウリー/icon/レイブンジャケット.JPG",
+    "rarity": "SSR",
+    "genre": "バランス",
+    "minHP": "2983",
+    "minATK": "1350",
+    "maxHP": "14915",
+    "maxATK": "6750",
+    "mg1": "無",
+    "mg2": "無",
+    "mg3": "無",
+    "mg1name": "ゼロレイ[II]",
+    "mg2name": "ゼロレイ[II]",
+    "mg3name": "ボイドショット[II]",
+    "mg1_description": "2連撃の無属性ダメージ(強)",
+    "mg2_description": "2連撃の無属性ダメージ(強)＆[DUO]グリムと一緒に選択したとき3連撃に強化",
+    "mg3_description": "2連撃の無属性ダメージ(弱)＆HP継続回復（小/味方選択/3T）",
+    "buddy1": "ヴィル",
+    "buddy_bonus1": "ATK UP(小)",
+    "buddy2": "グリム",
+    "buddy_bonus2": "ATK UP(小)＆HP UP(小)",
+    "buddy3": "デュース",
+    "buddy_bonus3": "HP UP(小)",
+    "buddyEx": "グリム",
+    "buddy_bonusEx": "被ダメージDOWN（中）"
+  }
+]

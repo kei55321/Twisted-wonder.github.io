@@ -1,0 +1,28 @@
+﻿[
+  {
+    "icon": "image/08_Other/トレイン/icon/ストリクトスーツ.JPG",
+    "rarity": "SSR",
+    "genre": "ディフェンス",
+    "minHP": "3481",
+    "minATK": "1189",
+    "maxHP": "19284",
+    "maxATK": "5302",
+    "mg1": "木",
+    "mg2": "木",
+    "mg3": "木",
+    "mg1name": "フォレストストライク[II]",
+    "mg2name": "フォレストストライク[II]",
+    "mg3name": "リーフショット[II]",
+    "mg1_description": "2連撃の木属性ダメージ(強)",
+    "mg2_description": "2連撃の木属性ダメージ(強)＆[DUO]クルーウェルと一緒に選択したとき3連撃に強化",
+    "mg3_description": "2連撃の木属性ダメージ(弱)＆被ダメージDOWN（大/味方全体/5T）",
+    "buddy1": "クルーウェル",
+    "buddy_bonus1": "ATK UP(小)＆HP UP(小)",
+    "buddy2": "リドル",
+    "buddy_bonus2": "HP UP(小)",
+    "buddy3": "ラギー",
+    "buddy_bonus3": "HP UP(小)",
+    "buddyEx": "クルーウェル",
+    "buddy_bonusEx": "やけど無効"
+  }
+]
