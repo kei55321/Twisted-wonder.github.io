@@ -406,27 +406,52 @@ td:nth-child(6) img {
   border-radius: 2px;
 }
 
-.filter-options {
+/* --- フィルタボタン共通配置（PC・タブレット） --- */
+.filter-options,
+.grid-options {
   display: flex;
+  flex-wrap: wrap; /* 画面幅に応じて自然に折り返す */
   gap: 10px;
   padding: 4px;
 }
 
-.filter-opt-btn {
+/* 魔法効果の3列グリッド（PC・タブレット用） */
+.effect-grid-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px 10px;
+  align-items: center;
+}
+
+/* --- ボタン自体の共通スタイル（縦文字化を完全に防ぐ） --- */
+.filter-opt-btn,
+.effect-btn,
+#filterAllBtn, #filterSsrBtn, #filterSrBtn, #filterRBtn,
+#typeAllBtn, #typeBalanceBtn, #typeDefenseBtn, #typeAttackBtn,
+#effectAllBtn {
   background: #fff;
   border: 1px solid #c9b37e;
   color: #4a3b1a;
-  padding: 6px 16px;
+  padding: 8px 16px;
   border-radius: 20px;
   font-size: 13px;
   font-weight: bold;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   cursor: pointer;
   transition: all 0.2s;
+  white-space: nowrap; /* 文字を絶対に折り返さない */
 }
 
+/* 魔法効果は左寄せ（テキスト用） */
+.effect-grid-options .filter-opt-btn,
+.effect-btn {
+  justify-content: flex-start;
+}
+
+/* ラジオボタン風の丸アイコン */
 .radio-circle {
   width: 14px;
   height: 14px;
@@ -435,6 +460,7 @@ td:nth-child(6) img {
   display: inline-block;
   position: relative;
   background: #fff;
+  flex-shrink: 0; /* 丸が潰れるのを防ぐ */
 }
 
 .filter-opt-btn.active .radio-circle {
@@ -460,48 +486,30 @@ td:nth-child(6) img {
   vertical-align: middle;
 }
 
-.grid-options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 15px;
-}
-
-.effect-grid-options {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px 10px;
-  align-items: center;
-}
-
-.effect-grid-options .filter-opt-btn {
-  width: 100%;
-  box-sizing: border-box;
-  justify-content: flex-start;
-}
-
-/* タイプのボタン（またはフィルタボタン全般）に指定 */
-#typeBalanceBtn, #typeDefenseBtn, #typeAttackBtn, #typeAllBtn {
-  white-space: nowrap;  /* 文字を絶対に折り返さない（縦文字化を防ぐ） */
-  font-size: 14px;      /* スマホで見切れる場合は少し文字サイズを下げる */
-}
-
-/* ボタンを囲んでいる親要素（例） */
-.type-filter-container {
-  display: flex;
-  flex-wrap: wrap; /* 横幅が足りない時は次の行に折り返す */
-  gap: 8px;        /* ボタン同士の隙間 */
-}
-
-/* または、画面幅が480px以下の時は縦に並べる場合 */
+/* =============================================================================
+   スマホ専用レスポンシブ表示（画面幅480px以下）
+   ============================================================================= */
 @media (max-width: 480px) {
-  .type-filter-container {
-    display: flex;
-    flex-direction: column; /* 縦並びにする */
+  /* 各種コンテナを強制的に縦1列並びにする */
+  .filter-options,
+  .grid-options,
+  .effect-grid-options {
+    display: flex !important; /* gridを解除してflexにする */
+    flex-direction: column !important; /* 縦並び */
+    gap: 8px !important;
     width: 100%;
   }
-  
-  .type-filter-container button {
-    width: 100%; /* ボタンを横いっぱいに広げる */
-    white-space: nowrap;
+
+  /* ボタンをすべて横いっぱいに広げ、タップしやすくする */
+  .filter-opt-btn,
+  .effect-btn,
+  #filterAllBtn, #filterSsrBtn, #filterSrBtn, #filterRBtn,
+  #typeAllBtn, #typeBalanceBtn, #typeDefenseBtn, #typeAttackBtn,
+  #effectAllBtn {
+    width: 100% !important;
+    box-sizing: border-box;
+    padding: 10px 16px; /* 上下にゆとりを持たせて押しやすく */
+    justify-content: flex-start; /* 左寄せに見栄えを統一（効果に合わせる） */
+    font-size: 14px;
   }
 }
