@@ -478,3 +478,30 @@ td:nth-child(6) img {
   box-sizing: border-box;
   justify-content: flex-start;
 }
+
+/* タイプのボタン（またはフィルタボタン全般）に指定 */
+#typeBalanceBtn, #typeDefenseBtn, #typeAttackBtn, #typeAllBtn {
+  white-space: nowrap;  /* 文字を絶対に折り返さない（縦文字化を防ぐ） */
+  font-size: 14px;      /* スマホで見切れる場合は少し文字サイズを下げる */
+}
+
+/* ボタンを囲んでいる親要素（例） */
+.type-filter-container {
+  display: flex;
+  flex-wrap: wrap; /* 横幅が足りない時は次の行に折り返す */
+  gap: 8px;        /* ボタン同士の隙間 */
+}
+
+/* または、画面幅が480px以下の時は縦に並べる場合 */
+@media (max-width: 480px) {
+  .type-filter-container {
+    display: flex;
+    flex-direction: column; /* 縦並びにする */
+    width: 100%;
+  }
+  
+  .type-filter-container button {
+    width: 100%; /* ボタンを横いっぱいに広げる */
+    white-space: nowrap;
+  }
+}
