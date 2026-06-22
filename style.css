@@ -1,4 +1,6 @@
-/* ===== 全体設定 ===== */
+/* =============================================================================
+   1. 全体設定 & 共通コンポーネント
+   ============================================================================= */
 body {
   margin: 0;
   background: #e3dfd4;
@@ -17,7 +19,6 @@ main {
   padding: 12px; 
 }
 
-/* ===== 共通コンポーネント ===== */
 button {
   padding: 6px 12px;
   margin: 4px;
@@ -36,7 +37,9 @@ input {
   margin: 10px 0;
 }
 
-/* ===== 一覧テーブル ===== */
+/* =============================================================================
+   2. 一覧テーブル（名前・ステータス・魔法の自動可変レイアウト）
+   ============================================================================= */
 .table-scroll {
   background: #fff;
   border-radius: 10px;
@@ -47,29 +50,27 @@ input {
 
 table {
   width: 100%;
-  min-width: 960px; /* 余裕を持たせる */
+  table-layout: auto !important; /* コンテンツの長さに応じて列幅を自動計算（最重要） */
   border-collapse: collapse;
 }
 
 th, td {
   border: 1px solid #ddd;
-  padding: 8px;
+  padding: 8px 12px;
   font-size: 13px;
-  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap !important; /* 途中で改行されるのを完全に防ぐ */
 }
 
-/* 1列目（名前）の設定 */
-th:first-child, td:first-child {
-  width: 15%;
-  white-space: nowrap;
-}
-
-td:first-child {
-  text-align: left;
+/* --- 1列目（名前の列）の設定：余った幅をすべて割り当てて可変にする --- */
+table th:first-child,
+#character-table-body td:first-child {
+  width: auto !important;
+  text-align: left; /* 名前は左寄せ */
 }
 
 .name-cell {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 8px;
   white-space: nowrap;
@@ -79,13 +80,37 @@ td:first-child {
   width: 42px;
   height: 42px;
   border-radius: 6px;
+  flex-shrink: 0; /* アイコンが横につぶれるのを防ぐ */
+}
+
+.name-cell span {
+  display: inline-block;
 }
 
 .detail-arrow {
-  margin-left: 6px;
+  margin-left: auto; /* 矢印をセルの右端に綺麗に寄せる */
   color: #aaa;
 }
 
+/* --- 2列目以降（HP・ATK・Magic1〜3）の設定：中身にジャストフィット --- */
+table th:not(:first-child),
+#character-table-body td:not(:first-child) {
+  width: 1% !important; /* 必要最小限の幅にギュッと縮める */
+  text-align: center;   /* 中央揃え */
+}
+
+/* 一覧内の技アイコンのサイズと配置 */
+#character-table-body td:nth-child(4) img,
+#character-table-body td:nth-child(5) img,
+#character-table-body td:nth-child(6) img {
+  width: 24px !important;
+  height: 24px !important;
+  object-fit: contain;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+/* 行のインタラクション */
 tbody tr {
   cursor: pointer;
   transition: background 0.15s ease;
@@ -104,39 +129,9 @@ tbody tr.clicked {
   background: #d8c8a0;
 }
 
-/* 1列目（名前）の設定：余った幅を名前にあてて、ゆとりを持たせる */
-th:first-child, td:first-child {
-  width: auto; /* 固定％を解除して、残りの幅を自動で広げる */
-  white-space: nowrap;
-}
-
-/* 4・5・6列目（Magic1〜3）の幅設定とアイコンサイズ固定 */
-th:nth-child(4), th:nth-child(5), th:nth-child(6),
-td:nth-child(4), td:nth-child(5), td:nth-child(6) {
-  width: 10%; /* 22% から 10% に縮小して、無駄な余白をカット */
-}
-
-/* 一覧内の技アイコンのサイズと配置 */
-td:nth-child(4) img,
-td:nth-child(5) img,
-td:nth-child(6) img {
-  width: 24px !important;
-  height: 24px !important;
-  object-fit: contain;
-  vertical-align: middle;
-}
-
-/* 一覧内の技アイコンが大きく引き伸ばされるのを防ぐ修正 */
-td:nth-child(4) img,
-td:nth-child(5) img,
-td:nth-child(6) img {
-  width: 24px !important;
-  height: 24px !important;
-  object-fit: contain;
-  vertical-align: middle;
-}
-
-/* ===== アイコンのみ表示モード ===== */
+/* =============================================================================
+   3. アイコンのみ表示モード
+   ============================================================================= */
 #icon-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -156,7 +151,9 @@ td:nth-child(6) img {
   height: 64px;
 }
 
-/* ===== 詳細モーダル ===== */
+/* =============================================================================
+   4. 詳細モーダル
+   ============================================================================= */
 #overlay {
   display: none;
   position: fixed;
@@ -216,7 +213,6 @@ td:nth-child(6) img {
   margin-top: 6px;
 }
 
-/* モーダル内セクション基本設定 */
 .section {
   margin: 14px;
   border-top: 2px solid #c9b37e;
@@ -232,13 +228,11 @@ td:nth-child(6) img {
   padding: 4px 8px;
 }
 
-/* モーダル内 MAGIC 属性アイコンサイズ */
 #detail-modal .section img {
   width: 25px;
   height: 25px;
 }
 
-/* ステータス関連 */
 .stat-row {
   display: grid;
   grid-template-columns: 80px auto;
@@ -255,7 +249,6 @@ td:nth-child(6) img {
   font-weight: bold;
 }
 
-/* 魔法ヘッダー・各アイコン個別サイズ調整 */
 .magic-head {
   display: flex;
   align-items: center;
@@ -286,7 +279,6 @@ td:nth-child(6) img {
   margin-bottom: 8px;
 }
 
-/* ------ バディセクションのレイアウト調整 ------------------ */
 .buddy-row {
   display: flex;
   align-items: center;
@@ -297,16 +289,14 @@ td:nth-child(6) img {
   border-radius: 4px;
 }
 
-/* バディアイコンの見た目 */
 .buddy-icon {
   width: 50px !important;
   height: 50px !important;
   object-fit: cover;
-  border: 2px solid #333; /* 黒い縁取り */
+  border: 2px solid #333;
   background-color: #eee;
 }
 
-/* テキストエリア */
 .buddy-info {
   display: flex;
   flex-direction: column;
@@ -323,14 +313,15 @@ td:nth-child(6) img {
   color: #666;
 }
 
-/* レスポンシブ */
 @media (max-width: 600px) {
   .detail-body { 
     grid-template-columns: 1fr; 
   }
 }
 
-/* ===== 新設：フィルタモーダル専用スタイル ===== */
+/* =============================================================================
+   5. フィルタモーダル
+   ============================================================================= */
 #filter-overlay {
   display: none;
   position: fixed;
@@ -422,16 +413,14 @@ td:nth-child(6) img {
   border-radius: 2px;
 }
 
-/* --- フィルタボタン共通配置（PC・タブレット） --- */
 .filter-options,
 .grid-options {
   display: flex;
-  flex-wrap: wrap; /* 画面幅に応じて自然に折り返す */
+  flex-wrap: wrap;
   gap: 10px;
   padding: 4px;
 }
 
-/* 魔法効果の3列グリッド（PC・タブレット用） */
 .effect-grid-options {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -439,7 +428,6 @@ td:nth-child(6) img {
   align-items: center;
 }
 
-/* --- ボタン自体の共通スタイル（縦文字化を完全に防ぐ） --- */
 .filter-opt-btn,
 .effect-btn,
 #filterAllBtn, #filterSsrBtn, #filterSrBtn, #filterRBtn,
@@ -458,16 +446,14 @@ td:nth-child(6) img {
   gap: 8px;
   cursor: pointer;
   transition: all 0.2s;
-  white-space: nowrap; /* 文字を絶対に折り返さない */
+  white-space: nowrap;
 }
 
-/* 魔法効果は左寄せ（テキスト用） */
 .effect-grid-options .filter-opt-btn,
 .effect-btn {
   justify-content: flex-start;
 }
 
-/* ラジオボタン風の丸アイコン */
 .radio-circle {
   width: 14px;
   height: 14px;
@@ -476,7 +462,7 @@ td:nth-child(6) img {
   display: inline-block;
   position: relative;
   background: #fff;
-  flex-shrink: 0; /* 丸が潰れるのを防ぐ */
+  flex-shrink: 0;
 }
 
 .filter-opt-btn.active .radio-circle {
@@ -503,20 +489,18 @@ td:nth-child(6) img {
 }
 
 /* =============================================================================
-   スマホ専用レスポンシブ表示（画面幅480px以下）
+   6. スマホ専用レスポンシブ表示（画面幅480px以下）
    ============================================================================= */
 @media (max-width: 480px) {
-  /* 各種コンテナを強制的に縦1列並びにする */
   .filter-options,
   .grid-options,
   .effect-grid-options {
-    display: flex !important; /* gridを解除してflexにする */
-    flex-direction: column !important; /* 縦並び */
+    display: flex !important;
+    flex-direction: column !important;
     gap: 8px !important;
     width: 100%;
   }
 
-  /* ボタンをすべて横いっぱいに広げ、タップしやすくする */
   .filter-opt-btn,
   .effect-btn,
   #filterAllBtn, #filterSsrBtn, #filterSrBtn, #filterRBtn,
@@ -524,8 +508,8 @@ td:nth-child(6) img {
   #effectAllBtn {
     width: 100% !important;
     box-sizing: border-box;
-    padding: 10px 16px; /* 上下にゆとりを持たせて押しやすく */
-    justify-content: flex-start; /* 左寄せに見栄えを統一（効果に合わせる） */
+    padding: 10px 16px;
+    justify-content: flex-start;
     font-size: 14px;
   }
 }

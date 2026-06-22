@@ -90,16 +90,16 @@ const groovyBtn = document.getElementById('groovyBtn');
 // JSONファイルパス一覧
 const jsonFiles = [
   './data/01_Heartslabyul/リドル.json', './data/01_Heartslabyul/エース.json',
-  './data/01_Heartslabyul/ケイト.json', './data/01_Heartslabyul/デュース.json',
-  './data/01_Heartslabyul/トレイ.json', './data/02_Savanaclaw/ジャック.json',
-  './data/02_Savanaclaw/ラギー.json', './data/02_Savanaclaw/レオナ.json',
+  './data/01_Heartslabyul/デュース.json', './data/01_Heartslabyul/ケイト.json',
+  './data/01_Heartslabyul/トレイ.json','./data/02_Savanaclaw/レオナ.json',
+   './data/02_Savanaclaw/ジャック.json','./data/02_Savanaclaw/ラギー.json', 
   './data/03_Octavinelle/アズール.json', './data/03_Octavinelle/ジェイド.json',
   './data/03_Octavinelle/フロイド.json', './data/04_Scarabia/カリム.json',
-  './data/04_Scarabia/ジャミル.json', './data/05_Pomefiore/エペル.json',
-  './data/05_Pomefiore/ルーク.json', './data/05_Pomefiore/ヴィル.json',
+  './data/04_Scarabia/ジャミル.json', './data/05_Pomefiore/ヴィル.json',
+  './data/05_Pomefiore/ルーク.json', './data/05_Pomefiore/エペル.json',
   './data/06_Ignihyde/イデア.json', './data/06_Ignihyde/オルト.json',
-  './data/07_Diasomnia/シルバー.json', './data/07_Diasomnia/セベク.json',
-  './data/07_Diasomnia/マレウス.json', './data/07_Diasomnia/リリア.json',
+  './data/07_Diasomnia/マレウス.json', './data/07_Diasomnia/セベク.json',
+  './data/07_Diasomnia/シルバー.json', './data/07_Diasomnia/リリア.json',
   './data/08_Other/クルーウェル.json', './data/08_Other/クロウリー.json',
   './data/08_Other/グリム.json', './data/08_Other/スカリー.json',
   './data/08_Other/トレイン.json', './data/08_Other/バルガス.json',
@@ -110,8 +110,8 @@ const jsonFiles = [
 // 2. ユーティリティ関数（名前抽出、アイコン取得など）
 // =============================================================================
 function extractCharacterName(c) {
-  if (c.name) return c.name;
-  if (!c.icon) return "[エラー: データ不備]";
+  if (c.name) return { charName: c.name, fullName: c.name };
+  if (!c.icon) return { charName: "[データ不備]", fullName: "[データ不備]" };
   const normalizedPath = c.icon.replace(/\\/g, '/');
   const parts = normalizedPath.split('/');
 
@@ -119,9 +119,14 @@ function extractCharacterName(c) {
     const charName = parts[2];
     const fileName = parts[parts.length - 1];
     const costumeName = fileName.replace(/\.(png|jpe?g)$/i, ''); 
-    return `${charName}(${c.rarity}/${costumeName})`;
+    
+    return {
+      charName: charName,
+      costumeInfo: `(${c.rarity}/${costumeName})`,
+      fullName: `${charName}(${c.rarity}/${costumeName})`
+    };
   } else {
-    return `[パス不正: ${c.icon}]`;
+    return { charName: `[パス不正]`, fullName: `[パス不正: ${c.icon}]` };
   }
 }
 
@@ -183,9 +188,11 @@ function render(list) {
     c.defaultImage = images.defaultImage;
     c.groovyImage = images.groovyImage;
 
-    const charName = extractCharacterName(c);
+    const nameObj = extractCharacterName(c);
+    const nameHtml = nameObj.costumeInfo 
+      ? `${nameObj.charName}<br><span class="costume-text">${nameObj.costumeInfo}</span>`
+      : nameObj.charName;
 
-    // 一覧テーブルは「属性アイコンのみ」のシンプルな表示に戻します
     const mg1Html = c.mg1 ? `<img src="${getAttrIcon(c.mg1)}">` : '-';
     const mg2Html = c.mg2 ? `<img src="${getAttrIcon(c.mg2)}">` : '-';
     const mg3Html = c.mg3 ? `<img src="${getAttrIcon(c.mg3)}">` : '-';
@@ -195,7 +202,7 @@ function render(list) {
       <td>
         <div class="name-cell">
           <img src="${c.icon}">
-          <span>${charName}</span>
+          <span>${nameHtml}</span>
           <span class="detail-arrow">▶</span>
         </div>
       </td>
@@ -210,7 +217,7 @@ function render(list) {
 
     const div = document.createElement('div');
     div.className = 'icon-item';
-    div.innerHTML = `<img src="${c.icon}"><div>${charName}</div>`;
+    div.innerHTML = `<img src="${c.icon}"><div>${nameHtml}</div>`;
     div.addEventListener('click', () => openDetail(c));
     iconGrid.appendChild(div);
   });
@@ -220,7 +227,8 @@ function render(list) {
 // 5. データのフィルタリング・適用共通関数
 // =============================================================================
 function applyFiltersAndSort() {
-  let filtered = characters;
+  // 元の並び順（初期配列）が崩れないように浅いコピーを作成
+  let filtered = [...characters];
 
   // 1. レアリティで絞り込み
   if (selectedRarities.length > 0) {
@@ -257,7 +265,7 @@ function applyFiltersAndSort() {
   if (keyword) {
     const words = keyword.split(/[\s\u3000]+/);
     filtered = filtered.filter(c => {
-      const targetNameHira = kataToHira(extractCharacterName(c).toLowerCase());
+      const targetNameHira = kataToHira(extractCharacterName(c).fullName.toLowerCase());
       return words.every(word => {
         const searchWordHira = kataToHira(word.toLowerCase());
         return targetNameHira.includes(searchWordHira);
@@ -415,11 +423,20 @@ sortAtkBtn.onclick = () => {
 };
 
 resetBtn.onclick = () => {
-  hpAsc = false; atkAsc = false;
-  selectedRarities = []; selectedAttrs = []; selectedTypes = []; selectedEffects = [];
+  // ソート状態管理変数を完全に初期化
+  hpAsc = false; 
+  atkAsc = false;
+  selectedRarities = []; 
+  selectedAttrs = []; 
+  selectedTypes = []; 
+  selectedEffects = [];
   searchInput.value = '';
-  sortHpBtn.textContent = 'HP ↓'; sortAtkBtn.textContent = 'ATK ↓';
-  sortHpBtn.classList.remove('active'); sortAtkBtn.classList.remove('active');
+  
+  // ソートボタンのテキストとアクティブクラスの初期化
+  sortHpBtn.textContent = 'HP ↓'; 
+  sortAtkBtn.textContent = 'ATK ↓';
+  sortHpBtn.classList.remove('active'); 
+  sortAtkBtn.classList.remove('active');
   
   // すべてのフィルタボタンの選択状態を初期リセット
   filterAllBtn.classList.add('active');
@@ -432,13 +449,15 @@ resetBtn.onclick = () => {
   effectButtons.forEach(btn => btn.classList.remove('active'));
 
   resetBtn.classList.add('active');
-  render(characters);
+  
+  // 💡初期の読み込み順（characters配列そのもの）で再度描画する
+  render([...characters]);
 };
 
 searchInput.oninput = () => applyFiltersAndSort();
 
 // =============================================================================
-// 7. モーダル制御（詳細表示） & バディ画像生成
+// 7. モーダル制御（詳細表示） & バディ画像生成 & 枠外クリック処理
 // =============================================================================
 
 function getBuddyImgPath(baseIconPath, buddyName) {
@@ -465,8 +484,12 @@ function openDetail(c, el) {
     detailImage.src = c.defaultImage;
     overlay.style.display = 'block';
 
-    const charName = extractCharacterName(c);
-    detailName.textContent = charName;
+    const nameObj = extractCharacterName(c);
+    const nameHtml = nameObj.costumeInfo 
+      ? `${nameObj.charName}<br><span class="costume-text">${nameObj.costumeInfo}</span>`
+      : nameObj.charName;
+
+    detailName.innerHTML = nameHtml;
     detailHp.textContent  = c.maxHP ?? '-';
     detailAtk.textContent = c.maxATK ?? '-';
 
@@ -548,3 +571,16 @@ function setupMagic(attr, name, desc, attrEl, typeEl, nameEl, descEl, rowEl) {
 }
 
 closeModal.onclick = () => overlay.style.display = 'none';
+
+// --- 💡 追加：モーダルの枠外（背景）クリックで閉じる処理 ---
+overlay.addEventListener('click', (event) => {
+  if (event.target === overlay) {
+    overlay.style.display = 'none';
+  }
+});
+
+filterOverlay.addEventListener('click', (event) => {
+  if (event.target === filterOverlay) {
+    filterOverlay.style.display = 'none';
+  }
+});

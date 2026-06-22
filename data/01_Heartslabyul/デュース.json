@@ -516,5 +516,31 @@
     "buddy_bonus1": "HP UP(中)",
     "buddyEx": "",
     "buddy_bonusEx": ""
-  }
+  },
+  {
+    "icon": "image/01_Heartslabyul/デュース/icon/ラ・ボンボニエール.JPG",
+    "rarity": "SSR",
+    "genre": "ディフェンス",
+    "minHP": "0",
+    "minATK": "0",
+    "maxHP": "14633",
+    "maxATK": "5620",
+    "mg1": "水",
+    "mg2": "無",
+    "mg3": "火",
+    "mg1name": "アクアウェーブ",
+    "mg2name": "ゼロレイ",
+    "mg3name": "ファイアショット[Ⅱ]",
+    "mg1_description": "水属性ダメージ(強)＆火属性ダメージDOWN(中)(相手全体/3T)",
+    "mg2_description": "2連撃の無属性ダメージ(強)&[DUO]レオナと一緒に選択したとき3連撃に強化",
+    "mg3_description": "2連撃の火属性ダメージ(弱)＆ATKDOWN(小)(相手/1T)＆ダメージUP(小)(自/1T)",
+    "buddy1": "レオナ",
+    "buddy_bonus1": "HP UP(中)",
+    "buddy2": "ルーク",
+    "buddy_bonus2": "HP UP(小)",
+    "buddy3": "カリム",
+    "buddy_bonus3": "HP UP(小)",
+    "buddyEx": "レオナ",
+    "buddy_bonusEx": "HP UP(大)"
+  } 
 ]
